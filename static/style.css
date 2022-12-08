@@ -1,0 +1,11 @@
+
+.menu {
+    text-decoration: none;
+    color: black;
+}
+
+.datepicker,
+.table-condensed {
+  width: 500px;
+  height:300px;
+}

@@ -1,0 +1,78 @@
+{% extends 'base.html' %} {% block content %}
+
+
+<div class="container text-center justify">
+    <div class="row">
+        <h1 class="mb-3">Add portfolio</h1>
+        <div class="input-group mb-3 col">
+            <input type="text" class="form-control" placeholder="Portfolio title" aria-label="Username" aria-describedby="basic-addon1" id="portfolio_title">
+            <button type="button" class="btn btn-info btn-floating col-1" id="btn_port">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<div class="container my-3">
+    <div class="row">
+        <div class="list-group">
+            <h4>Portpolio list</h4> 
+            <table class="table">
+                <thead>
+                    <tr class="text-center table-dark">
+                        <th>번호</th>
+                        <th style="width:50%">제목</th>
+                        <th>작성일</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if portfolio %} 
+                    {% for port in portfolio %}
+                    <tr class="text-center">
+                        <td>
+                            {{ forloop.counter }}
+                        </td>
+                        <td class="text-start text-center "> 
+                            <a href="{% url 'portfolio:detail' port.id %}"
+                                >{{ port.title }}</a
+                            >
+                            {% if port.answer_set.count > 0 %}
+                            <span class="text-danger small mx-2">{{ question.answer_set.count }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ port.create_date|date:"Y-m-d" }}</td>
+                    </tr>
+                    {% endfor %} {% else %}
+                    <tr>
+                        <td colspan="3">등록된 포트폴리오가 없습니다.</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock content %} 
+
+{% block script %}
+<script type="text/javascript">
+
+
+
+    const btn_port = document.getElementById("btn_port");
+    btn_port.addEventListener("click", function () {
+        document.getElementById("port_title").value = document.getElementById("portfolio_title").value;
+        document.getElementById("portForm").submit();
+    });
+
+
+
+
+
+</script>
+{% endblock %}

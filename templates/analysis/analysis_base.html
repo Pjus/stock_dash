@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block style %}
+    <!-- dash CSS -->
+    <link
+        rel="stylesheet"
+        type="text/css"
+        href="{% static 'style.css' %}"
+    />
+{% endblock style %}
+{% block content %}
+
+
+
+<div class="container-lg">
+    <div class="row mt-5">
+        <div class="col">
+            {% comment %}  (e.g., net profit margin and return on shareholders' equity) {% endcomment %}
+            <h4><a class="menu" href="">Profitability ratios</a></h4> 
+        </div>
+
+        <div class="col">
+            {% comment %}  (e.g., working capital) {% endcomment %}
+            <h4><a class="menu" href="">Liquidity ratios</a></h4>
+        </div>
+
+        <div class="col">
+            {% comment %}  (e.g., debt-to-equity and debt-to-asset ratios) {% endcomment %}
+            <h4><a class="menu" href="">Debt ratios</a></h4>
+        </div>
+
+        <div class="col">
+            {% comment %} (e.g., inventory turnover) {% endcomment %}
+            <h4><a class="menu" href="">Operations ratios</a></h4>
+        </div>
+
+        <div class="col">
+            {% comment %} (e.g. earnings per share (EPS)) {% endcomment %}
+            <h4><a class="menu" href="">Market ratios</a></h4>
+        </div>
+
+    </div>
+</div>
+<div>
+
+    <div>
+        EPS= 
+                AOCS 
+                NI − PD 
+                ​
+                
+                where:
+                NI= Net income 
+                PD= Preferred dividends 
+                AOCS= Average outstanding common shares 
+                ​
+
+    </div>
+</div>
+
+$$a^2+b^2=c^2+\frac{d}{e}$$
+{% endblock content %}
+
+
+{% block script %}
+<script>
+    MathJax.Hub.Config({
+        tex2jax: { inlineMath: [['$$', '$$']], displayMath: [['$$$', '$$$']] }
+    });
+</script>
+{% endblock script %}
