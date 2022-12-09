@@ -16,7 +16,7 @@ def question_create(request):
             question.create_date = timezone.now()
             question.author = request.user
             question.save()
-            return redirect('dash:index')
+            return redirect('dash:notice')
     else:
         form = QuestionForm()
     context = {'form': form}
@@ -49,7 +49,7 @@ def question_delete(request, question_id):
         messages.error(request, '삭제권한이 없습니다')
         return redirect('dash:detail', question_id=question.id)
     question.delete()
-    return redirect('dash:index')
+    return redirect('dash:notice')
 
 
 @login_required(login_url='common:login')

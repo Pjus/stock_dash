@@ -27,6 +27,4 @@ urlpatterns = [
     path("analysis/", include('analysis.urls')),
     path("", base_views.resume, name="index"),
 
-
-
 ]

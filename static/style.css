@@ -1,8 +1,9 @@
-html,body {
+html,
+body {
     margin: 0;
     background: #eee;
-    font-family: 'Montserrat', sans-serif;
-    font-family: 'Open Sans', sans-serif;
+    font-family: "Montserrat", sans-serif;
+    font-family: "Open Sans", sans-serif;
     font-weight: bold;
 
     letter-spacing: 0.65px;
@@ -16,13 +17,13 @@ html,body {
     color: black;
 }
 
-.my-container{
-    height: 500px;    
+.my-container {
+    height: 500px;
 }
 
 .datepicker,
 .table-condensed {
-  width: 500px;
-  height:300px;
+    width: 500px;
+    height: 300px;
 }
 

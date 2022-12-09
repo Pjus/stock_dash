@@ -29,6 +29,10 @@ def detail(request, question_id):
     context = {'question': question}
     return render(request, 'dash/question_detail.html', context)
 
-
 def resume(request):
-    return render(request, 'dash/resume.html')
+    photo_name = []
+    for i in range(1, 14):
+        photo_name.append(f"img/portfolio/port({i}).png")
+
+    content = {"photo": photo_name}
+    return render(request, 'dash/resume.html', content)

@@ -51,6 +51,17 @@
                     {% endif %}
                 </li>
             </ul>
+
         </div>
     </div>
 </nav>
+
+
+<script>
+    $(".mode-switch").on("click", () => {
+        $("body").toggleClass("dark");
+        $("button").toggleClass("on");
+        $("#btn-toggle").toggleClass("on");
+        $("#sun").toggleClass("off");
+      });
+</script>

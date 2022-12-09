@@ -48,12 +48,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'fontawesomefree',
+    'crispy_forms',
+    'crispy_bootstrap5',
     # "django_apscheduler",
     # App registration
     'dash.apps.DashConfig',
     'common.apps.CommonConfig',
     'portfolio.apps.PortfolioConfig'
 ]
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

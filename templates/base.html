@@ -67,6 +67,8 @@
             type="text/css"
             href="{% static 'style.css' %}"
         />
+
+        
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="{% static 'js/bootstrap.min.js' %}"></script>
 
@@ -80,11 +82,14 @@
         <script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
         <script src="{% static 'js/bootstrap-datepicker.ko.min.js' %}"></script>
         <script src="{% static 'js/bootstrap.min.js' %}"></script>
+        <script src={% static 'js/scripts.js' %}></script>
 
         <title>ATO</title>
     </head>
     <body>
-        {% include 'navbar.html' %} {% block content %} {% endblock content %}
+        {% include 'navbar.html' %} 
+        {% block content %} 
+        {% endblock content %}
         <!-- 자바스크립트 Start -->
         {% block script %} {% endblock %}
         <!-- 자바스크립트 End -->
