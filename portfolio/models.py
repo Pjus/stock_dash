@@ -16,7 +16,7 @@ class Stock(models.Model):
     portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE, related_name='stock_port')
     ticker = models.CharField(max_length=200)
     quantity = models.IntegerField(default=0)
-    buy_price = models.FloatField(default=0)
+    buy_price = models.FloatField(default=0.0)
     current_price = models.FloatField(default=0, null=True)
     profit = models.FloatField(default=0, null=True)
     return_ratio = models.FloatField(default=0, null=True)

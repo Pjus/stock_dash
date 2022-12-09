@@ -20,12 +20,13 @@ from dash.views import base_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', base_views.index, name="index"),
     path("dash/", include('dash.urls')),
     path("common/", include('common.urls')),
     path("portfolio/", include('portfolio.urls')),
     path("user/", include('user.urls')),
     path("analysis/", include('analysis.urls')),
+    path("", base_views.resume, name="index"),
+
 
 
 ]

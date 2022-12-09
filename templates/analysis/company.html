@@ -1,0 +1,477 @@
+{% extends 'base.html' %} 
+{% load dash_filter %}
+{% block content %}
+
+<div class="container">
+    <div>
+        <h3 class="text-center mt-5">Search Company</h3>
+        <div class="container my-3 d-flex justify-content-center">
+            <div class="col-6">
+                <div class="input-group">
+                    <input
+                        placeholder="Search by Ticker (e.g. AAPL)"
+                        type="text"
+                        id="search_ticker"
+                        class="form-control"
+                        value="{{ ticker|default_if_none:'' }}"
+                    />
+                    <div class="input-group-append">
+                        <button
+                            class="btn btn-outline-secondary"
+                            type="button"
+                            id="btn_search"
+                        >
+                            Search
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if ticker == '' %} {% else %} {% endif %}
+    </div>
+</div>
+
+<form id="searchForm" method="get" action="{% url 'analysis:company' %}">
+    <input
+        type="hidden"
+        id="ticker"
+        name="ticker"
+        value="{{ ticker|default_if_none:'' }}"
+    />
+</form>
+
+<div class="cotainer">
+    <div class="container mb-5">
+        <div id="chartContainer" style="height: 370px; width: 100%"></div>
+    </div>
+
+    <br />
+    <div class="container">
+        <h3>Financial Statement</h3>
+        {% for key, value in dict_fs.items %}
+            {% if forloop.counter == 1 %}
+            <div class="row">
+                <div class="btn-group mx-auto mb-2 col" role="group" aria-label="Basic example">
+                    {% for keys, val in value.items %}
+                        {% if val != 'None' and forloop.counter < 12 %}
+                            <button type="button" class="accountSubject btn btn-primary" >{{keys}}</button>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="btn-group mx-auto col mb-5" role="group" aria-label="Basic example">
+                    {% for keys, val in value.items %}
+                        {% if val != 'None' %}
+                            {% if forloop.counter > 11 %}
+                                <button type="button" class="accountSubject btn btn-primary" >{{keys}}</button>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+
+        <h3>Balance Sheet</h3>
+        {% for key, value in dict_bs.items %}
+            {% if forloop.counter == 1 %}
+            <div class="row">
+                <div class="btn-group mx-auto mb-2 col" role="group" aria-label="Basic example">
+                    {% for keys, val in value.items %}
+                        {% if val != 'None' and forloop.counter < 12 %}
+                            <button type="button" class="accountSubject btn btn-primary" >{{keys}}</button>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="btn-group mx-auto col mb-5" role="group" aria-label="Basic example">
+                    {% for keys, val in value.items %}
+                        {% if val != 'None' %}
+                            {% if forloop.counter > 11 %}
+                                <button type="button" class="accountSubject btn btn-primary" >{{keys}}</button>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+
+        <h3>Cashflow</h3>
+        {% for key, value in dict_cf.items %}
+            {% if forloop.counter == 1 %}
+            <div class="row">
+                <div class="btn-group mx-auto mb-2 col" role="group" aria-label="Basic example">
+                    {% for keys, val in value.items %}
+                        {% if val != 'None' and forloop.counter < 12 %}
+                            <button type="button" class="accountSubject btn btn-primary" >{{keys}}</button>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="btn-group mx-auto col mb-5" role="group" aria-label="Basic example">
+                    {% for keys, val in value.items %}
+                        {% if val != 'None' %}
+                            {% if forloop.counter > 11 %}
+                                <button type="button" class="accountSubject btn btn-primary" >{{keys}}</button>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <br>
+
+    {{info}}
+    <div class="container mt-3">
+        <div id="incomechartContainer" style="height: 500px; width: 100%"></div>
+    </div>
+</div>
+
+
+<input
+    type="hidden"
+    id="stock_price"
+    name="variable"
+    value="{{ stock_price }}"
+/>
+<input type="hidden" id="stock_ticker" name="variable" value="{{ ticker }}" />
+<input type="hidden" id="stock_fs" name="variable" value="{{ financial }}" />
+<input type="hidden" id="stock_bs" name="variable" value="{{ balance }}" />
+<input type="hidden" id="stock_cf" name="variable" value="{{ cashflow }}" />
+
+
+
+{% endblock content %} {% block script %}
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+
+<script>
+    const btn_search = document.getElementById("btn_search");
+    btn_search.addEventListener("click", function () {
+        document.getElementById("ticker").value =
+            document.getElementById("search_ticker").value;
+        document.getElementById("searchForm").submit();
+    });
+    document
+        .querySelector("#search_ticker")
+        .addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+                document.getElementById("ticker").value =
+                    document.getElementById("search_ticker").value;
+                document.getElementById("searchForm").submit();
+            }
+        });
+
+    const stock_ticker = document.getElementById("stock_ticker").value;
+
+    let dataPoints = [];
+    let financialDataPoints = [];
+    let balancePoints = [];
+    let cashPoints = [];
+
+
+
+    var chart1 = new CanvasJS.Chart("chartContainer", {
+        zoomEnabled: true,
+        animationEnabled: true,
+        theme: "light2", // "light1", "light2", "dark1", "dark2"
+        exportEnabled: true,
+        title: {
+            text: `${stock_ticker.toUpperCase()} Stock Price`,
+        },
+        subtitles: [
+            {
+                text: "",
+            },
+        ],
+        axisX: {
+            interval: 1,
+            valueFormatString: "YYYY-MM-DD",
+        },
+        axisY: {
+            prefix: "$",
+            title: "Price",
+        },
+        toolTip: {
+            shared: true,
+        },
+        data: [
+            {
+                type: "candlestick",
+                yValueFormatString: "$##0.00",
+                dataPoints: dataPoints,
+            },
+            {
+                type: "line",
+                showInLegend: true,
+                name: "Total Revenue",
+                axisYType: "secondary",
+                yValueFormatString: "$#,##0.00bn",
+                xValueFormatString: "YYYY-MM-DD",
+                dataPoints: financialDataPoints,
+            },
+            {
+                type: "line",
+                showInLegend: true,
+                name: "Cash",
+                axisYType: "secondary",
+                yValueFormatString: "$#,##0.00bn",
+                xValueFormatString: "YYYY-MM-DD",
+                dataPoints: balancePoints,
+            },
+            {
+                type: "line",
+                showInLegend: true,
+                name: "Net Income",
+                axisYType: "secondary",
+                yValueFormatString: "$#,##0.00bn",
+                xValueFormatString: "YYYY-MM-DD",
+                dataPoints: cashPoints,
+            },
+        ],
+    });
+
+    var chart2 = new CanvasJS.Chart("incomechartContainer", {
+        zoomEnabled: true,
+        animationEnabled: true,
+        theme: "light2", // "light1", "light2", "dark1", "dark2"
+        exportEnabled: true,
+        title: {
+            text: `${stock_ticker.toUpperCase()} Total Revenue & Net Income`,
+        },
+        subtitles: [
+            {
+                text: "",
+            },
+        ],
+        axisX: {
+            interval: 1,
+            valueFormatString: "YYYY-MM-DD",
+        },
+        axisY: {
+            prefix: "$",
+            title: "Price",
+        },
+        toolTip: {
+            shared: true,
+        },
+        data: [
+            {
+                type: "line",
+                showInLegend: true,
+                name: "Net Income",
+                axisYType: "secondary",
+                yValueFormatString: "$#,##0.00bn",
+                xValueFormatString: "YYYY-MM-DD",
+                dataPoints: balancePoints,
+            },
+            {
+                type: "line",
+                showInLegend: true,
+                name: "Total Revenue",
+                axisYType: "secondary",
+                yValueFormatString: "$#,##0.00bn",
+                xValueFormatString: "YYYY-MM-DD",
+                dataPoints: financialDataPoints,
+            },
+        ],
+    });
+
+    function getPriceData() {
+        const price_data = document.getElementById("stock_price").value;
+        const price_data_json = JSON.parse(price_data);
+        let priceKeys = Object.keys(price_data_json);
+
+        for (let i = 0; i < Object.keys(priceKeys).length; i++) {
+            dataPoints.push({
+                x: new Date(priceKeys[i]),
+                y: [
+                    parseFloat(price_data_json[priceKeys[i]]["Open"]),
+                    parseFloat(price_data_json[priceKeys[i]]["High"]),
+                    parseFloat(price_data_json[priceKeys[i]]["Low"]),
+                    parseFloat(price_data_json[priceKeys[i]]["Close"]),
+                ],
+            });
+        }
+    }
+
+    const fs_data = document.getElementById("stock_fs").value;
+    const fs_data_json = JSON.parse(fs_data);
+    let fsKeys = Object.keys(fs_data_json);
+
+    const bs_data = document.getElementById("stock_bs").value;
+    const bs_data_json = JSON.parse(bs_data);
+    let bsKeys = Object.keys(bs_data_json);
+
+
+    const cf_data = document.getElementById("stock_cf").value;
+    const cf_data_json = JSON.parse(cf_data);
+    let cfKeys = Object.keys(cf_data_json);
+
+    window.onload = function () {
+
+        for (let i = 0; i < Object.keys(fs_data_json).length; i++) {
+            financialDataPoints.push({
+                x: new Date(fsKeys[i]),
+                y:
+                    parseFloat(fs_data_json[fsKeys[i]]["Total Revenue"]) /
+                    1000000000,
+            });
+            balancePoints.push({
+                x: new Date(bsKeys[i]),
+                y: parseFloat(bs_data_json[bsKeys[i]]["Cash"]) / 1000000000,
+            });
+            cashPoints.push({
+                x: new Date(cfKeys[i]),
+                y: parseFloat(cf_data_json[cfKeys[i]]["Net Income"]) / 1000000000,
+            });
+        }
+        getPriceData();
+        chart1.render()
+
+    };
+
+
+    let selectedSubject = ''
+    const accountSubjects = document.getElementsByClassName('accountSubject')
+
+    let fsData = [];
+    let bsData = [];
+    let cfData = [];
+
+    let fsSub = '';
+    let bsSub = '';
+    let cfSub = '';
+
+    function update(subject) {
+        
+        if(Object.keys(fs_data_json[fsKeys[0]]).includes(subject)){
+            if(fsData.length > 0){
+                fsData = []
+                fsSub = ''
+            }
+            fsSub = subject
+            for (let i = 0; i < Object.keys(fs_data_json).length; i++) {
+                fsData.push({
+                    x: new Date(fsKeys[i]),
+                    y:
+                        parseFloat(fs_data_json[fsKeys[i]][subject]) /
+                        1000000000,
+                });
+            }
+        }
+
+        if(Object.keys(bs_data_json[bsKeys[0]]).includes(subject)){
+            if(bsData.length > 0){
+                bsData = []
+                bsSub = ''
+
+            }
+            bsSub = subject
+            for (let i = 0; i < Object.keys(bs_data_json).length; i++) {
+                bsData.push({
+                    x: new Date(bsKeys[i]),
+                    y:
+                        parseFloat(bs_data_json[bsKeys[i]][subject]) /
+                        1000000000,
+                });
+            }
+        }
+
+        if(Object.keys(cf_data_json[cfKeys[0]]).includes(subject)){
+            if(cfData.length > 0){
+                cfData = []
+                cfSub = ''
+            }
+            cfSub = subject
+            for (let i = 0; i < Object.keys(cf_data_json).length; i++) {
+                cfData.push({
+                    x: new Date(cfKeys[i]),
+                    y:
+                        parseFloat(cf_data_json[cfKeys[i]][subject]) /
+                        1000000000,
+                });
+            }
+        }
+
+
+        var chart1 = new CanvasJS.Chart("chartContainer", {
+            zoomEnabled: true,
+            animationEnabled: true,
+            theme: "light2", // "light1", "light2", "dark1", "dark2"
+            exportEnabled: true,
+            title: {
+                text: `${stock_ticker.toUpperCase()} Stock Price`,
+            },
+            subtitles: [
+                {
+                    text: "",
+                },
+            ],
+            axisX: {
+                interval: 1,
+                valueFormatString: "YYYY-MM-DD",
+            },
+            axisY: {
+                prefix: "$",
+                title: "Price",
+            },
+            toolTip: {
+                shared: true,
+            },
+            data: [
+                {
+                    type: "candlestick",
+                    yValueFormatString: "$##0.00",
+                    dataPoints: dataPoints,
+                },
+                {
+                    type: "line",
+                    showInLegend: true,
+                    name: fsSub,
+                    axisYType: "secondary",
+                    yValueFormatString: "$#,##0.00bn",
+                    xValueFormatString: "YYYY-MM-DD",
+                    dataPoints: fsData,
+                },
+                {
+                    type: "line",
+                    showInLegend: true,
+                    name: bsSub,
+                    axisYType: "secondary",
+                    yValueFormatString: "$#,##0.00bn",
+                    xValueFormatString: "YYYY-MM-DD",
+                    dataPoints: bsData,
+                },
+                {
+                    type: "line",
+                    showInLegend: true,
+                    name: cfSub,
+                    axisYType: "secondary",
+                    yValueFormatString: "$#,##0.00bn",
+                    xValueFormatString: "YYYY-MM-DD",
+                    dataPoints: cfData,
+                },
+
+            ],
+        });
+        chart1.render()
+    }
+
+
+    for(let i=0; i < accountSubjects.length; i++){
+        accountSubjects[i].addEventListener("click", function(e){
+            selectedSubject = this.innerText;
+            update(selectedSubject)
+        })
+    }
+
+</script>
+{% endblock script %} 

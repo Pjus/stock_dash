@@ -18,9 +18,10 @@ def index(request):
             Q(author__username__icontains=kw) |  # 질문 글쓴이 검색
             Q(answer__author__username__icontains=kw)  # 답변 글쓴이 검색
         ).distinct()
-    paginator = Paginator(question_list, 10)  # 페이지당 10개씩 보여주기
+    paginator = Paginator(question_list, 25)  # 페이지당 25개씩 보여주기
     page_obj = paginator.get_page(page)
     context = {'question_list': page_obj, 'page': page, 'kw': kw}
+    print(page_obj.number)
     return render(request, 'dash/question_list.html', context)
 
 def detail(request, question_id):
@@ -30,4 +31,4 @@ def detail(request, question_id):
 
 
 def resume(request):
-    return render('dash/resume.html')
+    return render(request, 'dash/resume.html')

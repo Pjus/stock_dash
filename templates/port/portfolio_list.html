@@ -54,15 +54,15 @@
     </div>
 </div>
 
-
-
+<form id="portForm" method="post" action="{% url 'portfolio:index' %}">
+    {% csrf_token %}
+    <input type="hidden" id="port_title" name="title" value="{{ title|default_if_none:'' }}">
+</form>
 
 {% endblock content %} 
 
 {% block script %}
 <script type="text/javascript">
-
-
 
     const btn_port = document.getElementById("btn_port");
     btn_port.addEventListener("click", function () {
@@ -70,7 +70,14 @@
         document.getElementById("portForm").submit();
     });
 
-
+    document
+        .querySelector("#portfolio_title")
+        .addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+                document.getElementById("port_title").value = document.getElementById("portfolio_title").value;
+                document.getElementById("portForm").submit();
+            }
+        });
 
 
 

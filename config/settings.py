@@ -12,9 +12,14 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import json
+import pymongo
+
+
 
 with open("SECRET.json", "r") as secret_json:
     sc_python = json.load(secret_json)
+
+
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -43,7 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'fontawesomefree',
-    "django_apscheduler",
+    # "django_apscheduler",
     # App registration
     'dash.apps.DashConfig',
     'common.apps.CommonConfig',
@@ -89,13 +94,19 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
+
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'default': {
+            'ENGINE': 'djongo',
+            'NAME': 'stockDB',
+            'ENFORCE_SCHEMA':False,
+            'CLIENT':{
+                'host':sc_python['MONGODB']
+            }
+
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators

@@ -14,43 +14,79 @@
             type="text/css"
             href="{% static 'bootstrap.min.css' %}"
         />
+
+
+        <link
+            href="{% static 'fontawesomefree/css/fontawesome.css' %}"
+            rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="{% static 'fontawesomefree/css/brands.css' %}"
+            rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="{% static 'fontawesomefree/css/solid.css' %}"
+            rel="stylesheet"
+            type="text/css"
+        />
+
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css"
+        />
+        <link rel="stylesheet" href="{% static 'bootstrap-datepicker.css' %}" />
+        <link
+            href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css"
+            rel="stylesheet"
+            type="text/css"
+        />
+        <!-- Google fonts-->
+        <link
+            href="https://fonts.googleapis.com/css?family=Montserrat:400,700"
+            rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700"
+            rel="stylesheet"
+            type="text/css"
+        />
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300&family=Open+Sans:wght@300&display=swap"
+            rel="stylesheet"
+        />
         <!-- dash CSS -->
         <link
             rel="stylesheet"
             type="text/css"
             href="{% static 'style.css' %}"
         />
-
-        <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
-        <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
-        <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
-
-        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
-  
-        <link rel="stylesheet" href="{% static 'bootstrap-datepicker.css' %}">
-
-        <!-- Google fonts-->
-        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
-        <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="{% static 'js/bootstrap.min.js' %}"></script>
 
-        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
+        <script
+            type="text/javascript"
+            charset="utf8"
+            src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"
+        ></script>
         <script src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
         <script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
         <script src="{% static 'js/bootstrap-datepicker.ko.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
 
         <title>ATO</title>
     </head>
     <body>
-        {% include 'navbar.html' %}
-        {% block content %} 
-        {% endblock content %}
-        <script src="{% static 'js/bootstrap.min.js' %}"></script>
+        {% include 'navbar.html' %} {% block content %} {% endblock content %}
         <!-- 자바스크립트 Start -->
-        {% block script %}
-        {% endblock %}
+        {% block script %} {% endblock %}
         <!-- 자바스크립트 End -->
     </body>
 </html>

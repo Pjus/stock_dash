@@ -1,7 +1,23 @@
+html,body {
+    margin: 0;
+    background: #eee;
+    font-family: 'Montserrat', sans-serif;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: bold;
+
+    letter-spacing: 0.65px;
+    font-size: 15px;
+    color: #555;
+    cursor: default;
+}
 
 .menu {
     text-decoration: none;
     color: black;
+}
+
+.my-container{
+    height: 500px;    
 }
 
 .datepicker,
@@ -9,3 +25,4 @@
   width: 500px;
   height:300px;
 }
+

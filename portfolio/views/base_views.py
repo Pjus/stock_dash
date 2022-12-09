@@ -11,8 +11,10 @@ from ..forms import PortfolioForm, StockForm
 
 
 def index(request):
+    print(request.method)
     if request.method == 'POST':
         form = PortfolioForm(request.POST)
+        print(form)
         if form.is_valid():
             port = form.save(commit=False)
             port.create_date = timezone.now()

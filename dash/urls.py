@@ -5,7 +5,8 @@ from .views import base_views, question_views, answer_views
 app_name = 'dash'
 
 urlpatterns = [
-    path('', base_views.index, name='index'),
+    path('', base_views.index, name='notice'),
+    path('', base_views.index, name='news'),
     path('<int:question_id>/', base_views.detail, name='detail'),
     path('answer/create/<int:question_id>/', answer_views.answer_create, name='answer_create'),
     path('answer/modify/<int:answer_id>/', answer_views.answer_modify, name='answer_modify'),
