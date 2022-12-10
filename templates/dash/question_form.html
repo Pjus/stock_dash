@@ -1,14 +1,22 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags %}
-
+{% load bootstrap5 %} 
 {% block content %}
-<div class="container">
-    <h5 class="my-3 border-bottom pb-2">질문등록</h5>
-    <form method="post">
-        {% csrf_token %}
-        {{ form|crispy }}
-
+<div class="container my-form" >
+    <h5 class="my-3 border-bottom pb-2">등록</h5>
+    {{ form.media }}
+    <form method="post" class="my-form">
+        {% csrf_token %} 
+        {% bootstrap_form form %}
         <button type="submit" class="btn btn-primary">저장하기</button>
     </form>
+
 </div>
-{% endblock %}
+{% endblock %} 
+
+{% block script %}
+<script>
+    $(document).ready(function () {
+        $("#cke_1_contents").css("height", "100%")
+     });
+</script>
+{% endblock script %}

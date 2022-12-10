@@ -26,5 +26,6 @@ urlpatterns = [
     path("user/", include('user.urls')),
     path("analysis/", include('analysis.urls')),
     path("", base_views.resume, name="index"),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
 
 ]
