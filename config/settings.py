@@ -13,13 +13,13 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 import json
 import os
+import certifi
 
+ca = certifi.where()
 
 
 with open("SECRET.json", "r") as secret_json:
     sc_python = json.load(secret_json)
-
-
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -33,9 +33,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = sc_python['DJANGO_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    ".compute-1.amazonaws.com",
+    ".junss.shop",
+]
 
 
 # Application definition
@@ -110,7 +113,8 @@ DATABASES = {
             'NAME': 'stockDB',
             'ENFORCE_SCHEMA':False,
             'CLIENT':{
-                'host':sc_python['MONGODB']
+                'host':sc_python['MONGODB'],
+                'port':27017
             }
 
     }
@@ -176,7 +180,7 @@ CKEDITOR_FILENAME_GENERATOR = 'utils.get_filename'
 CKEDITOR_CONFIGS = {
     'default': {
         'width': 'full',
-        'height': 9000,
+        'height': 900,
     },
 }
 

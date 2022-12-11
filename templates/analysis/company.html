@@ -3,6 +3,17 @@
 {% block content %}
 
 <div class="container">
+    <!-- message 표시 -->
+    {% if messages %}
+    <div class="alert alert-danger my-3" role="alert">
+        {% for message in messages %}
+        <strong>{{ message.tags }}</strong>
+        <ul>
+            <li>{{ message.message }}</li>
+        </ul>
+        {% endfor %}
+    </div>
+    {% endif %}
     <div>
         <h3 class="text-center mt-5">Search Company</h3>
         <div class="container my-3 d-flex justify-content-center">
@@ -153,6 +164,7 @@
 <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
 
 <script>
+
     const btn_search = document.getElementById("btn_search");
     btn_search.addEventListener("click", function () {
         document.getElementById("ticker").value =
@@ -172,11 +184,23 @@
     const stock_ticker = document.getElementById("stock_ticker").value;
 
     let dataPoints = [];
+    let stockDate = [];
+
     let financialDataPoints = [];
     let balancePoints = [];
     let cashPoints = [];
 
+    const fs_data = document.getElementById("stock_fs").value;
+    const fs_data_json = JSON.parse(fs_data);
+    let fsKeys = Object.keys(fs_data_json);
 
+    const bs_data = document.getElementById("stock_bs").value;
+    const bs_data_json = JSON.parse(bs_data);
+    let bsKeys = Object.keys(bs_data_json);
+
+    const cf_data = document.getElementById("stock_cf").value;
+    const cf_data_json = JSON.parse(cf_data);
+    let cfKeys = Object.keys(cf_data_json);
 
     var chart1 = new CanvasJS.Chart("chartContainer", {
         zoomEnabled: true,
@@ -203,38 +227,7 @@
             shared: true,
         },
         data: [
-            {
-                type: "candlestick",
-                yValueFormatString: "$##0.00",
-                dataPoints: dataPoints,
-            },
-            {
-                type: "line",
-                showInLegend: true,
-                name: "Total Revenue",
-                axisYType: "secondary",
-                yValueFormatString: "$#,##0.00bn",
-                xValueFormatString: "YYYY-MM-DD",
-                dataPoints: financialDataPoints,
-            },
-            {
-                type: "line",
-                showInLegend: true,
-                name: "Cash",
-                axisYType: "secondary",
-                yValueFormatString: "$#,##0.00bn",
-                xValueFormatString: "YYYY-MM-DD",
-                dataPoints: balancePoints,
-            },
-            {
-                type: "line",
-                showInLegend: true,
-                name: "Net Income",
-                axisYType: "secondary",
-                yValueFormatString: "$#,##0.00bn",
-                xValueFormatString: "YYYY-MM-DD",
-                dataPoints: cashPoints,
-            },
+
         ],
     });
 
@@ -289,7 +282,7 @@
         const price_data_json = JSON.parse(price_data);
         let priceKeys = Object.keys(price_data_json);
 
-        for (let i = 0; i < Object.keys(priceKeys).length; i++) {
+        for (let i = Object.keys(priceKeys).length - 300; i < Object.keys(priceKeys).length; i++) {
             dataPoints.push({
                 x: new Date(priceKeys[i]),
                 y: [
@@ -302,18 +295,7 @@
         }
     }
 
-    const fs_data = document.getElementById("stock_fs").value;
-    const fs_data_json = JSON.parse(fs_data);
-    let fsKeys = Object.keys(fs_data_json);
 
-    const bs_data = document.getElementById("stock_bs").value;
-    const bs_data_json = JSON.parse(bs_data);
-    let bsKeys = Object.keys(bs_data_json);
-
-
-    const cf_data = document.getElementById("stock_cf").value;
-    const cf_data_json = JSON.parse(cf_data);
-    let cfKeys = Object.keys(cf_data_json);
 
     window.onload = function () {
 
@@ -472,6 +454,78 @@
             update(selectedSubject)
         })
     }
+
+
+
+
+    window.onload = function () {
+        var dps1 = [], dps2= [];
+        var stockChart = new CanvasJS.StockChart("chartContainer",{
+            theme: "light2",
+            exportEnabled: true,
+            title:{
+            text:"StockChart with Date-Time Axis"
+            },
+            subtitles: [{
+            text: "Bitcoin Price (in USD)"
+            }],
+            charts: [{
+            axisX: {
+                crosshair: {
+                enabled: true,
+                snapToDataPoint: true
+                }
+            },
+            axisY: {
+                prefix: "$"
+            },
+            data: [
+                {
+                    type: "candlestick",
+                    yValueFormatString: "$##0.00",
+                    dataPoints: dataPoints,
+                },
+                {
+                    type: "line",
+                    showInLegend: true,
+                    name: "Total Revenue",
+                    axisYType: "secondary",
+                    yValueFormatString: "$#,##0.00bn",
+                    xValueFormatString: "YYYY-MM-DD",
+                    dataPoints: financialDataPoints,
+                },
+                {
+                    type: "line",
+                    showInLegend: true,
+                    name: "Cash",
+                    axisYType: "secondary",
+                    yValueFormatString: "$#,##0.00bn",
+                    xValueFormatString: "YYYY-MM-DD",
+                    dataPoints: balancePoints,
+                },
+                {
+                    type: "line",
+                    showInLegend: true,
+                    name: "Net Income",
+                    axisYType: "secondary",
+                    yValueFormatString: "$#,##0.00bn",
+                    xValueFormatString: "YYYY-MM-DD",
+                    dataPoints: cashPoints,
+                },
+            ]}],
+            navigator: {
+            data: [{
+                dataPoints: stockDate
+            }],
+            slider: {
+                minimum: new Date(2018, 04, 01),
+                maximum: new Date(2018, 06, 01)
+            }
+            }
+        });
+        stockChart.render();
+    }
+
 
 </script>
 {% endblock script %} 

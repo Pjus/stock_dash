@@ -8,19 +8,18 @@ from pymongo import MongoClient
 
 from datetime import datetime, timedelta
 
-with open("SECRET.json", "r") as secret_json:
-    sc_python = json.load(secret_json)
-
-client = MongoClient(sc_python['MONGODB'])
+client = MongoClient('mongodb://jun:qkrwns716722!@0.0.0.0', 27017)
 db = client['stockDB']
 
 balancesheet_collection = db['balance']
 cashflow_collection = db['cashflow']
 financial_collection = db['financial_statement']
 price_collection = db['stock_price']
+infos_collection = db['infos']
 
 yesterday = datetime.now() - timedelta(1)
 day = datetime.strftime(yesterday, '%Y-%m-%d')
+
 # Create your views here.
 def index(request):
     return render(request, 'analysis/analysis_base.html')
@@ -30,8 +29,13 @@ def company(request):
     ticker = request.GET.get('ticker', '')  # 검색어
     stock = yf.Ticker(ticker)
     content = {"ticker":ticker}
-    if ticker != '':
-        last_day = list(price_collection.find_one({'ticker':ticker})['price'])[-1]
+    if ticker.encode().isalpha() == False:
+        print("not alpha")
+        return render(request, 'analysis/company.html', content)
+
+    if ticker.encode().isalpha():
+        print("alpha")
+        # last_day = list(price_collection.find_one({'ticker':ticker})['price'])[-1]
         # if last_day != day:
         #     stock_price = pdr.get_data_yahoo(ticker)
         #     stock_price = stock_price.iloc[-1,:]
@@ -39,7 +43,7 @@ def company(request):
         #     price_collection.update_one({'ticker':ticker, 'price' : price_mongodb_query})
 
         if price_collection.find_one({'ticker':ticker}) == None:
-            stock_price = pdr.get_data_yahoo(ticker)[-300:]
+            stock_price = pdr.get_data_yahoo(ticker)
             price_mongodb_query = {}
             for row in stock_price.iterrows():
                 price_mongodb_query[str(row[0]).split(" ")[0]] = {
@@ -158,7 +162,6 @@ def company(request):
             'dict_fs':fs,
             'dict_bs':bs,
             'dict_cf':cf,
-        
         }
 
 
