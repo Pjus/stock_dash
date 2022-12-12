@@ -18,6 +18,7 @@ class Stock(models.Model):
     quantity = models.IntegerField(default=0)
     buy_price = models.FloatField(default=0.0)
     current_price = models.FloatField(default=0, null=True)
+    target_price = models.FloatField(default=0, null=True, blank=True)
     profit = models.FloatField(default=0, null=True)
     return_ratio = models.FloatField(default=0, null=True)
     volatility = models.FloatField(default=0, null=True)

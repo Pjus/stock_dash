@@ -160,8 +160,6 @@
 
 
 {% endblock content %} {% block script %}
-<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-<script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
 
 <script>
 
@@ -190,17 +188,17 @@
     let balancePoints = [];
     let cashPoints = [];
 
-    const fs_data = document.getElementById("stock_fs").value;
-    const fs_data_json = JSON.parse(fs_data);
-    let fsKeys = Object.keys(fs_data_json);
+    let selectedSubject = ''
+    const accountSubjects = document.getElementsByClassName('accountSubject')
 
-    const bs_data = document.getElementById("stock_bs").value;
-    const bs_data_json = JSON.parse(bs_data);
-    let bsKeys = Object.keys(bs_data_json);
+    let fsData = [];
+    let bsData = [];
+    let cfData = [];
 
-    const cf_data = document.getElementById("stock_cf").value;
-    const cf_data_json = JSON.parse(cf_data);
-    let cfKeys = Object.keys(cf_data_json);
+    let fsSub = '';
+    let bsSub = '';
+    let cfSub = '';
+
 
     var chart1 = new CanvasJS.Chart("chartContainer", {
         zoomEnabled: true,
@@ -227,7 +225,38 @@
             shared: true,
         },
         data: [
-
+                {
+                    type: "candlestick",
+                    yValueFormatString: "$##0.00",
+                    dataPoints: dataPoints,
+                },
+                {
+                    type: "line",
+                    showInLegend: true,
+                    name: "Total Revenue",
+                    axisYType: "secondary",
+                    yValueFormatString: "$#,##0.00bn",
+                    xValueFormatString: "YYYY-MM-DD",
+                    dataPoints: financialDataPoints,
+                },
+                {
+                    type: "line",
+                    showInLegend: true,
+                    name: "Cash",
+                    axisYType: "secondary",
+                    yValueFormatString: "$#,##0.00bn",
+                    xValueFormatString: "YYYY-MM-DD",
+                    dataPoints: balancePoints,
+                },
+                {
+                    type: "line",
+                    showInLegend: true,
+                    name: "Net Income",
+                    axisYType: "secondary",
+                    yValueFormatString: "$#,##0.00bn",
+                    xValueFormatString: "YYYY-MM-DD",
+                    dataPoints: cashPoints,
+                },
         ],
     });
 
@@ -277,10 +306,26 @@
         ],
     });
 
+    
+
+    const price_data = document.getElementById("stock_price").value;
+    const price_data_json = JSON.parse(price_data);
+    let priceKeys = Object.keys(price_data_json);
+
+    const fs_data = document.getElementById("stock_fs").value;
+    const fs_data_json = JSON.parse(fs_data);
+    let fsKeys = Object.keys(fs_data_json);
+
+    const bs_data = document.getElementById("stock_bs").value;
+    const bs_data_json = JSON.parse(bs_data);
+    let bsKeys = Object.keys(bs_data_json);
+
+    const cf_data = document.getElementById("stock_cf").value;
+    const cf_data_json = JSON.parse(cf_data);
+    let cfKeys = Object.keys(cf_data_json);
+    
     function getPriceData() {
-        const price_data = document.getElementById("stock_price").value;
-        const price_data_json = JSON.parse(price_data);
-        let priceKeys = Object.keys(price_data_json);
+
 
         for (let i = Object.keys(priceKeys).length - 300; i < Object.keys(priceKeys).length; i++) {
             dataPoints.push({
@@ -293,11 +338,6 @@
                 ],
             });
         }
-    }
-
-
-
-    window.onload = function () {
 
         for (let i = 0; i < Object.keys(fs_data_json).length; i++) {
             financialDataPoints.push({
@@ -315,22 +355,16 @@
                 y: parseFloat(cf_data_json[cfKeys[i]]["Net Income"]) / 1000000000,
             });
         }
+    }
+
+
+    window.onload = function () {
         getPriceData();
         chart1.render()
-
     };
 
 
-    let selectedSubject = ''
-    const accountSubjects = document.getElementsByClassName('accountSubject')
 
-    let fsData = [];
-    let bsData = [];
-    let cfData = [];
-
-    let fsSub = '';
-    let bsSub = '';
-    let cfSub = '';
 
     function update(subject) {
         
@@ -455,76 +489,6 @@
         })
     }
 
-
-
-
-    window.onload = function () {
-        var dps1 = [], dps2= [];
-        var stockChart = new CanvasJS.StockChart("chartContainer",{
-            theme: "light2",
-            exportEnabled: true,
-            title:{
-            text:"StockChart with Date-Time Axis"
-            },
-            subtitles: [{
-            text: "Bitcoin Price (in USD)"
-            }],
-            charts: [{
-            axisX: {
-                crosshair: {
-                enabled: true,
-                snapToDataPoint: true
-                }
-            },
-            axisY: {
-                prefix: "$"
-            },
-            data: [
-                {
-                    type: "candlestick",
-                    yValueFormatString: "$##0.00",
-                    dataPoints: dataPoints,
-                },
-                {
-                    type: "line",
-                    showInLegend: true,
-                    name: "Total Revenue",
-                    axisYType: "secondary",
-                    yValueFormatString: "$#,##0.00bn",
-                    xValueFormatString: "YYYY-MM-DD",
-                    dataPoints: financialDataPoints,
-                },
-                {
-                    type: "line",
-                    showInLegend: true,
-                    name: "Cash",
-                    axisYType: "secondary",
-                    yValueFormatString: "$#,##0.00bn",
-                    xValueFormatString: "YYYY-MM-DD",
-                    dataPoints: balancePoints,
-                },
-                {
-                    type: "line",
-                    showInLegend: true,
-                    name: "Net Income",
-                    axisYType: "secondary",
-                    yValueFormatString: "$#,##0.00bn",
-                    xValueFormatString: "YYYY-MM-DD",
-                    dataPoints: cashPoints,
-                },
-            ]}],
-            navigator: {
-            data: [{
-                dataPoints: stockDate
-            }],
-            slider: {
-                minimum: new Date(2018, 04, 01),
-                maximum: new Date(2018, 06, 01)
-            }
-            }
-        });
-        stockChart.render();
-    }
 
 
 </script>

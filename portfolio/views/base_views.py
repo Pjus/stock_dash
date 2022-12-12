@@ -17,6 +17,7 @@ def index(request):
         print(form)
         if form.is_valid():
             port = form.save(commit=False)
+            # port.target_price = 
             port.create_date = timezone.now()
             port.author = request.user
             port.save()

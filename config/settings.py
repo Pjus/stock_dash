@@ -38,6 +38,7 @@ DEBUG = False
 ALLOWED_HOSTS = [
     ".compute-1.amazonaws.com",
     ".junss.shop",
+
 ]
 
 
