@@ -107,6 +107,11 @@
 
             </tbody>
         </table>
+        <div>
+            {% if portfolio.stock_port %} 
+            Total Value : <i class="fa fa-usd" aria-hidden="true"></i> {{ total_value }}
+            {% endif %}
+        </div>
     </div>
 </div>
 

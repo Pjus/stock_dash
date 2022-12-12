@@ -61,102 +61,48 @@ def company(request):
 
         if financial_collection.find_one({'ticker':ticker}) == None:
             qt_fs = stock.quarterly_financials
+            qt_fs.fillna(0, inplace=True)
             fs_mongodb_query = {}
             for row in qt_fs.items():
-                fs_mongodb_query[str(row[0]).split(" ")[0]] = {
-                    row[1].index[0] : str(row[1][0]),
-                    row[1].index[1] : str(row[1][1]),
-                    row[1].index[2] : str(row[1][2]),
-                    row[1].index[3] : str(row[1][3]),
-                    row[1].index[4] : str(row[1][4]),
-                    row[1].index[5] : str(row[1][5]),
-                    row[1].index[6] : str(row[1][6]),
-                    row[1].index[7] : str(row[1][7]),
-                    row[1].index[8] : str(row[1][8]),
-                    row[1].index[9] : str(row[1][9]),
-                    row[1].index[10] : str(row[1][10]),
-                    row[1].index[11] : str(row[1][11]),
-                    row[1].index[12] : str(row[1][12]),
-                    row[1].index[13] : str(row[1][13]),
-                    row[1].index[14] : str(row[1][14]),
-                    row[1].index[15] : str(row[1][15]),
-                    row[1].index[16] : str(row[1][16]),
-                    row[1].index[17] : str(row[1][17]),
-                    row[1].index[18] : str(row[1][18]),
-                    row[1].index[19] : str(row[1][19]),
-                    row[1].index[20] : str(row[1][20]),
-                    row[1].index[21] : str(row[1][21]),
-                }
+                date = str(row[0]).split(" ")[0]
+                fs_mongodb_query[date] = {}
+                for i in range(len(qt_fs)):
+                    subject = qt_fs.index[i]
+                    fs_mongodb_query[date][subject] = qt_fs[date][subject]
             financial_collection.insert_one({'ticker':ticker, 'fs' : fs_mongodb_query})
 
 
         if balancesheet_collection.find_one({'ticker':ticker}) == None:
             qt_bs = stock.quarterly_balancesheet
+            qt_bs.fillna(0, inplace=True)
             bs_mongodb_query = {}
             for row in qt_bs.items():
-                bs_mongodb_query[str(row[0]).split(" ")[0]] = {
-                    row[1].index[0] : str(row[1][0]),
-                    row[1].index[1] : str(row[1][1]),
-                    row[1].index[2] : str(row[1][2]),
-                    row[1].index[3] : str(row[1][3]),
-                    row[1].index[4] : str(row[1][4]),
-                    row[1].index[5] : str(row[1][5]),
-                    row[1].index[6] : str(row[1][6]),
-                    row[1].index[7] : str(row[1][7]),
-                    row[1].index[8] : str(row[1][8]),
-                    row[1].index[9] : str(row[1][9]),
-                    row[1].index[10] : str(row[1][10]),
-                    row[1].index[11] : str(row[1][11]),
-                    row[1].index[12] : str(row[1][12]),
-                    row[1].index[13] : str(row[1][13]),
-                    row[1].index[14] : str(row[1][14]),
-                    row[1].index[15] : str(row[1][15]),
-                    row[1].index[16] : str(row[1][16]),
-                    row[1].index[17] : str(row[1][17]),
-                    row[1].index[18] : str(row[1][18]),
-                    row[1].index[19] : str(row[1][19]),
-                    row[1].index[20] : str(row[1][20]),
-                    row[1].index[21] : str(row[1][21]),
-                    row[1].index[22] : str(row[1][22]),
-
-                }
+                date = str(row[0]).split(" ")[0]
+                bs_mongodb_query[date] = {}
+                for i in range(len(qt_bs)):
+                    subject = qt_bs.index[i]
+                    bs_mongodb_query[date][subject] = qt_bs[date][subject]
             balancesheet_collection.insert_one({'ticker':ticker, 'bs' : bs_mongodb_query})
 
 
         if cashflow_collection.find_one({'ticker':ticker}) == None:
             qt_cf = stock.quarterly_cashflow
+            qt_cf.fillna(0, inplace=True)
             cf_mongodb_query = {}
             for row in qt_cf.items():
-                cf_mongodb_query[str(row[0]).split(" ")[0]] = {
-                    row[1].index[0] : str(row[1][0]),
-                    row[1].index[1] : str(row[1][1]),
-                    row[1].index[2] : str(row[1][2]),
-                    row[1].index[3] : str(row[1][3]),
-                    row[1].index[4] : str(row[1][4]),
-                    row[1].index[5] : str(row[1][5]),
-                    row[1].index[6] : str(row[1][6]),
-                    row[1].index[7] : str(row[1][7]),
-                    row[1].index[8] : str(row[1][8]),
-                    row[1].index[9] : str(row[1][9]),
-                    row[1].index[10] : str(row[1][10]),
-                    row[1].index[11] : str(row[1][11]),
-                    row[1].index[12] : str(row[1][12]),
-                    row[1].index[13] : str(row[1][13]),
-                    row[1].index[14] : str(row[1][14]),
-                    row[1].index[15] : str(row[1][15]),
-                    row[1].index[16] : str(row[1][16]),
-                    row[1].index[17] : str(row[1][17]),
-                }
+                date = str(row[0]).split(" ")[0]
+                cf_mongodb_query[date] = {}
+                for i in range(len(qt_cf)):
+                    subject = qt_cf.index[i]
+                    cf_mongodb_query[date][subject] = qt_cf[date][subject]
             cashflow_collection.insert_one({'ticker':ticker, 'cf' : cf_mongodb_query})
-
 
         stock_price = price_collection.find_one({'ticker':ticker})['price']
         fs = financial_collection.find_one({'ticker':ticker})['fs']
         bs = balancesheet_collection.find_one({'ticker':ticker})['bs']
         cf = cashflow_collection.find_one({'ticker':ticker})['cf']
         infos = infos_collection.find_one({'ticker':ticker})['infos']
-
-
+        
         content = {
             "ticker":ticker, 
             'stock_price':json.dumps(stock_price), 
@@ -166,6 +112,9 @@ def company(request):
             'dict_fs':fs,
             'dict_bs':bs,
             'dict_cf':cf,
+            'len_fs':len(list(fs.values())[0]) // 2,
+            'len_bs':len(list(bs.values())[0]) // 2,
+            'len_cf':len(list(cf.values())[0]) // 2,
             'infos':infos,
         }
 

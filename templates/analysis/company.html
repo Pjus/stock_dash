@@ -39,7 +39,6 @@
             </div>
         </div>
 
-        {% if ticker == '' %} {% else %} {% endif %}
     </div>
 </div>
 
@@ -56,6 +55,13 @@
     <div class="container mb-5">
         <div id="chartContainer" style="height: 370px; width: 100%"></div>
     </div>
+    {% if infos %} 
+    <div class="container">
+        <h3>Current Price: {{infos.currentPrice}}</h3>
+    </div>
+    {% else %} 
+
+    {% endif %}
 
     <br />
     <div class="container">
@@ -65,7 +71,7 @@
             <div class="row">
                 <div class="btn-group mx-auto mb-2 col" role="group" aria-label="Basic example">
                     {% for keys, val in value.items %}
-                        {% if val != 'None' and forloop.counter < 12 %}
+                        {% if val != 'None' and forloop.counter < len_fs %}
                             <button type="button" class="accountSubject btn btn-primary" >{{keys}}</button>
                         {% endif %}
                     {% endfor %}
@@ -75,7 +81,7 @@
                 <div class="btn-group mx-auto col mb-5" role="group" aria-label="Basic example">
                     {% for keys, val in value.items %}
                         {% if val != 'None' %}
-                            {% if forloop.counter > 11 %}
+                            {% if forloop.counter > len_fs %}
                                 <button type="button" class="accountSubject btn btn-primary" >{{keys}}</button>
                             {% endif %}
                         {% endif %}
@@ -91,7 +97,7 @@
             <div class="row">
                 <div class="btn-group mx-auto mb-2 col" role="group" aria-label="Basic example">
                     {% for keys, val in value.items %}
-                        {% if val != 'None' and forloop.counter < 12 %}
+                        {% if val != 'None' and forloop.counter < len_bs %}
                             <button type="button" class="accountSubject btn btn-primary" >{{keys}}</button>
                         {% endif %}
                     {% endfor %}
@@ -101,7 +107,7 @@
                 <div class="btn-group mx-auto col mb-5" role="group" aria-label="Basic example">
                     {% for keys, val in value.items %}
                         {% if val != 'None' %}
-                            {% if forloop.counter > 11 %}
+                            {% if forloop.counter > len_fs %}
                                 <button type="button" class="accountSubject btn btn-primary" >{{keys}}</button>
                             {% endif %}
                         {% endif %}
@@ -111,13 +117,14 @@
             {% endif %}
         {% endfor %}
 
-        <h3>Cashflow</h3>
+        
+        <h3>Cashflow {{ len_fs }} </h3>
         {% for key, value in dict_cf.items %}
             {% if forloop.counter == 1 %}
             <div class="row">
                 <div class="btn-group mx-auto mb-2 col" role="group" aria-label="Basic example">
                     {% for keys, val in value.items %}
-                        {% if val != 'None' and forloop.counter < 12 %}
+                        {% if val != 'None' and forloop.counter < len_cf %}
                             <button type="button" class="accountSubject btn btn-primary" >{{keys}}</button>
                         {% endif %}
                     {% endfor %}
@@ -127,7 +134,7 @@
                 <div class="btn-group mx-auto col mb-5" role="group" aria-label="Basic example">
                     {% for keys, val in value.items %}
                         {% if val != 'None' %}
-                            {% if forloop.counter > 11 %}
+                            {% if forloop.counter > len_cf %}
                                 <button type="button" class="accountSubject btn btn-primary" >{{keys}}</button>
                             {% endif %}
                         {% endif %}

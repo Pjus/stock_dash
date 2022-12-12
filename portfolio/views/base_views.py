@@ -27,7 +27,6 @@ def index(request):
     print(request.method)
     if request.method == 'POST':
         form = PortfolioForm(request.POST)
-        print()
         if form.is_valid():
             port = form.save(commit=False)
             port.target_price = infos_collection.find_one({'ticker':request.POST.get('ticker')})
@@ -64,6 +63,6 @@ def detail(request, port_id):
             stock.return_ratio = round(stock.profit / stock.buy_price, 2) * 100
             stock.evaluated = stock.quantity * stock.current_price
             stock.save()
-        
-    context = {'portfolio':port}
+        port_value += stock.evaluated
+    context = {'portfolio':port, "total_value" : round(port_value, 2)}
     return render(request, 'port/portfolio_detail.html', context)

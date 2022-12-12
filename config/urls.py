@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 from dash.views import base_views
+from analysis import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,7 +26,7 @@ urlpatterns = [
     path("portfolio/", include('portfolio.urls')),
     path("user/", include('user.urls')),
     path("analysis/", include('analysis.urls')),
-    path("", base_views.resume, name="index"),
+    path("", views.base_views.company, name="index"),
     path('ckeditor/', include('ckeditor_uploader.urls')),
 
 ]
