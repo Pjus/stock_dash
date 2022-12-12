@@ -138,8 +138,35 @@
         {% endfor %}
     </div>
     <br>
+    <div class="contianer">
+        {% if infos %}
+        <div class="container text-center justify mb-5">
+            <table class="table" id="table_id">
+                <thead>
+                    <tr class="text-center table-dark">
+                        <th>Name</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
 
-    {{info}}
+                <tbody>
+                    {% for keys, val in infos.items %}
+                    <tr class="text-center">
+                        <td>
+                            {{ keys }}
+                        </td>
+                        <td class="text-start text-center " colspan="1"> 
+                            {{ val }}
+                        </td>
+                    </tr>
+                    {% endfor %} 
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+    </div>
+
     <div class="container mt-3">
         <div id="incomechartContainer" style="height: 500px; width: 100%"></div>
     </div>

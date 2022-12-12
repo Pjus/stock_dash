@@ -41,6 +41,9 @@ def company(request):
         #     stock_price = stock_price.iloc[-1,:]
         #     price_mongodb_query = {}
         #     price_collection.update_one({'ticker':ticker, 'price' : price_mongodb_query})
+        if infos_collection.find_one({'ticker':ticker}) == None:
+            stock_info = stock.info
+            infos_collection.insert_one({'ticker':ticker, 'infos' : stock_info})
 
         if price_collection.find_one({'ticker':ticker}) == None:
             stock_price = pdr.get_data_yahoo(ticker)
@@ -151,6 +154,7 @@ def company(request):
         fs = financial_collection.find_one({'ticker':ticker})['fs']
         bs = balancesheet_collection.find_one({'ticker':ticker})['bs']
         cf = cashflow_collection.find_one({'ticker':ticker})['cf']
+        infos = infos_collection.find_one({'ticker':ticker})['infos']
 
 
         content = {
@@ -162,6 +166,7 @@ def company(request):
             'dict_fs':fs,
             'dict_bs':bs,
             'dict_cf':cf,
+            'infos':infos,
         }
 
 

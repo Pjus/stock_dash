@@ -9,15 +9,28 @@ import pandas as pd
 from ..models import Portfolio, Stock
 from ..forms import PortfolioForm, StockForm
 
+from pymongo import MongoClient
+
+from datetime import datetime, timedelta
+
+from pymongo import MongoClient
+import json
+
+with open("SECRET.json", "r") as secret_json:
+    sc_python = json.load(secret_json)
+
+client = MongoClient(sc_python['MONGODB'], 27017)
+db = client['stockDB']
+infos_collection = db['infos']
 
 def index(request):
     print(request.method)
     if request.method == 'POST':
         form = PortfolioForm(request.POST)
-        print(form)
+        print()
         if form.is_valid():
             port = form.save(commit=False)
-            # port.target_price = 
+            port.target_price = infos_collection.find_one({'ticker':request.POST.get('ticker')})
             port.create_date = timezone.now()
             port.author = request.user
             port.save()
