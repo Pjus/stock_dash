@@ -30,34 +30,29 @@ def company(request):
     stock = yf.Ticker(ticker)
     content = {"ticker":ticker}
     if ticker.encode().isalpha() == False:
-        print("not alpha")
         return render(request, 'analysis/company.html', content)
 
     if ticker.encode().isalpha():
-        print("alpha")
-        # last_day = list(price_collection.find_one({'ticker':ticker})['price'])[-1]
-        # if last_day != day:
-        #     stock_price = pdr.get_data_yahoo(ticker)
-        #     stock_price = stock_price.iloc[-1,:]
-        #     price_mongodb_query = {}
-        #     price_collection.update_one({'ticker':ticker, 'price' : price_mongodb_query})
         if infos_collection.find_one({'ticker':ticker}) == None:
             stock_info = stock.info
             infos_collection.insert_one({'ticker':ticker, 'infos' : stock_info})
 
-        if price_collection.find_one({'ticker':ticker}) == None:
-            stock_price = pdr.get_data_yahoo(ticker)
-            price_mongodb_query = {}
-            for row in stock_price.iterrows():
-                price_mongodb_query[str(row[0]).split(" ")[0]] = {
-                    'High':row[1][0],
-                    'Low':row[1][1],
-                    'Open':row[1][2],
-                    'Close':row[1][3],
-                    'Volume':row[1][4],
-                    'Adj Close':row[1][5],
+        if price_collection.find_one({'ticker':ticker}) != None:
+            last_day = list(price_collection.find_one({'ticker':ticker})['price'])[-1]
+            if str(last_day) != str(day):
+                stock_price = pdr.get_data_yahoo(ticker)
+                stock_price = stock_price.iloc[-1,:]
+                price_mongodb_query = {}
+                price_mongodb_query[str(stock_price.name).split(" ")[0]] = {
+                    'High':stock_price['High'],
+                    'Low':stock_price['Low'],
+                    'Open':stock_price['Open'],
+                    'Close':stock_price['Close'],
+                    'Volume':stock_price['Volume'],
+                    'Adj Close':stock_price['Adj Close'],
                 }
-            price_collection.insert_one({'ticker':ticker, 'price' : price_mongodb_query})
+                print(price_mongodb_query)
+                price_collection.update({'ticker':ticker}, {'$push':{'price' : price_mongodb_query}})
 
         if financial_collection.find_one({'ticker':ticker}) == None:
             qt_fs = stock.quarterly_financials

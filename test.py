@@ -16,9 +16,6 @@ price_collection = db['stock_price']
 infos_collection = db['infos']
 
 
-yesterday = datetime.now() - timedelta(1)
-day = datetime.strftime(yesterday, '%Y-%m-%d')
-
 def company(ticker):
     stock = yf.Ticker(ticker)
     if ticker.isalpha():
@@ -82,8 +79,28 @@ def company(ticker):
 #     company(ticker)
 
 
-db.balance.drop()
-db.cashflow.drop()
-db.financial_statement.drop()
-db.stock_price.drop()
-db.infos.drop()
+# db.balance.drop()
+# db.cashflow.drop()
+# db.financial_statement.drop()
+# db.stock_price.drop()
+# db.infos.drop()
+
+yesterday = datetime.now() - timedelta(1)
+day = datetime.strftime(yesterday, '%Y-%m-%d')
+if price_collection.find_one({'ticker':"msft"}) != None:
+    last_day = list(price_collection.find_one({'ticker':"msft"})['price'])[-1]
+    if str(last_day) != str(day):
+        print("???")
+        stock_price = pdr.get_data_yahoo("msft")
+        stock_price = stock_price.iloc[-1,:]
+        price_mongodb_query = {}
+        price_mongodb_query[str(stock_price.name).split(" ")[0]] = {
+            'High':stock_price['High'],
+            'Low':stock_price['Low'],
+            'Open':stock_price['Open'],
+            'Close':stock_price['Close'],
+            'Volume':stock_price['Volume'],
+            'Adj Close':stock_price['Adj Close'],
+        }
+        print(price_mongodb_query)
+        price_collection.update({'ticker':ticker}, {'$push':{'price' : price_mongodb_query}})
