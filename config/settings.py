@@ -35,11 +35,15 @@ SECRET_KEY = sc_python['DJANGO_SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    ".compute-1.amazonaws.com",
-    ".junss.shop",
+ALLOWED_HOSTS = {
+    "production":
+        [".compute-1.amazonaws.com",
+         ".junss.shop"],
+    "dev": ["*"]
+}
 
-]
+ALLOWED_HOSTS = ALLOWED_HOSTS['dev'] if DEBUG else ALLOWED_HOSTS['production']
+print(ALLOWED_HOSTS)
 
 
 # Application definition
@@ -107,19 +111,25 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 
-
 DATABASES = {
-        'default': {
-            'ENGINE': 'djongo',
-            'NAME': 'stockDB',
-            'ENFORCE_SCHEMA':False,
-            'CLIENT':{
-                'host':sc_python['MONGODB'],
-                'port':27017
-            }
+    'dev': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    },
+    'production': {
+        'ENGINE': 'djongo',
+        'NAME': 'stockDB',
+        'ENFORCE_SCHEMA': False,
+        'CLIENT': {
+            'host': sc_python['MONGODB'],
+            'port': 27017
+        }
 
     }
 }
+
+DATABASES['default'] = DATABASES['dev' if DEBUG else 'production']
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -180,23 +190,28 @@ CKEDITOR_UPLOAD_PATH = "uploads/"
 CKEDITOR_FILENAME_GENERATOR = 'utils.get_filename'
 CKEDITOR_CONFIGS = {
     'default': {
-        'toolbar':'Custom',
+        'toolbar': 'Custom',
         'width': 'full',
         'height': 900,
         'toolbar_Custom': [
-            [ 'Styles','Format','Font','FontSize' ],
-            [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ],
-            [ 'TextColor','BGColor' ],
-            [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ],
-            [ 'Find','Replace','-','SelectAll','-','SpellChecker', 'Scayt' ],
-            [ 'Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField' ],
-            [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','CreateDiv','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ],
-            [ 'Link','Unlink','Anchor' ],
-            [ 'Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak' ],
-            [ 'CodeSnippet']
+            ['Styles', 'Format', 'Font', 'FontSize'],
+            ['Bold', 'Italic', 'Underline', 'Strike',
+                'Subscript', 'Superscript', '-', 'RemoveFormat'],
+            ['TextColor', 'BGColor'],
+            ['Cut', 'Copy', 'Paste', 'PasteText',
+                'PasteFromWord', '-', 'Undo', 'Redo'],
+            ['Find', 'Replace', '-', 'SelectAll', '-', 'SpellChecker', 'Scayt'],
+            ['Form', 'Checkbox', 'Radio', 'TextField', 'Textarea',
+                'Select', 'Button', 'ImageButton', 'HiddenField'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-',
+                'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl'],
+            ['Link', 'Unlink', 'Anchor'],
+            ['Image', 'Flash', 'Table', 'HorizontalRule',
+                'Smiley', 'SpecialChar', 'PageBreak'],
+            ['CodeSnippet', 'Youtube']
 
         ],
-        'extraPlugins': 'codesnippet',
+        'extraPlugins': ','.join(['codesnippet', 'youtube']),
 
     },
 }

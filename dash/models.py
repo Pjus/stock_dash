@@ -11,6 +11,11 @@ class Question(models.Model):
     content = RichTextUploadingField(
                                         blank=True, 
                                         null=True,
+                                        external_plugin_resources=[(
+                                            'youtube',
+                                            '/static/vendor/ckeditor_plugins/youtube/youtube/',
+                                            'plugin.js',
+                                        )]
 
                                     )
     create_date = models.DateTimeField()
