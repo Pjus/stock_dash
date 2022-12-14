@@ -6,7 +6,7 @@ from pymongo import MongoClient
 from datetime import datetime, timedelta
 from yahoo_fin import stock_info as si
 
-client = MongoClient('mongodb://jun:qkrwns716722!@0.0.0.0', 27017)
+client = MongoClient(sc_python['MONGODB'], 27017)
 db = client['stockDB']
 
 balancesheet_collection = db['balance']
@@ -85,22 +85,38 @@ def company(ticker):
 # db.stock_price.drop()
 # db.infos.drop()
 
-yesterday = datetime.now() - timedelta(1)
-day = datetime.strftime(yesterday, '%Y-%m-%d')
-if price_collection.find_one({'ticker':"msft"}) != None:
-    last_day = list(price_collection.find_one({'ticker':"msft"})['price'])[-1]
-    if str(last_day) != str(day):
-        print("???")
-        stock_price = pdr.get_data_yahoo("msft")
-        stock_price = stock_price.iloc[-1,:]
-        price_mongodb_query = {}
-        price_mongodb_query[str(stock_price.name).split(" ")[0]] = {
-            'High':stock_price['High'],
-            'Low':stock_price['Low'],
-            'Open':stock_price['Open'],
-            'Close':stock_price['Close'],
-            'Volume':stock_price['Volume'],
-            'Adj Close':stock_price['Adj Close'],
-        }
-        print(price_mongodb_query)
-        price_collection.update({'ticker':ticker}, {'$push':{'price' : price_mongodb_query}})
+def update_price(ticker):
+    yesterday = datetime.now() - timedelta(1)
+    day = datetime.strftime(yesterday, '%Y-%m-%d')
+    if price_collection.find_one({'ticker':ticker}) != None:
+        last_day = list(price_collection.find_one({'ticker':ticker})['price'])[-1]
+        if str(last_day) != str(day):
+            stock_price = pdr.get_data_yahoo(ticker)
+            stock_price = stock_price.iloc[-1,:]
+            price_mongodb_query = {}
+            price_mongodb_query[str(stock_price.name).split(" ")[0]] = {
+                'High':stock_price['High'],
+                'Low':stock_price['Low'],
+                'Open':stock_price['Open'],
+                'Close':stock_price['Close'],
+                'Volume':stock_price['Volume'],
+                'Adj Close':stock_price['Adj Close'],
+            }
+            print(price_mongodb_query)
+            price_collection.update({'ticker':ticker}, {'$push':{'price' : price_mongodb_query}})
+
+
+"""
+
+
+source myvenv/bin/activate
+
+sudo cp -f /srv/stock_dash/.config/nginx/mysite.conf /etc/nginx/sites-available/mysite.conf
+
+sudo ln -sf /etc/nginx/sites-available/mysite.conf /etc/nginx/sites-enabled/mysite.conf
+
+sudo systemctl daemon-reload && sudo systemctl restart nginx uwsgi
+
+
+"""
+

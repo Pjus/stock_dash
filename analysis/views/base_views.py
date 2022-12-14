@@ -7,8 +7,11 @@ import json
 from pymongo import MongoClient
 
 from datetime import datetime, timedelta
+with open("SECRET.json", "r") as secret_json:
+    sc_python = json.load(secret_json)
 
-client = MongoClient('mongodb://jun:qkrwns716722!@0.0.0.0', 27017)
+
+client = MongoClient(sc_python['MONGODB'], 27017)
 db = client['stockDB']
 
 balancesheet_collection = db['balance']

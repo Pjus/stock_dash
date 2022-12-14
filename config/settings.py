@@ -180,8 +180,24 @@ CKEDITOR_UPLOAD_PATH = "uploads/"
 CKEDITOR_FILENAME_GENERATOR = 'utils.get_filename'
 CKEDITOR_CONFIGS = {
     'default': {
+        'toolbar':'Custom',
         'width': 'full',
         'height': 900,
+        'toolbar_Custom': [
+            [ 'Styles','Format','Font','FontSize' ],
+            [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ],
+            [ 'TextColor','BGColor' ],
+            [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ],
+            [ 'Find','Replace','-','SelectAll','-','SpellChecker', 'Scayt' ],
+            [ 'Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField' ],
+            [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','CreateDiv','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ],
+            [ 'Link','Unlink','Anchor' ],
+            [ 'Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak' ],
+            [ 'CodeSnippet' ]
+
+        ],
+        'extraPlugins':'codesnippet',
+
     },
 }
 
