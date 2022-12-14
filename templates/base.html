@@ -67,6 +67,11 @@
             type="text/css"
             href="{% static 'style.css' %}"
         />
+
+        <link rel="stylesheet"
+            href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+        <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+
         <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
         <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
         
@@ -85,7 +90,7 @@
         <script src="{% static 'js/bootstrap-datepicker.ko.min.js' %}"></script>
         <script src="{% static 'js/bootstrap.min.js' %}"></script>
         <script src={% static 'js/scripts.js' %}></script>
-
+        <script>hljs.highlightAll();</script>
         <title>JUNSS</title>
     </head>
     <body>

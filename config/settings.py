@@ -193,10 +193,10 @@ CKEDITOR_CONFIGS = {
             [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','CreateDiv','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ],
             [ 'Link','Unlink','Anchor' ],
             [ 'Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak' ],
-            [ 'CodeSnippet' ]
+            [ 'CodeSnippet']
 
         ],
-        'extraPlugins':'codesnippet',
+        'extraPlugins': 'codesnippet',
 
     },
 }
