@@ -6,6 +6,10 @@ from pymongo import MongoClient
 from datetime import datetime, timedelta
 from yahoo_fin import stock_info as si
 
+
+with open("SECRET.json", "r") as secret_json:
+    sc_python = json.load(secret_json)
+
 client = MongoClient(sc_python['MONGODB'], 27017)
 db = client['stockDB']
 
