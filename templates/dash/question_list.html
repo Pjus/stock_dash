@@ -33,6 +33,8 @@
         <tbody>
             {% if question_list %} 
             {% for question in question_list %}
+            {% if question.hide %}
+            {% else %}
             <tr class="text-center">
                 <td>
                     <!-- 번호 = 전체건수 - 시작인덱스 - 현재인덱스 + 1 -->
@@ -49,6 +51,7 @@
                 <td>{{ question.author.username }}</td>  <!-- 글쓴이 추가 -->
                 <td>{{ question.create_date|date:"Y-m-d" }}</td>
             </tr>
+            {% endif %}
             {% endfor %} {% else %}
             <tr>
                 <td colspan="6" class="text-center">게시글이 없습니다.</td>

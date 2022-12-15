@@ -21,6 +21,7 @@ class Question(models.Model):
     create_date = models.DateTimeField()
     modify_date = models.DateTimeField(null=True, blank=True)
     voter = models.ManyToManyField(User, related_name='voter_question', default=None, blank=True)  # 추천인 추가
+    hide = models.BooleanField(default=False, blank=True)
 
     def __str__(self):
         return self.subject
