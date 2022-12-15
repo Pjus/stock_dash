@@ -32,9 +32,9 @@ let fsData = [];
 let bsData = [];
 let cfData = [];
 
-let fsSub = '';
-let bsSub = '';
-let cfSub = '';
+let fsSub = 'Total Revenue';
+let bsSub = 'Cash';
+let cfSub = 'Net Income';
 
 
 let stockChart = new CanvasJS.StockChart("chartContainer",{
@@ -82,7 +82,7 @@ let stockChart = new CanvasJS.StockChart("chartContainer",{
             {
                 type: "line",
                 showInLegend: true,
-                name: "Total Revenue",
+                name: `${fsSub}`,
                 axisYType: "secondary",
                 yValueFormatString: "$#,##0.00bn",
                 xValueFormatString: "YYYY-MM-DD",
@@ -91,7 +91,7 @@ let stockChart = new CanvasJS.StockChart("chartContainer",{
             {
                 type: "line",
                 showInLegend: true,
-                name: "Cash",
+                name: `${bsSub}`,
                 axisYType: "secondary",
                 yValueFormatString: "$#,##0.00bn",
                 xValueFormatString: "YYYY-MM-DD",
@@ -100,7 +100,7 @@ let stockChart = new CanvasJS.StockChart("chartContainer",{
             {
                 type: "line",
                 showInLegend: true,
-                name: "Net Income",
+                name: `${cfSub}`,
                 axisYType: "secondary",
                 yValueFormatString: "$#,##0.00bn",
                 xValueFormatString: "YYYY-MM-DD",
@@ -208,7 +208,6 @@ window.onload = function () {
 
 
 function update(subject) {
-    
     if(Object.keys(fs_data_json[fsKeys[0]]).includes(subject)){
         if(fsData.length > 0){
             fsData = []
@@ -304,7 +303,7 @@ function update(subject) {
             {
                 type: "line",
                 showInLegend: true,
-                name: "Total Revenue",
+                name: `${fsSub}`,
                 axisYType: "secondary",
                 yValueFormatString: "$#,##0.00bn",
                 xValueFormatString: "YYYY-MM-DD",
@@ -313,7 +312,7 @@ function update(subject) {
             {
                 type: "line",
                 showInLegend: true,
-                name: "Cash",
+                name: `${bsSub}`,
                 axisYType: "secondary",
                 yValueFormatString: "$#,##0.00bn",
                 xValueFormatString: "YYYY-MM-DD",
@@ -322,7 +321,7 @@ function update(subject) {
             {
                 type: "line",
                 showInLegend: true,
-                name: "Net Income",
+                name: `${cfSub}`,
                 axisYType: "secondary",
                 yValueFormatString: "$#,##0.00bn",
                 xValueFormatString: "YYYY-MM-DD",
@@ -375,15 +374,3 @@ for(let i=0; i < accountSubjects.length; i++){
     })
 }
 
-let chartTypeName = ''
-const chartTypes = document.getElementsByClassName('chartType')
-for(let i=0; i < chartTypes.length; i++){
-    chartTypes[i].addEventListener("click", function(e){
-        chartTypeName = this.innerText;
-        if(chartTypeName=='Candle Chart'){
-            console.log(chartTypeName);
-        }else if(chartTypeName=='Line Chart'){
-            console.log(chartTypeName);           
-        } 
-    })
-}
