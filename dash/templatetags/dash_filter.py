@@ -27,3 +27,7 @@ def get_dict(dictionary, key):
 def to_krw(num):
     num = float(num)
     return format(num, ',')
+
+@register.filter
+def add_one(num):
+    return num + 1

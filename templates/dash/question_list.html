@@ -31,9 +31,12 @@
             </tr>
         </thead>
         <tbody>
+                
             {% if question_list %} 
             {% for question in question_list %}
             {% if question.hide %}
+                {{ hideCount|add_one }}
+                {{ question_list.paginator.count|sub:1 }}
             {% else %}
             <tr class="text-center">
                 <td>
@@ -57,6 +60,7 @@
                 <td colspan="6" class="text-center">게시글이 없습니다.</td>
             </tr>
             {% endif %}
+
         </tbody>
     </table>
 

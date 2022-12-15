@@ -125,37 +125,38 @@ sudo systemctl daemon-reload && sudo systemctl restart nginx uwsgi
 # db.stock_price.drop()
 
 
+# df = pd.read_html('https://www.kita.net/cmmrcInfo/ehgtGnrlzInfo/rltmEhgt.do', header = 0, encoding='utf-8')[0]
 
-df = pd.read_html('https://www.kita.net/cmmrcInfo/ehgtGnrlzInfo/rltmEhgt.do', header = 0, encoding='utf-8')[0]
+# today = datetime.now()
+# today = datetime.strftime(today, '%Y-%m-%d')
 
-today = datetime.now()
-today = datetime.strftime(today, '%Y-%m-%d')
+# currency_query = {today:{}}
 
-currency_query = {today:{}}
+# for row in df.iloc[:, :-1].iterrows():
+#     if row[1][3] < 0:
+#         numbers = re.sub(r'[^0-9.]', '', row[1][2])
+#         day_before = f'-{numbers}'
+#     else:
+#         numbers = re.sub(r'[^0-9.]', '', row[1][2])
+#         day_before = numbers
 
-for row in df.iloc[:, :-1].iterrows():
-    if row[1][3] < 0:
-        numbers = re.sub(r'[^0-9.]', '', row[1][2])
-        day_before = f'-{numbers}'
-    else:
-        numbers = re.sub(r'[^0-9.]', '', row[1][2])
-        day_before = numbers
+#     currency_query[today][row[1][0].split(" ")[0]] = {
+#         'in_korean' : row[1][0].split(" ")[1],
+#         'current' : row[1][1],
+#         'day_before' : float(day_before),
+#         'change' : row[1][3],
+#         'buy' : row[1][4],
+#         'sell' : row[1][5],
+#         'send' : row[1][6],
+#         'receive' : row[1][7],
+#     }
 
-    currency_query[today][row[1][0].split(" ")[0]] = {
-        'in_korean' : row[1][0].split(" ")[1],
-        'current' : row[1][1],
-        'day_before' : float(day_before),
-        'change' : row[1][3],
-        'buy' : row[1][4],
-        'sell' : row[1][5],
-        'send' : row[1][6],
-        'receive' : row[1][7],
-    }
+# with open("SECRET.json", "r") as secret_json:
+#     sc_python = json.load(secret_json)
 
-with open("SECRET.json", "r") as secret_json:
-    sc_python = json.load(secret_json)
+# client = MongoClient(sc_python['MONGODB'], 27017)
+# db = client['stockDB']
+# currency_collection = db['currency']
+# currency_collection.insert_one({'date':today, 'currency' : currency_query})
 
-client = MongoClient(sc_python['MONGODB'], 27017)
-db = client['stockDB']
-currency_collection = db['currency']
-currency_collection.insert_one({'date':today, 'currency' : currency_query})
+

@@ -1,0 +1,23 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container">
+    <table class="table my-table">
+        <tr>
+            {% for col in news_list.columns %}
+            <td>{{col}}</td>
+            {% endfor %}
+        </tr>
+        {% for index, row in news_list.iterrows %}
+        <tr>
+            {% for cell in row %}
+            {% if 'http' in cell %}
+                <td><a href="{{cell}}">{{cell}}</a></td>
+            {% else %}
+                <td>{{cell}}</td>
+            {% endif %}
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+{% endblock content %} {% block script %} {% endblock script %}
