@@ -41,7 +41,7 @@
                     {{ question_list.paginator.count|sub:question_list.start_index|sub:forloop.counter0|add:1 }}
                 </td>
                 <td class="text-start"> 
-                    <a href="{% url 'dash:detail' question.id %}"
+                    <a class="articlTitle" href="{% url 'dash:detail' question.id %}"
                         >{{ question.subject }}</a
                     >
                     {% if question.answer_set.count > 0 %}
