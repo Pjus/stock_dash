@@ -18,9 +18,14 @@ from django.urls import path, include
 
 from dash.views import base_views
 from analysis import views
+from django.conf.urls.i18n import i18n_patterns
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+]
+
+urlpatterns += i18n_patterns(
     path("dash/", include('dash.urls')),
     path("common/", include('common.urls')),
     path("portfolio/", include('portfolio.urls')),
@@ -28,5 +33,4 @@ urlpatterns = [
     path("analysis/", include('analysis.urls')),
     path("", views.base_views.company, name="index"),
     path('ckeditor/', include('ckeditor_uploader.urls')),
-
-]
+)

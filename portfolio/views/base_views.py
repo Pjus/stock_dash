@@ -61,7 +61,7 @@ def detail(request, port_id):
             stock.current_price = round(last_quote, 2)
             stock.profit = round(stock.current_price - stock.buy_price, 2)
             stock.return_ratio = round(stock.profit / stock.buy_price, 2) * 100
-            stock.evaluated = stock.quantity * stock.current_price
+            stock.evaluated = round(stock.quantity * stock.current_price, 2)
             stock.save()
         port_value += stock.evaluated
     context = {'portfolio':port, "total_value" : round(port_value, 2)}

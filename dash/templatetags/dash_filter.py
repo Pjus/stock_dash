@@ -18,3 +18,12 @@ def mark(value):
 @register.filter
 def json_loads(value):
     return json.loads(value)
+
+@register.filter
+def get_dict(dictionary, key):
+    return dictionary.get(key)
+
+@register.filter
+def to_krw(num):
+    num = float(num)
+    return format(num, ',')

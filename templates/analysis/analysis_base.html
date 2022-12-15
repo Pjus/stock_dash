@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load dash_filter %}
+
 {% block style %}
     <!-- dash CSS -->
     <link
@@ -11,61 +13,52 @@
 {% block content %}
 
 
+<div class="contianer">
+    {% if currency %}
+    <div class="container text-center justify mb-5">
 
-<div class="container-lg">
-    <div class="row mt-5">
-        <div class="col">
-            {% comment %}  (e.g., net profit margin and return on shareholders' equity) {% endcomment %}
-            <h4><a class="menu" href="">Profitability ratios</a></h4> 
-        </div>
+        <h3>Currency (KRW)  {{today}}</h3>
+        <table class="table" id="table_id">
+            <thead>
+                <tr class="text-center table-dark">
+                    <th>Code</th>
+                    <th>Nation</th>
+                    <th>Current</th>
+                    <th>Day before</th>
+                    <th>Day Change</th>
+                    <th>Buy</th>
+                    <th>Sell</th>
+                    <th>Send</th>
+                    <th>Receive</th>
+                </tr>
+            </thead>
 
-        <div class="col">
-            {% comment %}  (e.g., working capital) {% endcomment %}
-            <h4><a class="menu" href="">Liquidity ratios</a></h4>
-        </div>
+            <tbody>
+                {% for keys, val in currency.items %}
+                    {% for code, dicts in val.items %}
+                    <tr class="text-center">
+                        <td>
+                            {{ code }}
+                        </td>
+                        {% for key, value in dicts.items %}
+                            <td class="text-start text-center " colspan="1"> 
+                                {{ value }}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
 
-        <div class="col">
-            {% comment %}  (e.g., debt-to-equity and debt-to-asset ratios) {% endcomment %}
-            <h4><a class="menu" href="">Debt ratios</a></h4>
-        </div>
-
-        <div class="col">
-            {% comment %} (e.g., inventory turnover) {% endcomment %}
-            <h4><a class="menu" href="">Operations ratios</a></h4>
-        </div>
-
-        <div class="col">
-            {% comment %} (e.g. earnings per share (EPS)) {% endcomment %}
-            <h4><a class="menu" href="">Market ratios</a></h4>
-        </div>
-
+                {% endfor %} 
+            </tbody>
+        </table>
     </div>
-</div>
-<div>
+    {% endif %}
 
-    <div>
-        EPS= 
-                AOCS 
-                NI − PD 
-                ​
-                
-                where:
-                NI= Net income 
-                PD= Preferred dividends 
-                AOCS= Average outstanding common shares 
-                ​
-
-    </div>
 </div>
 
-$$a^2+b^2=c^2+\frac{d}{e}$$
 {% endblock content %}
 
 
 {% block script %}
-<script>
-    MathJax.Hub.Config({
-        tex2jax: { inlineMath: [['$$', '$$']], displayMath: [['$$$', '$$$']] }
-    });
-</script>
+
 {% endblock script %}

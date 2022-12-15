@@ -83,11 +83,6 @@ def company(ticker):
 #     company(ticker)
 
 
-# db.balance.drop()
-# db.cashflow.drop()
-# db.financial_statement.drop()
-# db.stock_price.drop()
-# db.infos.drop()
 
 def update_price(ticker):
     yesterday = datetime.now() - timedelta(1)
@@ -124,3 +119,24 @@ sudo systemctl daemon-reload && sudo systemctl restart nginx uwsgi
 
 """
 
+# db.balance.drop()
+# db.cashflow.drop()
+# db.financial_statement.drop()
+# db.infos.drop()
+# db.stock_price.drop()
+import requests
+from bs4 import BeautifulSoup
+
+
+def convert_currency(counrty1, counrty2, amount):
+    url = f"https://wise.com/gb/currency-converter/{counrty1}-to-{counrty2}-rate?amount={amount}"
+    print(url)
+    req = requests.get(url)
+    html_doc = req.text
+    soup = BeautifulSoup(html_doc, 'html.parser')
+    amount = amount * float(soup.find("span", class_="text-success").text)
+    print(amount)
+    return amount
+
+
+convert_currency("USD", "KWR", 1)

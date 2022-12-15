@@ -14,6 +14,12 @@ from pathlib import Path
 import json
 import os
 import certifi
+from django.utils.translation import gettext_lazy as _
+
+LANGUAGES = [
+    ('ko', _('Korean')),
+    ('en', _('English')),
+]
 
 ca = certifi.where()
 
@@ -43,8 +49,6 @@ ALLOWED_HOSTS = {
 }
 
 ALLOWED_HOSTS = ALLOWED_HOSTS['dev'] if DEBUG else ALLOWED_HOSTS['production']
-print(ALLOWED_HOSTS)
-
 
 # Application definition
 
@@ -74,6 +78,7 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -153,7 +158,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+# LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ko-kr'
 
 TIME_ZONE = 'Asia/Seoul'
 
@@ -162,6 +168,10 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = False
+
+LOCALE_PATH = [
+    os.path.join(BASE_DIR, 'locale')
+]
 
 # schduler setting
 APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
