@@ -2,7 +2,6 @@ html,
 body {
     margin: 0;
     background: #eee;
-    font-family: "Montserrat", sans-serif;
     font-family: "Open Sans", sans-serif;
 
     letter-spacing: 0.65px;
@@ -38,15 +37,25 @@ body {
 
 }
 
-#cke_1_contents{
-}
+
 .cke_inner .cke_reset {
     width: 100%;
 
 }
 
 
-a .articlTitle{
+a {
+    text-decoration: none;
+    color: black;
+}
+
+.my-table {
+    table-layout: auto;
+    width: 100%;
+    line-height: 2rem;
+}
+
+.newsSelect .newsTitle{
     text-decoration: none;
     color: black;
 }

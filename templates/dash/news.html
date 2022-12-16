@@ -1,22 +1,35 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
 <div class="container">
-    <table class="table my-table">
-        <tr>
-            {% for col in news_list.columns %}
-            <td>{{col}}</td>
+    <div class="row text-center mb-5 mt-5">
+        <h3 class="col" ><a class="newsSelect" href="{% url 'dash:news' 'fin' %}">Finviz</a></h3>
+        <h3 class="col" ><a class="newsSelect" href="{% url 'dash:news' 'sec' %}">SEC</a></h3>
+        <h3 class="col" ><a class="newsSelect" href="{% url 'dash:news' 'yah' %}">IMF</a></h3>
+    </div>
+
+    <table class="table-responsive my-table">
+        <thead>
+            <tr>
+                {% for col in news_list.columns %}
+                {% if col == "URL" %}
+                {% elif col == "Headline" %}
+                    <th style="padding-left:5rem">{{col}}</th>
+                {% else %}
+                    <th>{{col}}</th>
+                {% endif %}
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for index, row in news_list.iterrows %}
+            <tr>
+                <td>{{row.Time}}</td>
+                <td style="padding-left:5rem"><a class="newsTitle" href="{{row.URL}}">{{row.Headline}}</a></td>
+            </tr>
             {% endfor %}
-        </tr>
-        {% for index, row in news_list.iterrows %}
-        <tr>
-            {% for cell in row %}
-            {% if 'http' in cell %}
-                <td><a href="{{cell}}">{{cell}}</a></td>
-            {% else %}
-                <td>{{cell}}</td>
-            {% endif %}
-            {% endfor %}
-        </tr>
-        {% endfor %}
+        </tbody>
     </table>
 </div>
 
