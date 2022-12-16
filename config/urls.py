@@ -19,13 +19,12 @@ from django.urls import path, include
 from dash.views import base_views
 from analysis import views
 from django.conf.urls.i18n import i18n_patterns
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-]
-
-urlpatterns += i18n_patterns(
     path("dash/", include('dash.urls')),
     path("common/", include('common.urls')),
     path("portfolio/", include('portfolio.urls')),
@@ -33,4 +32,7 @@ urlpatterns += i18n_patterns(
     path("analysis/", include('analysis.urls')),
     path("", views.base_views.company, name="index"),
     path('ckeditor/', include('ckeditor_uploader.urls')),
-)
+]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
