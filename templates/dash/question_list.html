@@ -35,8 +35,6 @@
             {% if question_list %} 
             {% for question in question_list %}
             {% if question.hide %}
-                {{ hideCount|add_one }}
-                {{ question_list.paginator.count|sub:1 }}
             {% else %}
             <tr class="text-center">
                 <td>

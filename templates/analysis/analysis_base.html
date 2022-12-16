@@ -17,7 +17,12 @@
     {% if currency %}
     <div class="container text-center justify mb-5">
 
-        <h3>Currency (KRW)  {{today}}</h3>
+        <h3>Currency (KRW)  {{today}} 
+            <a
+            href="{% url 'analysis:refresh' %}"
+            class="delete btn btn-sm btn-outline-secondary"
+            ><i class="fa fa-refresh" aria-hidden="true"></i></a>   
+        </h3>
         <table class="table" id="table_id">
             <thead>
                 <tr class="text-center table-dark">
@@ -60,5 +65,9 @@
 
 
 {% block script %}
+
+<script>
+
+</script>
 
 {% endblock script %}

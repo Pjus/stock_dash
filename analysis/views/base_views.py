@@ -48,13 +48,31 @@ def index(request):
                 'send' : row[1][6],
                 'receive' : row[1][7],
             }
-        
         currency_collection.insert_one({'date':today, 'currency' : currency_query})
-
     currency = currency_collection.find_one({'date':today})['currency']
     content = {'currency' : currency, 'today':today }
-
     return render(request, 'analysis/analysis_base.html', content)
+
+
+def refresh(request):
+    currency_query = {today:{}}
+    df = pd.read_html('https://www.kita.net/cmmrcInfo/ehgtGnrlzInfo/rltmEhgt.do', header = 0, encoding='utf-8')[0]
+    for row in df.iloc[:, :-1].iterrows():
+        currency_query[today][row[1][0].split(" ")[0]] = {
+            'in_korean' : row[1][0].split(" ")[1],
+            'current' : row[1][1],
+            'day_before' : row[1][2],
+            'change' : row[1][3],
+            'buy' : row[1][4],
+            'sell' : row[1][5],
+            'send' : row[1][6],
+            'receive' : row[1][7],
+        }
+    currency_collection.update_one({'date':today}, {'$set':{'currency' : currency_query}})
+    currency = currency_collection.find_one({'date':today})['currency']
+    content = {'currency' : currency, 'today':today }
+    return render(request, 'analysis/analysis_base.html', content)
+
 
 def company(request):
     ticker = request.GET.get('ticker', '')  # 검색어
