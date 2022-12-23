@@ -201,3 +201,7 @@ def company(request):
 
 
     return render(request, 'analysis/company.html', content)
+
+
+def board(request):
+    return render(request, 'main/base.html')
