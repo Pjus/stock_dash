@@ -1,12 +1,13 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from django.shortcuts import render
 from pymongo import MongoClient
-from analysis.modules import get_price, get_last_day, get_currency
+from analysis.modules import get_price, get_last_day, get_currency, time_in_range
 
 import yfinance as yf
 import pandas as pd
 import json
 
+TODAY_DOWN = False
 
 yf.pdr_override()
 with open("SECRET.json", "r") as secret_json:
@@ -27,16 +28,19 @@ today_origin = datetime.now()
 today = datetime.strftime(today_origin, '%Y-%m-%d')
 
 
+start = time(7, 0, 0)
+end = time(9, 0, 0)
+now = datetime.now()
+
 def board(request):
     nasdaq = "^IXIC"
     dow = "^DJI"
     snp = "^GSPC"
-
-    get_price(nasdaq, yesterday)
-    get_price(dow, yesterday)
-    get_price(snp, yesterday)
-
-    get_currency(refresh=True)
+    if time_in_range(start, end, now.time()):
+        get_price(nasdaq, yesterday)
+        get_price(dow, yesterday)
+        get_price(snp, yesterday)
+        get_currency()
 
     nas_price = price_collection.find_one({'ticker':nasdaq})['price']
     dow_price = price_collection.find_one({'ticker':dow})['price']

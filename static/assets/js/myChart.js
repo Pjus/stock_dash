@@ -1,3 +1,16 @@
+let testData = [-450, -200, 100, 220, 500, 100, 400, 230, 500];
+var colors = []
+for(var i = 0; i < testData.length; i++){
+   var color;
+   if(testData[i] > 0){
+    color = "green"
+   }else{
+    color = "red"
+   }
+   colors[i] = color;
+}
+
+
 var ctx = document.getElementById("chart-bars").getContext("2d");
 
 new Chart(ctx, {
@@ -11,8 +24,8 @@ new Chart(ctx, {
                 borderWidth: 0,
                 borderRadius: 4,
                 borderSkipped: false,
-                backgroundColor: "#fff",
-                data: [450, 200, 100, 220, 500, 100, 400, 230, 500],
+                backgroundColor: colors,
+                data: testData,
                 maxBarThickness: 6,
             },
         ],
@@ -38,7 +51,7 @@ new Chart(ctx, {
                     drawTicks: false,
                 },
                 ticks: {
-                    suggestedMin: 0,
+                    suggestedMin: -500,
                     suggestedMax: 500,
                     beginAtZero: true,
                     padding: 15,
@@ -80,6 +93,9 @@ gradientStroke2.addColorStop(1, "rgba(20,23,39,0.2)");
 gradientStroke2.addColorStop(0.2, "rgba(72,72,176,0.0)");
 gradientStroke2.addColorStop(0, "rgba(20,23,39,0)"); //purple colors
 
+
+
+
 new Chart(ctx2, {
     type: "line",
     data: {
@@ -94,7 +110,7 @@ new Chart(ctx2, {
                 borderWidth: 3,
                 backgroundColor: gradientStroke1,
                 fill: true,
-                data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
+                data: [50, 40, -300, 220, 500, 250, 400, 230, 500],
                 maxBarThickness: 6,
             },
             {
@@ -106,7 +122,7 @@ new Chart(ctx2, {
                 borderWidth: 3,
                 backgroundColor: gradientStroke2,
                 fill: true,
-                data: [60, 90, 40, 140, 290, 290, 340, 230, 400],
+                data: [60, -90, 40, 140, 290, 290, 340, 2030, 400],
                 maxBarThickness: 6,
             },
         ],

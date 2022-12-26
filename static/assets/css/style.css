@@ -1,4 +1,7 @@
 @media only screen and (max-width: 600px){
+    body{
+        overflow-y:scroll;
+    }
     .articleTitle {
         max-width: 130px;
     }

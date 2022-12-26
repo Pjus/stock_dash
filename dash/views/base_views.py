@@ -20,7 +20,13 @@ def index(request):
         ).distinct()
     paginator = Paginator(question_list, 25)  # 페이지당 25개씩 보여주기
     page_obj = paginator.get_page(page)
-    context = {'question_list': page_obj, 'page': page, 'kw': kw, 'hideCount':0}
+    context = {
+        'question_list': page_obj, 
+        'page': page, 
+        'kw': kw, 
+        'hideCount':0,
+        'page': "Article",
+        }
     return render(request, 'main/articles.html', context)
 
 def detail(request, question_id):

@@ -57,9 +57,12 @@ def get_price(ticker, yesterday):
         price_mongodb_query = make_price_query(ticker)
         price_collection.insert_one({'ticker':ticker, 'price' : price_mongodb_query})
     else:
-        if week_of_day != "Monday":
+        except_days = ['Monday', 'Sunday', 'Saturday']
+        if week_of_day not in except_days :
+            print(week_of_day)
             last_day = get_last_day(ticker)
             if str(last_day) != str(yesterday):
+                print(last_day)
                 price_mongodb_query = make_price_query(ticker)
                 price_collection.update_one({'ticker':ticker}, {'$set':{'price':price_mongodb_query }})
         else:
@@ -99,3 +102,12 @@ def get_finanacial_infos(collection, ticker, type):
                 column = financial.columns[idx]
                 mongodb_query[date][subject] = financial[column][subject]
         collection.insert_one({'ticker':ticker, type : mongodb_query})
+
+
+
+def time_in_range(start, end, x):
+    """Return true if x is in the range [start, end]"""
+    if start <= end:
+        return start <= x <= end
+    else:
+        return start <= x or x <= end

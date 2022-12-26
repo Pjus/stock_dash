@@ -36,7 +36,6 @@
   {% endif %}
   {% block articles %}
   {% endblock articles %}
-  {% include 'main/gear.html' %}
 
 
   <!--   Core JS Files   -->
@@ -45,8 +44,15 @@
   <script src={% static "assets/js/plugins/perfect-scrollbar.min.js" %}></script>
   <script src={% static "assets/js/plugins/smooth-scrollbar.min.js" %}></script>
   <script src={% static "assets/js/plugins/chartjs.min.js" %}></script>
-  <script src={% static "assets/js/myChart.js" %}></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script
+      type="text/javascript"
+      charset="utf8"
+      src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"
+  ></script>
+  <script src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
+  
   <script>
     var win = navigator.platform.indexOf('Win') > -1;
     if (win && document.querySelector('#sidenav-scrollbar')) {

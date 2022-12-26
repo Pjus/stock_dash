@@ -321,3 +321,25 @@
 
 {% endblock contents %}
 
+{% block script %}
+<script>
+
+  function sidebarType(e) {
+    for (
+        var t = e.parentElement.children,
+            n = e.getAttribute("data-class"),
+            i = 0;
+        i < t.length;
+        i++
+    )
+        t[i].classList.remove("active");
+    e.classList.contains("active")
+        ? e.classList.remove("active")
+        : e.classList.add("active");
+    e = document.querySelector(".sidenav");
+    e.classList.remove("bg-transparent"),
+        e.classList.remove("bg-white"),
+        e.classList.add(n);
+  }
+</script>
+{% endblock script %}
