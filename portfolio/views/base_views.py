@@ -45,7 +45,7 @@ def index(request):
     context["portfolio"] = portfolio
 
 
-    return render(request, 'port/portfolio_list.html', context)
+    return render(request, 'main/ports.html', context)
 
 
 def detail(request, port_id):

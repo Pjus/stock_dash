@@ -1,0 +1,5 @@
+@media only screen and (max-width: 600px){
+    .articleTitle {
+        max-width: 130px;
+    }
+}

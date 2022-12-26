@@ -20,6 +20,8 @@
   <link href={% static "assets/css/nucleo-svg.css" %} rel="stylesheet" />
   <!-- CSS Files -->
   <link id="pagestyle" href={% static 'assets/css/soft-ui-dashboard.css' %} rel="stylesheet" />
+  <link id="pagestyle" href={% static 'assets/css/style.css' %} rel="stylesheet" />
+
 </head>
 
 <body class="g-sidenav-show  bg-gray-100">
@@ -32,6 +34,8 @@
     {% block unauthuser %}
     {% endblock unauthuser %}
   {% endif %}
+  {% block articles %}
+  {% endblock articles %}
   {% include 'main/gear.html' %}
 
 

@@ -66,8 +66,7 @@ def board(request):
 
     }
     if not request.user.is_authenticated:
-        return render(request, 'main/articles.html', context)
-
+        return render(request, 'main/core2.html', context)
     return render(request, 'main/core.html', context)
 
 
