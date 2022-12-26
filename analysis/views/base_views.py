@@ -1,17 +1,13 @@
 from django.shortcuts import render
-from django.core.serializers.json import DjangoJSONEncoder
-
 import yfinance as yf
 from pandas_datareader import data as pdr
 import json
 from pymongo import MongoClient
-
 from datetime import datetime, timedelta
-
-from bs4 import BeautifulSoup as soup
-import requests
 import pandas as pd
 
+import calendar
+yf.pdr_override()
 with open("SECRET.json", "r") as secret_json:
     sc_python = json.load(secret_json)
 
@@ -29,9 +25,11 @@ currency_collection = db['currency']
 yesterday = datetime.now() - timedelta(1)
 day = datetime.strftime(yesterday, '%Y-%m-%d')
 
+today_origin = datetime.now()
+today = datetime.strftime(today_origin, '%Y-%m-%d')
 
-today = datetime.now()
-today = datetime.strftime(today, '%Y-%m-%d')
+week_of_day = calendar.day_name[today_origin.weekday()]
+
 # Create your views here.
 def index(request):
     if currency_collection.find_one({'date':today}) == None:
@@ -105,20 +103,22 @@ def company(request):
             infos_collection.insert_one({'ticker':ticker, 'infos' : stock_info})
 
         if price_collection.find_one({'ticker':ticker}) != None:
-            last_day = list(price_collection.find_one({'ticker':ticker})['price'])[-1]
-            if str(last_day) != str(day):
-                stock_price = pdr.get_data_yahoo(ticker)
-                price_mongodb_query = {}
-                for row in stock_price.iterrows():
-                    price_mongodb_query[str(row[0]).split(" ")[0]] = {
-                        'High':row[1][0],
-                        'Low':row[1][1],
-                        'Open':row[1][2],
-                        'Close':row[1][3],
-                        'Volume':row[1][4],
-                        'Adj Close':row[1][5],
-                    }
-                price_collection.update_one({'ticker':ticker}, {'$set':{'price':price_mongodb_query }})
+            if week_of_day != "Monday":
+                last_day = list(price_collection.find_one({'ticker':ticker})['price'])[-1]
+                if str(last_day) != str(day):
+                    stock_price = pdr.get_data_yahoo(ticker)
+                    price_mongodb_query = {}
+                    for row in stock_price.iterrows():
+                        price_mongodb_query[str(row[0]).split(" ")[0]] = {
+                            'High':row[1][0],
+                            'Low':row[1][1],
+                            'Open':row[1][2],
+                            'Close':row[1][3],
+                            'Adj Close':row[1][4],
+                            'Volume':row[1][5],
+
+                        }
+                    price_collection.update_one({'ticker':ticker}, {'$set':{'price':price_mongodb_query }})
 
         else:
             stock_price = pdr.get_data_yahoo(ticker)
@@ -129,8 +129,8 @@ def company(request):
                     'Low':row[1][1],
                     'Open':row[1][2],
                     'Close':row[1][3],
-                    'Volume':row[1][4],
-                    'Adj Close':row[1][5],
+                    'Adj Close':row[1][4],
+                    'Volume':row[1][5],
                 }
             price_collection.insert_one({'ticker':ticker, 'price' : price_mongodb_query})
             
@@ -203,5 +203,3 @@ def company(request):
     return render(request, 'analysis/company.html', content)
 
 
-def board(request):
-    return render(request, 'main/base.html')
