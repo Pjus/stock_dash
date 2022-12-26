@@ -24,7 +24,6 @@ db = client['stockDB']
 infos_collection = db['infos']
 
 def index(request):
-    print(request.method)
     if request.method == 'POST':
         form = PortfolioForm(request.POST)
         if form.is_valid():

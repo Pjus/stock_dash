@@ -7,6 +7,8 @@ from django.contrib.auth.models import User
 class Portfolio(models.Model):
     title = models.CharField(max_length=200)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='author_portfolio')
+    port_history = models.TextField(null=True, blank=True)
+    port_value = models.FloatField(default=0, null=True)
     create_date = models.DateTimeField()
     modify_date = models.DateTimeField(null=True, blank=True)
     def __str__(self):

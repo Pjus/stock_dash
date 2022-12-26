@@ -1,10 +1,10 @@
-from pandas_datareader import data as pdr
 from datetime import datetime, timedelta
 from django.shortcuts import render
 from pymongo import MongoClient
+from analysis.modules import get_price, get_last_day, get_currency
+
 import yfinance as yf
 import pandas as pd
-import calendar
 import json
 
 
@@ -19,93 +19,48 @@ db = client['stockDB']
 price_collection = db['stock_price']
 currency_collection = db['currency']
 
+
 yesterday = datetime.now() - timedelta(1)
 day = datetime.strftime(yesterday, '%Y-%m-%d')
 
 today_origin = datetime.now()
 today = datetime.strftime(today_origin, '%Y-%m-%d')
 
-week_of_day = calendar.day_name[today_origin.weekday()]
 
 def board(request):
     nasdaq = "^IXIC"
     dow = "^DJI"
-    last_day = list(price_collection.find_one({'ticker':nasdaq})['price'])[-1]
-    if price_collection.find_one({'ticker':nasdaq}) != None:
-        if week_of_day != "Monday":
-            if str(last_day) != str(day):
-                nas_price = pdr.get_data_yahoo("^IXIC")
-                dow_price = pdr.get_data_yahoo("^DJI")
+    snp = "^GSPC"
 
-                nas_price_mongodb_query = {}
-                for row in nas_price.iterrows():
-                    nas_price_mongodb_query[str(row[0]).split(" ")[0]] = {
-                        'High':row[1][0],
-                        'Low':row[1][1],
-                        'Open':row[1][2],
-                        'Close':row[1][3],
-                        'Adj Close':row[1][4],
-                        'Volume':row[1][5],
-                    }
-                price_collection.update_one({'ticker':nasdaq}, {'$set':{'price':nas_price_mongodb_query }})
-                
-                
-                dow_price_mongodb_query = {}
-                for row in dow_price.iterrows():
-                    dow_price_mongodb_query[str(row[0]).split(" ")[0]] = {
-                        'High':row[1][0],
-                        'Low':row[1][1],
-                        'Open':row[1][2],
-                        'Close':row[1][3],
-                        'Adj Close':row[1][4],
-                        'Volume':row[1][5],
-                    }
-                price_collection.update_one({'ticker':dow}, {'$set':{'price':dow_price_mongodb_query }})
-    else:
-        nas_price = pdr.get_data_yahoo(nasdaq)
-        dow_price = pdr.get_data_yahoo(dow)
-        nas_price_mongodb_query = {}
-        for row in nas_price.iterrows():
-            nas_price_mongodb_query[str(row[0]).split(" ")[0]] = {
-                'High':row[1][0],
-                'Low':row[1][1],
-                'Open':row[1][2],
-                'Close':row[1][3],
-                'Adj Close':row[1][4],
-                'Volume':row[1][5],
-            }
+    get_price(nasdaq, yesterday)
+    get_price(dow, yesterday)
+    get_price(snp, yesterday)
 
-        dow_price_mongodb_query = {}
-        for row in dow_price.iterrows():
-            dow_price_mongodb_query[str(row[0]).split(" ")[0]] = {
-                'High':row[1][0],
-                'Low':row[1][1],
-                'Open':row[1][2],
-                'Close':row[1][3],
-                'Adj Close':row[1][4],
-                'Volume':row[1][5],
-            }
-        price_collection.insert_one({'ticker':nasdaq, 'price' : nas_price_mongodb_query})
-        price_collection.insert_one({'ticker':dow, 'price' : dow_price_mongodb_query})
-
-
+    get_currency(refresh=True)
 
     nas_price = price_collection.find_one({'ticker':nasdaq})['price']
     dow_price = price_collection.find_one({'ticker':dow})['price']
+    snp_price = price_collection.find_one({'ticker':snp})['price']
+
     currency = currency_collection.find_one({'date':today})['currency']
 
     nas_df = pd.DataFrame(nas_price).T.pct_change()
     dow_df = pd.DataFrame(dow_price).T.pct_change()
+    snp_df = pd.DataFrame(snp_price).T.pct_change()
 
     krw = currency
-    print(krw[today]['USD']['current'])
-    
+
+    last_day = get_last_day(nasdaq)
 
     context = {
         "nasdaq": round(nas_price[last_day]['Adj Close'], 2),
         "dow":round(dow_price[last_day]['Adj Close'], 2),
+        "snp":round(snp_price[last_day]['Adj Close'], 2),
+
         "nas_pct": round(nas_df.iloc[-1:, 3:4].values[0][0] * 100, 2),
         "dow_pct": round(dow_df.iloc[-1:, 3:4].values[0][0] * 100, 2),
+        "snp_pct": round(snp_df.iloc[-1:, 3:4].values[0][0] * 100, 2),
+
         "currency": round(krw[today]['USD']['current'], 2),
         "currency_pct": krw[today]['USD']['change'],
 

@@ -1,12 +1,13 @@
 from django.shortcuts import render
 import yfinance as yf
-from pandas_datareader import data as pdr
 import json
 from pymongo import MongoClient
 from datetime import datetime, timedelta
-import pandas as pd
 
 import calendar
+
+from analysis.modules import get_currency, get_price, get_finanacial_infos
+
 yf.pdr_override()
 with open("SECRET.json", "r") as secret_json:
     sc_python = json.load(secret_json)
@@ -33,40 +34,14 @@ week_of_day = calendar.day_name[today_origin.weekday()]
 # Create your views here.
 def index(request):
     if currency_collection.find_one({'date':today}) == None:
-        currency_query = {today:{}}
-        df = pd.read_html('https://www.kita.net/cmmrcInfo/ehgtGnrlzInfo/rltmEhgt.do', header = 0, encoding='utf-8')[0]
-        for row in df.iloc[:, :-1].iterrows():
-            currency_query[today][row[1][0].split(" ")[0]] = {
-                'in_korean' : row[1][0].split(" ")[1],
-                'current' : row[1][1],
-                'day_before' : row[1][2],
-                'change' : row[1][3],
-                'buy' : row[1][4],
-                'sell' : row[1][5],
-                'send' : row[1][6],
-                'receive' : row[1][7],
-            }
-        currency_collection.insert_one({'date':today, 'currency' : currency_query})
+        get_currency()
     currency = currency_collection.find_one({'date':today})['currency']
     content = {'currency' : currency, 'today':today }
     return render(request, 'analysis/analysis_base.html', content)
 
 
 def refresh(request):
-    currency_query = {today:{}}
-    df = pd.read_html('https://www.kita.net/cmmrcInfo/ehgtGnrlzInfo/rltmEhgt.do', header = 0, encoding='utf-8')[0]
-    for row in df.iloc[:, :-1].iterrows():
-        currency_query[today][row[1][0].split(" ")[0]] = {
-            'in_korean' : row[1][0].split(" ")[1],
-            'current' : row[1][1],
-            'day_before' : row[1][2],
-            'change' : row[1][3],
-            'buy' : row[1][4],
-            'sell' : row[1][5],
-            'send' : row[1][6],
-            'receive' : row[1][7],
-        }
-    currency_collection.update_one({'date':today}, {'$set':{'currency' : currency_query}})
+    get_currency(refresh=True)
     currency = currency_collection.find_one({'date':today})['currency']
     content = {'currency' : currency, 'today':today }
     return render(request, 'analysis/analysis_base.html', content)
@@ -74,106 +49,23 @@ def refresh(request):
 
 def company(request):
     ticker = request.GET.get('ticker', '')  # 검색어
-    stock = yf.Ticker(ticker)
     content = {"ticker":ticker}
 
     if currency_collection.find_one({'date':today}) == None:
-        currency_query = {today:{}}
-        df = pd.read_html('https://www.kita.net/cmmrcInfo/ehgtGnrlzInfo/rltmEhgt.do', header = 0, encoding='utf-8')[0]
-        for row in df.iloc[:, :-1].iterrows():
-            currency_query[today][row[1][0].split(" ")[0]] = {
-                'in_korean' : row[1][0].split(" ")[1],
-                'current' : row[1][1],
-                'day_before' : row[1][2],
-                'change' : row[1][3],
-                'buy' : row[1][4],
-                'sell' : row[1][5],
-                'send' : row[1][6],
-                'receive' : row[1][7],
-            }
-        
-        currency_collection.insert_one({'date':today, 'currency' : currency_query})
-
+        get_currency()
     if ticker.encode().isalpha() == False:
         return render(request, 'analysis/company.html', content)
 
     if ticker.encode().isalpha():
         if infos_collection.find_one({'ticker':ticker}) == None:
+            stock = yf.Ticker(ticker)
             stock_info = stock.info
             infos_collection.insert_one({'ticker':ticker, 'infos' : stock_info})
 
-        if price_collection.find_one({'ticker':ticker}) != None:
-            if week_of_day != "Monday":
-                last_day = list(price_collection.find_one({'ticker':ticker})['price'])[-1]
-                if str(last_day) != str(day):
-                    stock_price = pdr.get_data_yahoo(ticker)
-                    price_mongodb_query = {}
-                    for row in stock_price.iterrows():
-                        price_mongodb_query[str(row[0]).split(" ")[0]] = {
-                            'High':row[1][0],
-                            'Low':row[1][1],
-                            'Open':row[1][2],
-                            'Close':row[1][3],
-                            'Adj Close':row[1][4],
-                            'Volume':row[1][5],
-
-                        }
-                    price_collection.update_one({'ticker':ticker}, {'$set':{'price':price_mongodb_query }})
-
-        else:
-            stock_price = pdr.get_data_yahoo(ticker)
-            price_mongodb_query = {}
-            for row in stock_price.iterrows():
-                price_mongodb_query[str(row[0]).split(" ")[0]] = {
-                    'High':row[1][0],
-                    'Low':row[1][1],
-                    'Open':row[1][2],
-                    'Close':row[1][3],
-                    'Adj Close':row[1][4],
-                    'Volume':row[1][5],
-                }
-            price_collection.insert_one({'ticker':ticker, 'price' : price_mongodb_query})
-            
-        if financial_collection.find_one({'ticker':ticker}) == None:
-            qt_fs = stock.quarterly_financials
-            qt_fs.fillna(0, inplace=True)
-            fs_mongodb_query = {}
-            for idx, row in enumerate(qt_fs.items()):
-                date = str(row[0]).split(" ")[0]
-                fs_mongodb_query[date] = {}
-                for i in range(len(qt_fs)):
-                    subject = qt_fs.index[i]
-                    column = qt_fs.columns[idx]
-                    fs_mongodb_query[date][subject] = qt_fs[column][subject]
-            financial_collection.insert_one({'ticker':ticker, 'fs' : fs_mongodb_query})
-
-
-        if balancesheet_collection.find_one({'ticker':ticker}) == None:
-            qt_bs = stock.quarterly_balancesheet
-            qt_bs.fillna(0, inplace=True)
-            bs_mongodb_query = {}
-            for idx, row in enumerate(qt_bs.items()):
-                date = str(row[0]).split(" ")[0]
-                bs_mongodb_query[date] = {}
-                for i in range(len(qt_bs)):
-                    subject = qt_bs.index[i]
-                    column = qt_bs.columns[idx]
-                    bs_mongodb_query[date][subject] = qt_bs[column][subject]
-            balancesheet_collection.insert_one({'ticker':ticker, 'bs' : bs_mongodb_query})
-
-
-        if cashflow_collection.find_one({'ticker':ticker}) == None:
-            qt_cf = stock.quarterly_cashflow
-            qt_cf.fillna(0, inplace=True)
-            cf_mongodb_query = {}
-            for idx, row in enumerate(qt_cf.items()):
-                date = str(row[0]).split(" ")[0]
-                cf_mongodb_query[date] = {}
-                for i in range(len(qt_cf)):
-                    subject = qt_cf.index[i]
-                    column = qt_cf.columns[idx]
-                    cf_mongodb_query[date][subject] = qt_cf[column][subject]
-            cashflow_collection.insert_one({'ticker':ticker, 'cf' : cf_mongodb_query})
+        get_price(ticker, yesterday)
+        get_finanacial_infos(financial_collection, ticker, type="fs")
+        get_finanacial_infos(balancesheet_collection, ticker, type="bs")
+        get_finanacial_infos(cashflow_collection, ticker, type="cf")
 
         stock_price = price_collection.find_one({'ticker':ticker})['price']
         fs = financial_collection.find_one({'ticker':ticker})['fs']

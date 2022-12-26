@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from yahoo_fin import stock_info as si
+import yfinance as yf
+
 def get_heatmap(request):
 
     snp500 = si.tickers_sp500()

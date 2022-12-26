@@ -88,18 +88,18 @@
                             <p
                                 class="text-sm mb-0 text-capitalize font-weight-bold"
                             >
-                                KWR / USD
+                                S&P 500
                             </p>
                             <h5 class="font-weight-bolder mb-0">
-                                {{currency}}{% if currency_pct > 0 %}
+                                {{snp}}{% if snp_pct > 0 %}
                                 <span
                                     class="text-success text-sm font-weight-bolder"
-                                    >+{{currency_pct}}%</span
+                                    >+{{snp_pct}}%</span
                                 >
                                 {% else %}
                                 <span
                                     class="text-danger text-sm font-weight-bolder"
-                                    >{{currency_pct}}%</span
+                                    >{{snp_pct}}%</span
                                 >
                                 {% endif %}
                             </h5>
@@ -128,16 +128,24 @@
                             <p
                                 class="text-sm mb-0 text-capitalize font-weight-bold"
                             >
-                                Dow
+                                KWR / USD
                             </p>
                             <h5 class="font-weight-bolder mb-0">
-                                $103,430
+                                {{currency}}{% if currency_pct > 0 %}
                                 <span
                                     class="text-success text-sm font-weight-bolder"
-                                    >+5%</span
+                                    >+{{currency_pct}}%</span
                                 >
+                                {% else %}
+                                <span
+                                    class="text-danger text-sm font-weight-bolder"
+                                    >{{currency_pct}}%</span
+                                >
+                                {% endif %}
                             </h5>
                         </div>
+
+
                     </div>
                     <div class="col-4 text-end">
                         <div
