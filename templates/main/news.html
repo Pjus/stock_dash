@@ -1,0 +1,247 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block unauthuser %}
+<main
+    class="main-content position-relative max-height-vh-100 h-100 mt-1 border-radius-lg"
+>
+    <div class="container-fluid mb-10">
+        <div class="row my-4  justify-content-center">
+            <div class="col-lg-8 col-md-6 mb-md-0 mb-4">
+                {% include 'main/small_title.html' %}
+                <div class="row text-center mb-5 mt-5">
+                    <h3 class="col" ><a class="newsSelect" href="{% url 'dash:news' 'fin' %}">Finviz</a></h3>
+                    <h3 class="col" ><a class="newsSelect" href="{% url 'dash:news' 'sec' %}">SEC</a></h3>
+                    <!-- <h3 class="col" ><a class="newsSelect" href="{% url 'dash:news' 'yah' %}">IMF</a></h3> -->
+                </div>
+                <div class="card w-100">
+                    <div class="card-header pb-0">
+                        <div class="row">
+                            <div class="col-lg-6 col-7">
+                                <h6>News - {{press}}</h6>
+                            </div>
+                            <div class="col-lg-6 col-5 my-auto text-end">
+                                <div class="dropdown float-lg-end pe-4">
+                                    <a
+                                        class="cursor-pointer"
+                                        id="dropdownTable"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false"
+                                    >
+                                        <i
+                                            class="fa fa-ellipsis-v text-secondary"
+                                        ></i>
+                                    </a>
+                                    <ul
+                                        class="dropdown-menu px-2 py-3 ms-sm-n4 ms-n5"
+                                        aria-labelledby="dropdownTable"
+                                    >
+                                        <li>
+                                            <a
+                                                class="dropdown-item border-radius-md"
+                                                href="javascript:;"
+                                                >Action</a
+                                            >
+                                        </li>
+                                        <li>
+                                            <a
+                                                class="dropdown-item border-radius-md"
+                                                href="javascript:;"
+                                                >Another action</a
+                                            >
+                                        </li>
+                                        <li>
+                                            <a
+                                                class="dropdown-item border-radius-md"
+                                                href="javascript:;"
+                                                >Something else here</a
+                                            >
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body px-0 pb-2">
+                        <div class="table-responsive w-100">
+                            <table class="table align-items-center mb-0 w-100">
+                                <thead>
+                                    <tr>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 "
+                                        >
+                                            Title
+                                        </th>
+                                        
+                                        <th
+                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
+                                        >
+                                            Date
+                                        </th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for index, row in news_list.iterrows %}
+                                    <tr>
+                                        <td style="padding-left:1rem">
+                                            <div class="d-flex px-2 py-1">
+                                                <div
+                                                    class="d-flex flex-column justify-content-center articleTitle"
+                                                >
+                                                    <h6 class="mb-0 text-sm  d-inline-block text-truncate">
+                                                        <a 
+                                                            class="articlTitle" 
+                                                            href="{{row.URL}}">
+                                                            {{row.Headline}}
+                                                        </a>
+                                                    </h6>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td
+                                            class="align-middle text-center text-sm"
+                                            >
+                                            <span
+                                                class="text-xs font-weight-bold"
+                                            >
+                                            {{row.Time}}
+                                            </span>
+                                        </td>
+
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {% comment %} <!-- 페이징처리 시작 -->
+                        <ul class="pagination justify-content-center fixed-bottom mb-5">
+                            <!-- 이전페이지 -->
+                            {% if question_list.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" data-page="{{ 1 }}"
+                                    href="javascript:void(0)"><i class="fa fa-angle-double-left" aria-hidden="true"></i>
+                                </i></a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" data-page="{{ question_list.previous_page_number }}"
+                                    href="javascript:void(0)"><i class="fa fa-angle-left" aria-hidden="true"></i>
+                                </a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link" tabindex="-1" aria-disabled="true" href="#"
+                                    ><i class="fa fa-angle-double-left" aria-hidden="true"></i>
+                                </a>
+                                </li>
+                                <li class="page-item disabled">
+                                    <a class="page-link" tabindex="-1" aria-disabled="true" href="#"
+                                        ><i class="fa fa-angle-left" aria-hidden="true"></i>
+                                        </a
+                                    >
+                                </li>
+                            {% endif %}
+
+                            <!-- 페이지리스트 -->
+                            
+                            {% for page_number in question_list.paginator.page_range %}
+                                {% if page_number == 0 %}
+
+                                {% elif page_number == 1 %}
+                                    
+                                    {% if page_number == question_list.number %}
+                                        <li class="page-item active" aria-current="page">
+                                            <a class="page-link" data-page="{{ page_number }}"
+                                            href="javascript:void(0)">{{ page_number }}</a>
+                                        </li>
+                                        <li class="page-item" aria-current="page">
+                                            <a class="page-link" data-page="{{ page_number|add:1 }}"
+                                            href="javascript:void(0)">{{ page_number|add:1 }}</a>
+                                        </li>
+                                        <li class="page-item" aria-current="page">
+                                            <a class="page-link" data-page="{{ page_number|add:2 }}"
+                                            href="javascript:void(0)">{{ page_number|add:2 }}</a>
+                                        </li>
+                                    {% endif %}
+
+
+                                {% elif page_number > 1 and page_number < question_list.paginator.num_pages %}
+                                    {% if page_number == question_list.number %}
+                                        <li class="page-item">
+                                            <a class="page-link" data-page="{{ page_number|add:-1 }}"
+                                            href="javascript:void(0)">{{ page_number|add:-1 }}</a>
+                                        </li>
+                                        <li class="page-item active" aria-current="page">
+                                            <a class="page-link" data-page="{{ page_number }}"
+                                            href="javascript:void(0)">{{ page_number }}</a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link" data-page="{{ page_number|add:1 }}"
+                                            href="javascript:void(0)">{{ page_number|add:1 }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% else %}
+                                    {% if page_number == question_list.number %}
+                                        <li class="page-item">
+                                            <a class="page-link" data-page="{{ page_number|add:-1 }}"
+                                            href="javascript:void(0)">{{ page_number|add:-1 }}</a>
+                                        </li>
+                                        <li class="page-item active" aria-current="page">
+                                            <a class="page-link" data-page="{{ page_number }}"
+                                            href="javascript:void(0)">{{ page_number }}</a>
+                                        </li>
+                                        <li class="page-item disabled">
+                                            <a class="page-link" tabindex="-1" aria-disabled="true" href="#"
+                                                >{{ page_number|add:1 }}</a
+                                            >
+                                        </li>
+                                    {% endif %}    
+                                {% endif %}
+                                
+                            {% endfor %}
+                            <!-- 다음페이지 -->
+
+                            {% if question_list.has_next %}
+
+                                <li class="page-item">
+                                    <a class="page-link" data-page="{{ question_list.next_page_number }}"
+                                    href="javascript:void(0)"><i class="fa fa-angle-right" aria-hidden="true"></i>
+                                </a>
+                                </li>
+                                {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link" tabindex="-1" aria-disabled="true" href="#"
+                                        ><i class="fa fa-angle-right" aria-hidden="true"></i>
+                                        </a
+                                    >
+                                </li>
+                            {% endif %}
+                            {% if question_list.paginator %}
+                                {% if question_list.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" data-page="{{ question_list.paginator.num_pages }}"
+                                        href="javascript:void(0)"><i class="fa fa-angle-double-right" aria-hidden="true"></i></a>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item disabled">
+                                        <a class="page-link" tabindex="-1" aria-disabled="true" href="#"
+                                            ><i class="fa fa-angle-double-right" aria-hidden="true"></i></a
+                                        >
+                                    </li>
+                                {% endif %}
+                            {% endif %}
+                        </ul>
+                        <!-- 페이징처리 끝 --> {% endcomment %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+{% endblock unauthuser %}
+
+{% block script %}
+{% endblock script %}
+

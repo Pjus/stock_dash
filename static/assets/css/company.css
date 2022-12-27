@@ -1,0 +1,15 @@
+@media only screen and (max-width: 600px){
+    .ticker-search-input{
+        width: 34vh;
+        top: 25vh;
+        left: 4vh;
+    }
+}
+
+
+.ticker-search-input{
+    width: 80vh;
+    top: 25vh;
+    left: -45vh;
+}
+

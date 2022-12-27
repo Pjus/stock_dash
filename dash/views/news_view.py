@@ -32,6 +32,6 @@ def news_view(request, news_id):
         df['URL'] = df['URL'].str.replace('Link: ', '')
 
         df = df[['Time', 'Headline', 'URL']]
-        content = {'news_list':df}
+        content = {'news_list':df, 'press':news_id}
 
-    return render(request, 'dash/news.html', content)
+    return render(request, 'main/news.html', content)

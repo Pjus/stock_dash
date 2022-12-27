@@ -54,7 +54,7 @@ def company(request):
     if currency_collection.find_one({'date':today}) == None:
         get_currency()
     if ticker.encode().isalpha() == False:
-        return render(request, 'analysis/company.html', content)
+        return render(request, 'main/company.html', content)
 
     if ticker.encode().isalpha():
         if infos_collection.find_one({'ticker':ticker}) == None:
@@ -92,6 +92,6 @@ def company(request):
         }
 
 
-    return render(request, 'analysis/company.html', content)
+    return render(request, 'main/company.html', content)
 
 
