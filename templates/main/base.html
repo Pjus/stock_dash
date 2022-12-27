@@ -12,6 +12,9 @@
   </title>
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+
+
+  
   <!-- Nucleo Icons -->
   <link href={% static "assets/css/nucleo-icons.css" %} rel="stylesheet" />
   <link href={% static "assets/css/nucleo-svg.css" %} rel="stylesheet" />
@@ -19,8 +22,34 @@
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
   <link href={% static "assets/css/nucleo-svg.css" %} rel="stylesheet" />
   <!-- CSS Files -->
-  <link id="pagestyle" href={% static 'assets/css/soft-ui-dashboard.css' %} rel="stylesheet" />
-  <link id="pagestyle" href={% static 'assets/css/style.css' %} rel="stylesheet" />
+  <link href={% static 'assets/css/soft-ui-dashboard.css' %} rel="stylesheet" />
+  <link href={% static 'assets/css/style.css' %} rel="stylesheet" />
+  <link href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+
+  <!--   Core JS Files   -->
+  <script src={% static "assets/js/core/popper.min.js" %}></script>
+  <script src={% static "assets/js/core/bootstrap.min.js" %}></script>
+  <script src={% static "assets/js/plugins/perfect-scrollbar.min.js" %}></script>
+  <script src={% static "assets/js/plugins/smooth-scrollbar.min.js" %}></script>
+  <script src={% static "assets/js/plugins/chartjs.min.js" %}></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+  <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <script
+      type="text/javascript"
+      charset="utf8"
+      src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"
+  ></script>
+  <script src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+ 
+  <script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
+  <script src="{% static 'js/bootstrap-datepicker.ko.min.js' %}"></script>
+
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2835834888306304"
+      crossorigin="anonymous">
+  </script>
 
 </head>
 
@@ -38,19 +67,6 @@
   {% endblock articles %}
 
 
-  <!--   Core JS Files   -->
-  <script src={% static "assets/js/core/popper.min.js" %}></script>
-  <script src={% static "assets/js/core/bootstrap.min.js" %}></script>
-  <script src={% static "assets/js/plugins/perfect-scrollbar.min.js" %}></script>
-  <script src={% static "assets/js/plugins/smooth-scrollbar.min.js" %}></script>
-  <script src={% static "assets/js/plugins/chartjs.min.js" %}></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script
-      type="text/javascript"
-      charset="utf8"
-      src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"
-  ></script>
-  <script src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
   <script>
@@ -66,7 +82,9 @@
   <script async defer src="https://buttons.github.io/buttons.js"></script>
   <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
   <script src={% static "assets/js/soft-ui-dashboard.min.js" %}></script>
-
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2835834888306304"
+    crossorigin="anonymous">
+  </script>
   {% block script %}
   {% endblock script %}
 </body>

@@ -1,4 +1,7 @@
 <nav aria-label="breadcrumb">
-
-    <h6 class="font-weight-bolder mb-0">{{page}}</h6>
+    <h6 class="font-weight-bolder mb-0">
+        {{page}} 
+        {% if portfolio.title %}
+        - {{portfolio.title}}</h6>
+        {% endif %}
 </nav>

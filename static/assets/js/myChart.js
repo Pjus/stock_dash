@@ -110,7 +110,7 @@ new Chart(ctx2, {
                 borderWidth: 3,
                 backgroundColor: gradientStroke1,
                 fill: true,
-                data: [50, 40, -300, 220, 500, 250, 400, 230, 500],
+                data: [0, 50],
                 maxBarThickness: 6,
             },
             {
@@ -122,7 +122,7 @@ new Chart(ctx2, {
                 borderWidth: 3,
                 backgroundColor: gradientStroke2,
                 fill: true,
-                data: [60, -90, 40, 140, 290, 290, 340, 2030, 400],
+                data: [0, 60],
                 maxBarThickness: 6,
             },
         ],

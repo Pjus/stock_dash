@@ -2,6 +2,7 @@ from datetime import datetime, timedelta, time
 from django.shortcuts import render
 from pymongo import MongoClient
 from analysis.modules import get_price, get_last_day, get_currency, time_in_range
+from portfolio.models import Portfolio
 
 import yfinance as yf
 import pandas as pd
@@ -71,11 +72,19 @@ def board(request):
     }
     if not request.user.is_authenticated:
         return render(request, 'main/core2.html', context)
+    portfolio = Portfolio.objects.filter(author=request.user)
+    context["portfolio"] = portfolio
+    total_account = 0
+    for port in portfolio:
+        total_account += port.port_value
     return render(request, 'main/core.html', context)
 
 
 def get_portable(request):
-    return render(request, 'main/tables.html')
+    portfolio = Portfolio.objects.filter(author=request.user)
+    context = {"page":"Portfolio"}
+    context["portfolio"] = portfolio
+    return render(request, 'main/port_list.html', context)
 
 def get_billing(request):
     return render(request, 'main/billing.html')

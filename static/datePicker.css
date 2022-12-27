@@ -1,0 +1,46 @@
+/* DatePicker CSS */
+
+.ui-widget-header { border: none !important; background-color: transparent !important; }
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default, .ui-button, html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active {
+    border: 1px solid #fff !important;
+    background: #fff !important;
+    font-weight: normal !important;
+    color: #454545 !important;
+    text-align: center !important;
+    font-size: 28px;
+}
+
+.ui-widget.ui-widget-content {
+    width: 385px;
+}
+
+.ui-datepicker .ui-datepicker-title {
+    font-size: 23px;
+}
+
+.ui-datepicker .ui-datepicker-header {
+    width: 100%;
+}
+
+.ui-datepicker th {
+    font-size: 21px;
+    padding: 0.7em !important;
+}
+
+.ui-datepicker-calendar th:first-child {
+	color: #ff0000 !important;
+}
+
+.ui-datepicker-calendar th:nth-last-child(1) {
+	color: #0d47a1 !important;
+}
+
+.ui-datepicker-calendar tr td:first-child a {
+	color: #ff0000 !important;
+}
+
+.ui-datepicker-calendar tr td:nth-last-child(1) a {
+	color: #0d47a1 !important;
+}
+
