@@ -72,8 +72,11 @@ def board(request):
     }
     if not request.user.is_authenticated:
         return render(request, 'main/core2.html', context)
+    
     portfolio = Portfolio.objects.filter(author=request.user)
     context["portfolio"] = portfolio
+    context["percent"] = 100
+
     total_account = 0
     for port in portfolio:
         total_account += port.port_value

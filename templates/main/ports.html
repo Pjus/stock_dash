@@ -53,6 +53,7 @@
         <div class="table-responsive">
             <table class="table align-items-center mb-0">
                 <thead>
+
                     <tr>
                         <th
                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
@@ -72,11 +73,13 @@
                         <th
                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
                         >
-                            Date
+                            Weight
                         </th>
                     </tr>
                 </thead>
                 <tbody>
+                    {% if portfolio %}
+                    {% for port in portfolio %}
                     <tr>
                         <td>
                             <div class="d-flex px-2 py-1">
@@ -88,7 +91,7 @@
                                     class="d-flex flex-column justify-content-center"
                                 >
                                     <h6 class="mb-0 text-sm">
-                                        Soft UI XD Version
+                                        {{port.title}}
                                     </h6>
                                 </div>
                             </div>
@@ -135,7 +138,7 @@
                         </td>
                         <td class="align-middle text-center text-sm">
                             <span class="text-xs font-weight-bold">
-                                $14,000
+                                $ {{port.port_value}}
                             </span>
                         </td>
                         <td class="align-middle">
@@ -143,13 +146,13 @@
                                 <div class="progress-info">
                                     <div class="progress-percentage">
                                         <span class="text-xs font-weight-bold"
-                                            >60%</span
+                                            >{{percent}}%</span
                                         >
                                     </div>
                                 </div>
                                 <div class="progress">
                                     <div
-                                        class="progress-bar bg-gradient-info w-60"
+                                        class="progress-bar bg-gradient-info"
                                         role="progressbar"
                                         aria-valuenow="60"
                                         aria-valuemin="0"
@@ -159,8 +162,27 @@
                             </div>
                         </td>
                     </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td>
+                            No Portfolio
+                        </td>
+                    </tr>
+                    {% endif %}
+
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+
+<script>
+    let port_percent = "{{percent}}";
+    const progressBars = document.getElementsByClassName("progress-bar");
+    $(document).ready(function(){
+        for(i=0; i < progressBars.length; i++){
+            progressBars[i].classList.add(`w-${port_percent}`)
+        }
+    })
+</script>
