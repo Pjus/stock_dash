@@ -37,6 +37,12 @@ def board(request):
     nasdaq = "^IXIC"
     dow = "^DJI"
     snp = "^GSPC"
+
+    nasdaq_last_day = get_last_day(nasdaq)
+    dow_last_day = get_last_day(dow)
+    snp_last_day = get_last_day(snp)
+
+
     if time_in_range(start, end, now.time()):
         get_price(nasdaq, yesterday)
         get_price(dow, yesterday)
@@ -46,7 +52,6 @@ def board(request):
     nas_price = price_collection.find_one({'ticker':nasdaq})['price']
     dow_price = price_collection.find_one({'ticker':dow})['price']
     snp_price = price_collection.find_one({'ticker':snp})['price']
-
     currency = currency_collection.find_one({'date':today})['currency']
 
     nas_df = pd.DataFrame(nas_price).T.pct_change()
@@ -55,12 +60,11 @@ def board(request):
 
     krw = currency
 
-    last_day = get_last_day(nasdaq)
 
     context = {
-        "nasdaq": round(nas_price[last_day]['Adj Close'], 2),
-        "dow":round(dow_price[last_day]['Adj Close'], 2),
-        "snp":round(snp_price[last_day]['Adj Close'], 2),
+        "nasdaq": round(nas_price[nasdaq_last_day]['Adj Close'], 2),
+        "dow":round(dow_price[dow_last_day]['Adj Close'], 2),
+        "snp":round(snp_price[snp_last_day]['Adj Close'], 2),
 
         "nas_pct": round(nas_df.iloc[-1:, 3:4].values[0][0] * 100, 2),
         "dow_pct": round(dow_df.iloc[-1:, 3:4].values[0][0] * 100, 2),
@@ -70,17 +74,28 @@ def board(request):
         "currency_pct": krw[today]['USD']['change'],
 
     }
-    if not request.user.is_authenticated:
-        return render(request, 'main/core2.html', context)
-    
-    portfolio = Portfolio.objects.filter(author=request.user)
-    context["portfolio"] = portfolio
-    context["percent"] = 100
+    # except:
+    #     context = {
+    #         "nasdaq": "",
+    #         "dow":"",
+    #         "snp":"",
+    #         "nas_pct":"",
+    #         "dow_pct":"",
+    #         "snp_pct":"",
+    #         "currency":"",
+    #         "currency_pct":"",
 
-    total_account = 0
-    for port in portfolio:
-        total_account += port.port_value
-    return render(request, 'main/core.html', context)
+    #     }
+    if request.user.is_authenticated:
+        portfolio = Portfolio.objects.filter(author=request.user)
+        context["portfolio"] = portfolio
+        # context["percent"] = 100
+        total_account = 0
+        for port in portfolio:
+            total_account += port.port_value
+        return render(request, 'main/core.html', context)
+
+    return render(request, 'main/core2.html', context)
 
 
 def get_portable(request):

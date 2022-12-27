@@ -26,7 +26,7 @@
   <link href={% static 'assets/css/style.css' %} rel="stylesheet" />
   <link href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" />  
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" />  
 
   <!--   Core JS Files   -->
   <script src={% static "assets/js/core/popper.min.js" %}></script>
@@ -38,7 +38,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
   <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="http://code.jquery.com/ui/1.8.18/jquery-ui.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.8.18/jquery-ui.min.js"></script>
 
   <script
       type="text/javascript"
@@ -64,6 +64,8 @@
   {% endif %}
   {% block articles %}
   {% endblock articles %}
+  {% block news %}
+  {% endblock news %}
   {% include 'main/gear.html' %}
 
   

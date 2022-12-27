@@ -83,10 +83,9 @@ def get_currency(refresh=False):
             'receive' : row[1][7],
         }
     if refresh:
-        currency_collection.insert_one({'date':today, 'currency' : currency_query})
-    elif refresh:
         currency_collection.update_one({'date':today}, {'$set':{'currency' : currency_query}})
-
+    else:
+        currency_collection.insert_one({'date':today, 'currency' : currency_query})
 
 def get_finanacial_infos(collection, ticker, type):
     stock = yf.Ticker(ticker)

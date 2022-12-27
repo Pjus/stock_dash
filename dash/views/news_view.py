@@ -9,7 +9,7 @@ def news_view(request, news_id):
     print(news_id)
     if news_id == 'fin':
         news = News()
-        content = {'news_list':news.news_df}
+        content = {'news_list':news.news_df, 'press':news_id}
     elif news_id == 'sec':
         url = 'https://www.sec.gov/news/pressreleases'
         df = pd.read_html(url)[0]
