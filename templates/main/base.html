@@ -25,6 +25,8 @@
   <link href={% static 'assets/css/soft-ui-dashboard.css' %} rel="stylesheet" />
   <link href={% static 'assets/css/style.css' %} rel="stylesheet" />
   <link href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" />  
 
   <!--   Core JS Files   -->
   <script src={% static "assets/js/core/popper.min.js" %}></script>
@@ -36,6 +38,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
   <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="http://code.jquery.com/ui/1.8.18/jquery-ui.min.js"></script>
 
   <script
       type="text/javascript"
@@ -43,13 +46,9 @@
       src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"
   ></script>
   <script src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
- 
   <script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
-  <script src="{% static 'js/bootstrap-datepicker.ko.min.js' %}"></script>
 
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2835834888306304"
-      crossorigin="anonymous">
-  </script>
+
 
 </head>
 
@@ -65,8 +64,7 @@
   {% endif %}
   {% block articles %}
   {% endblock articles %}
-
-
+  {% include 'main/gear.html' %}
 
   
   <script>
@@ -82,9 +80,7 @@
   <script async defer src="https://buttons.github.io/buttons.js"></script>
   <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
   <script src={% static "assets/js/soft-ui-dashboard.min.js" %}></script>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2835834888306304"
-    crossorigin="anonymous">
-  </script>
+
   {% block script %}
   {% endblock script %}
 </body>

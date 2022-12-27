@@ -32,3 +32,12 @@ class Stock(models.Model):
     def __str__(self):
         return self.ticker
 
+
+class Transaction(models.Model):
+    ticker = models.CharField(max_length=20)
+    quantity = models.IntegerField(default=0)
+    buy_price = models.FloatField(default=0.0)
+    sell_price = models.FloatField(default=0.0)
+    buy_date = models.DateField(null=True, blank=True)
+    sell_date = models.DateField(null=True, blank=True)
+    profit = models.FloatField(default=0.0)

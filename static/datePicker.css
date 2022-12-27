@@ -1,46 +1,70 @@
-/* DatePicker CSS */
+.dropdown-menu {
+    top:210px;
+    position: absolute;
+    z-index: 1000;
+    display: none;
+    min-width: 12rem;
+    padding: 0.5rem 0;
+    margin: 0;
+    color: #67748e;
+    text-align: center;
+    list-style: none;
+    background-color: #f4f4f4;
+    background-clip: padding-box;
+    border: 0 solid transparent;
+    border-radius: 0.5rem;
+  }
 
-.ui-widget-header { border: none !important; background-color: transparent !important; }
-
-.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default, .ui-button, html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active {
-    border: 1px solid #fff !important;
-    background: #fff !important;
-    font-weight: normal !important;
-    color: #454545 !important;
-    text-align: center !important;
-    font-size: 28px;
+  
+.table-condensed{
+    padding: 0 0 0 0;
+    width: 10vh;
 }
 
-.ui-widget.ui-widget-content {
-    width: 385px;
+.prev {
+    float: left;
+}
+.datepicker-days{
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.ui-datepicker .ui-datepicker-title {
-    font-size: 23px;
+.datepicker-months{
+    display: inline-block;
+    align-items: center;
 }
 
-.ui-datepicker .ui-datepicker-header {
-    width: 100%;
+.datepicker-years{
+    display: inline-block;
+    align-items: center;
+}
+.month {
+    display: block;
+}
+.year {
+    display: block;
 }
 
-.ui-datepicker th {
-    font-size: 21px;
-    padding: 0.7em !important;
+
+
+
+.day {
+    padding: 0.2rem;
 }
 
-.ui-datepicker-calendar th:first-child {
+.datepicker-days th:first-child {
 	color: #ff0000 !important;
 }
 
-.ui-datepicker-calendar th:nth-last-child(1) {
+.datepicker-days th:nth-last-child(1) {
 	color: #0d47a1 !important;
 }
 
-.ui-datepicker-calendar tr td:first-child a {
+
+div.datepicker-days table tbody tr td:first-child {
 	color: #ff0000 !important;
 }
-
-.ui-datepicker-calendar tr td:nth-last-child(1) a {
-	color: #0d47a1 !important;
+div.datepicker-days table tbody tr td:nth-child(7) {
+    color: #6fa2f0 !important;
 }
-

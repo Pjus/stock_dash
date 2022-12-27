@@ -82,12 +82,12 @@
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
                                         >
-                                            Title
+                                            Owner
                                         </th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2"
                                         >
-                                            Author
+                                            Title
                                         </th>
                                         <th
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
@@ -105,25 +105,27 @@
                                     {% if portfolio %}
                                     {% for port in portfolio %}
                                     {% if request.user == port.author %}
-                                    <tr>
+                                    <tr>                                           
                                         <td>
                                             <div class="d-flex px-2 py-1">
                                                 <div
                                                     class="d-flex flex-column justify-content-center articleTitle"
                                                 >
                                                     <h6 class="mb-0 text-sm  d-inline-block text-truncate">
-                                                        <a 
-                                                            class="articlTitle" 
-                                                            href="{% url 'portfolio:detail' port.id %}">
-                                                            {{ port.title }}
-                                                        </a>
+                                                        {{ port.author.username }}
                                                     </h6>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
                                             <div class="avatar-group mt-2">
-                                                {{ port.author.username }}
+                                                <h6 class="mb-0 text-sm  d-inline-block text-truncate">
+                                                    <a 
+                                                        class="articlTitle" 
+                                                        href="{% url 'portfolio:detail' port.id %}">
+                                                    {{ port.title }}
+                                                    </a>
+                                                </h6>
                                             </div>
                                         </td>
                                         <td

@@ -7,11 +7,17 @@ def stock_create(request, port_id):
     port = get_object_or_404(Portfolio, pk=port_id)
     form = StockForm(request.POST)
     if form.is_valid():
-        stock_list = Stock.objects.filter(portfolio=port, ticker=request.POST.get('ticker'))
+        ticker = request.POST.get('ticker')
+        buy_price = int(request.POST.get('buy_price'))
+        quantity = int(request.POST.get('quantity'))
+        stock_list = Stock.objects.filter(portfolio=port, ticker=ticker)
         if len(stock_list) > 0:
             stocks = stock_list[0]
-            stocks.buy_price = (stocks.buy_price * stocks.quantity + float(request.POST.get('buy_price'))) * int(request.POST.get('quantity')) / (stocks.quantity + int(request.POST.get('quantity')))
-            stocks.quantity += int(request.POST.get('quantity'))
+            total_price = stocks.buy_price * stocks.quantity
+            new_price = buy_price * quantity
+            total_quantity = stocks.quantity + quantity
+            stocks.buy_price = (total_price + new_price) / total_quantity
+            stocks.quantity += quantity
             stocks.save()
         else:
             stocks = Stock(portfolio=port, ticker=request.POST.get('ticker'), quantity=request.POST.get('quantity'), buy_price=request.POST.get('buy_price'))

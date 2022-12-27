@@ -53,6 +53,7 @@ def index(request):
 
 def detail(request, port_id):
     port = get_object_or_404(Portfolio, pk=port_id)
+    total_value = 0
     if len(port.stock_port.all()) > 0:
         port_value = 0
         port_profit = 0
@@ -83,8 +84,9 @@ def detail(request, port_id):
             port.port_history = json_val
 
         port.port_value = port_value
+        total_value = round(port_value, 2)
         port.save()
-    context = {'portfolio':port, "total_value" : round(port_value, 2), "page":"Portfolio"}
+    context = {'portfolio':port, "total_value" : total_value, "page":"Portfolio"}
     return render(request, 'main/port_detail.html', context)
 
 
