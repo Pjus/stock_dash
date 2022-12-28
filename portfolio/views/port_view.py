@@ -10,6 +10,8 @@ def stock_create(request, port_id):
         ticker = request.POST.get('ticker')
         buy_price = int(request.POST.get('buy_price'))
         quantity = int(request.POST.get('quantity'))
+        buy_date = int(request.POST.get('buyDate'))
+
         stock_list = Stock.objects.filter(portfolio=port, ticker=ticker)
         if len(stock_list) > 0:
             stocks = stock_list[0]
@@ -17,6 +19,7 @@ def stock_create(request, port_id):
             new_price = buy_price * quantity
             total_quantity = stocks.quantity + quantity
             stocks.buy_price = (total_price + new_price) / total_quantity
+            stocks.buy_dates = buy_date
             stocks.quantity += quantity
             stocks.save()
         else:

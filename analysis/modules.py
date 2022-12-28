@@ -7,6 +7,15 @@ import pandas as pd
 import calendar
 import json
 
+# News
+from pyfinviz.news import News
+from bs4 import BeautifulSoup
+import requests
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import re
+
 yf.pdr_override()
 with open("SECRET.json", "r") as secret_json:
     sc_python = json.load(secret_json)
@@ -17,17 +26,18 @@ db = client['stockDB']
 price_collection = db['stock_price']
 currency_collection = db['currency']
 
-balancesheet_collection = db['balance']
-cashflow_collection = db['cashflow']
-financial_collection = db['financial_statement']
-price_collection = db['stock_price']
 infos_collection = db['infos']
+news_collection = db['news']
 
 yesterday = datetime.now() - timedelta(1)
 day = datetime.strftime(yesterday, '%Y-%m-%d')
 
 today_origin = datetime.now()
 today = datetime.strftime(today_origin, '%Y-%m-%d')
+
+def get_collection(collection_name):
+    collection = db[collection_name]
+    return collection
 
 def get_last_day(ticker):
     last_day = list(price_collection.find_one({'ticker':ticker})['price'])[-1]
@@ -110,3 +120,124 @@ def time_in_range(start, end, x):
         return start <= x <= end
     else:
         return start <= x or x <= end
+
+
+def get_sec_news():
+    url = 'https://www.sec.gov/news/pressreleases'
+    df = pd.read_html(url)[0]
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    table = soup.find('table')
+    links = []
+    for tr in table.findAll("tr"):
+        trs = tr.findAll("td")
+        for each in trs:
+            try:
+                link = each.find('a')['href']
+                links.append('https://www.sec.gov' + link)
+            except:
+                pass
+
+    df['URL'] = links
+    df['Time'] = df['Date'].str.replace('Date: ', '')
+    df['Headline'] = df['Headline'].str.replace('Headline: ', '')
+    df['URL'] = df['URL'].str.replace('Link: ', '')
+
+    df = df[['Time', 'Headline', 'URL']]
+    news_query = {}
+
+    for row in df.iterrows():
+        inner_query = {}
+        inner_query['headline'] = row[1]['Headline']
+        inner_query['url'] = row[1]['URL']
+        news_query[row[1]['Time']] = inner_query
+
+    news_collection.insert_one({"press":"sec", "news" : news_query})
+
+
+def get_finviz_news():
+    news = News()
+    df = news.news_df
+    news_query = {}
+    for idx, row in enumerate(df.iterrows()):
+        now = datetime.now()
+        now = datetime.strftime(today_origin, '%Y-%m-%d %H:%M')
+        inner_query = {}
+        inner_query['headline'] = row[1]['Headline']
+        inner_query['url'] = row[1]['URL']
+        inner_query['Time'] = row[1]['Time']
+        news_query[f'{str(now)} {str(idx)}'] = inner_query
+
+    news_collection.insert_one({'press':"fin", 'news' : news_query})
+
+
+
+
+def get_economic_calender():
+    options = webdriver.ChromeOptions()
+    options.add_argument("headless")
+    url = "https://kr.tradingview.com/economic-calendar/"
+
+    driver = webdriver.Chrome("./chromedriver.exe", options=options)
+    driver.get(url)
+    driver.implicitly_wait(3)
+
+    items = driver.find_elements(by=By.CLASS_NAME, value='economicCalendarItem-Q1EBfqP8')
+    driver.implicitly_wait(1)
+    event_day = driver.find_elements(by=By.CLASS_NAME, value='innerWrapper-sM9C7FZj')
+    driver.implicitly_wait(1)
+
+    date = []
+    data_dict = {}
+
+
+    for day in event_day:
+        data_dict[day.text] = {}
+        date.append(day.text)
+    
+    day_start = -1
+    defalut_time = 24
+
+    for item_idx, item in enumerate(items):
+        temp_dict = {}
+
+        country = item.find_element(by=By.CLASS_NAME, value='country-Q1EBfqP8')
+        inner_html = country.get_attribute("innerHTML")
+        
+        temp_dict['img_src'] = inner_html[inner_html.find("https"):inner_html.find("><")]
+        temp_dict['country'] = re.compile('[가-힣]+').findall(inner_html)[0]
+        all_data = item.text.split("\n")
+       
+        if ':' in all_data[0]:
+            event_time = all_data[0]
+            event_subject = all_data[1]
+
+        else:
+            if ':' in items[item_idx-1].text.split("\n")[0]:
+                event_time = items[item_idx-1].text.split("\n")[0]
+            else:
+                event_time = items[item_idx-2].text.split("\n")[0]
+            event_subject = all_data[0]
+
+        if int(event_time.split(":")[0]) < defalut_time:
+            day_start += 1
+        defalut_time = int(event_time.split(":")[0])
+
+        if "예측" in all_data:
+            if all_data[-1] == '%':
+                temp_dict['forecast'] = all_data[-5]
+            else:
+                temp_dict['forecast'] = all_data[-1]
+
+        if "이전" in all_data:
+            if all_data[-1] == '%':
+                temp_dict['previous'] = all_data[-2]
+            else:
+                temp_dict['previous'] = all_data[-1]
+                
+        temp_dict['event_time'] = event_time
+        temp_dict['event_subject'] = event_subject
+        temp_dict['event_date'] = date[day_start]
+        data_dict[date[day_start]][temp_dict['country']] = temp_dict
+
+

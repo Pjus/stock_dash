@@ -2,3 +2,4 @@
 SECRET.json
 staticfiles
 config/settings.py
+chromedriver.exe

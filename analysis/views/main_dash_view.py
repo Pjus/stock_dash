@@ -22,13 +22,12 @@ price_collection = db['stock_price']
 currency_collection = db['currency']
 
 
+
 yesterday = datetime.now() - timedelta(1)
 day = datetime.strftime(yesterday, '%Y-%m-%d')
 
 today_origin = datetime.now()
 today = datetime.strftime(today_origin, '%Y-%m-%d')
-
-
 start = time(7, 0, 0)
 end = time(9, 0, 0)
 now = datetime.now()
@@ -52,14 +51,18 @@ def board(request):
     nas_price = price_collection.find_one({'ticker':nasdaq})['price']
     dow_price = price_collection.find_one({'ticker':dow})['price']
     snp_price = price_collection.find_one({'ticker':snp})['price']
-    currency = currency_collection.find_one({'date':today})['currency']
+    try:
+        currency = currency_collection.find_one({'date':today})['currency']
+    except:
+        get_currency()
+        currency = currency_collection.find_one({'date':today})['currency']
+
 
     nas_df = pd.DataFrame(nas_price).T.pct_change()
     dow_df = pd.DataFrame(dow_price).T.pct_change()
     snp_df = pd.DataFrame(snp_price).T.pct_change()
 
     krw = currency
-
 
     context = {
         "nasdaq": round(nas_price[nasdaq_last_day]['Adj Close'], 2),
@@ -74,25 +77,16 @@ def board(request):
         "currency_pct": krw[today]['USD']['change'],
 
     }
-    # except:
-    #     context = {
-    #         "nasdaq": "",
-    #         "dow":"",
-    #         "snp":"",
-    #         "nas_pct":"",
-    #         "dow_pct":"",
-    #         "snp_pct":"",
-    #         "currency":"",
-    #         "currency_pct":"",
 
-    #     }
     if request.user.is_authenticated:
         portfolio = Portfolio.objects.filter(author=request.user)
         context["portfolio"] = portfolio
-        # context["percent"] = 100
+        context["percent"] = 100
         total_account = 0
         for port in portfolio:
             total_account += port.port_value
+        
+        context['total_account'] = total_account
         return render(request, 'main/core.html', context)
 
     return render(request, 'main/core2.html', context)

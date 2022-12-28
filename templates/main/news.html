@@ -86,13 +86,16 @@
                                         <td style="padding-left:1rem">
                                             <div class="d-flex px-2 py-1">
                                                 <div
-                                                    class="d-flex flex-column justify-content-center articleTitle"
+                                                    class="d-flex flex-column justify-content-center newsTitle"
                                                 >
                                                     <h6 class="mb-0 text-sm  d-inline-block text-truncate">
                                                         <a 
                                                             class="articlTitle" 
-                                                            href="{{row.URL}}">
-                                                            {{row.Headline}}
+                                                            title="{{row.headline}}"
+                                                            href="{{row.url}}"
+                                                            target="_blank"
+                                                            >
+                                                            {{row.headline}}
                                                         </a>
                                                     </h6>
                                                 </div>

@@ -19,7 +19,7 @@
                                 <input type="text" class="form-control col-3" placeholder="Ticker (e.g. AAPL)" aria-label="Ticker" aria-describedby="basic-addon1" id="ticker" name="ticker">
                                 <input type="number" min="0" step="0.0001" class="form-control col-3" placeholder="Buy Price (USD)" aria-label="Price" aria-describedby="basic-addon1" id="buy_price" name="buy_price">
                                 <input type="number" min="0" step="1" class="form-control col-3" placeholder="Quantity" aria-label="Quantity" aria-describedby="basic-addon1" id="quantity" name="quantity">
-                                <input type="text" id="datePicker" class="form-control" value="" placeholder="Pick buy date">
+                                <input type="text" id="datePicker" class="form-control" id="buyDate" value="" placeholder="Pick buy date">
                                 <span class="input-group-text text-body"
                                     ><button type="submit" class="btn mb-0"
                                         ><i class="fas fa-plus" aria-hidden="true"></i>
@@ -90,6 +90,7 @@
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Return r</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Evaluation</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Profit</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Buy Date</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Delete</th>
                                     </tr>
                                 </thead>
@@ -144,7 +145,9 @@
                                             {% endif %}
                                             
                                         </td>
-                    
+                                        <td class="align-middle text-center text-sm"> 
+                                            {{ stock.buy_dates|date:"Y-m-d" }}
+                                        </td>
                                         <td class="align-middle text-center text-sm"> 
                                             <a
                                                 href="javascript:void(0)"

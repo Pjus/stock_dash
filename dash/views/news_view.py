@@ -1,37 +1,44 @@
 from django.shortcuts import render
 from pyfinviz.news import News
 
+from analysis.modules import get_sec_news, time_in_range, get_collection, get_finviz_news
+from datetime import time, datetime
+
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
+start = time(7, 0, 0)
+end = time(9, 0, 0)
+now = datetime.now()
+
+news_collection = get_collection("news")
+
 def news_view(request, news_id):
-    print(news_id)
     if news_id == 'fin':
-        news = News()
-        content = {'news_list':news.news_df, 'press':news_id}
+        get_finviz_news()
+        try:
+            fin_news = news_collection.find_one({'press':news_id})['news']
+        except:
+            get_finviz_news()
+            fin_news = news_collection.find_one({'press':news_id})['news']
+
+        df = pd.DataFrame(fin_news).T
+        
+        content = {'news_list':df, 'press':news_id}
+
     elif news_id == 'sec':
-        url = 'https://www.sec.gov/news/pressreleases'
-        df = pd.read_html(url)[0]
-        response = requests.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        table = soup.find('table')
-        links = []
-        for tr in table.findAll("tr"):
-            trs = tr.findAll("td")
-            for each in trs:
-                try:
-                    link = each.find('a')['href']
-                    links.append('https://www.sec.gov' + link)
-                except:
-                    pass
+        if time_in_range(start, end, now.time()):
+            get_sec_news()
+        try:
+            sec_news = news_collection.find_one({'press':news_id})['news']
+        except:
+            get_sec_news()
+            sec_news = news_collection.find_one({'press':news_id})['news']
 
-        df['URL'] = links
-        df['Time'] = df['Date'].str.replace('Date: ', '')
-        df['Headline'] = df['Headline'].str.replace('Headline: ', '')
-        df['URL'] = df['URL'].str.replace('Link: ', '')
+        df = pd.DataFrame(sec_news).T
+        df['Time'] = df.index
 
-        df = df[['Time', 'Headline', 'URL']]
         content = {'news_list':df, 'press':news_id}
 
     return render(request, 'main/news.html', content)
