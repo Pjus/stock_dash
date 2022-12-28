@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, time
 from django.shortcuts import render
 from pymongo import MongoClient
-from analysis.modules import get_price, get_last_day, get_currency, time_in_range
+from analysis.modules import get_price, get_last_day, get_currency, time_in_range, get_calender, get_collection, get_finviz_news
 from portfolio.models import Portfolio
 
 import yfinance as yf
@@ -20,6 +20,7 @@ db = client['stockDB']
 
 price_collection = db['stock_price']
 currency_collection = db['currency']
+calender_collection = db['calender']
 
 
 
@@ -47,6 +48,7 @@ def board(request):
         get_price(dow, yesterday)
         get_price(snp, yesterday)
         get_currency()
+        get_calender()
 
     nas_price = price_collection.find_one({'ticker':nasdaq})['price']
     dow_price = price_collection.find_one({'ticker':dow})['price']
@@ -56,13 +58,20 @@ def board(request):
     except:
         get_currency()
         currency = currency_collection.find_one({'date':today})['currency']
-
-
+ 
+    calender = calender_collection.find_one()
+    if calender == None:
+        get_calender()
+        calender = calender_collection.find_one()
     nas_df = pd.DataFrame(nas_price).T.pct_change()
     dow_df = pd.DataFrame(dow_price).T.pct_change()
     snp_df = pd.DataFrame(snp_price).T.pct_change()
 
     krw = currency
+
+    news_collection = get_collection("news")
+    fin_news = news_collection.find_one({'press':"fin"})['news']
+
 
     context = {
         "nasdaq": round(nas_price[nasdaq_last_day]['Adj Close'], 2),
@@ -75,6 +84,9 @@ def board(request):
 
         "currency": round(krw[today]['USD']['current'], 2),
         "currency_pct": krw[today]['USD']['change'],
+        "calender": calender['calender'],
+
+        "news": pd.DataFrame(fin_news).T[:30]
 
     }
 

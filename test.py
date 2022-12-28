@@ -10,14 +10,18 @@ import re
 from pymongo import MongoClient
 
 
+with open("SECRET.json", "r") as secret_json:
+    sc_python = json.load(secret_json)
 
-
+client = MongoClient(sc_python['MONGODB'], 27017)
+db = client['stockDB']
 
 # balancesheet_collection = db['balance']
 # cashflow_collection = db['cashflow']
 # financial_collection = db['financial_statement']
 # price_collection = db['stock_price']
 
+calender_collection = db['calender']
 
 # def company(ticker):
 #     stock = yf.Ticker(ticker)
@@ -160,3 +164,14 @@ sudo systemctl daemon-reload && sudo systemctl restart nginx uwsgi
 # currency_collection.insert_one({'date':today, 'currency' : currency_query})
 
 
+
+data_dict = calender_collection.find_one()['calender']
+
+
+
+for i in data_dict:
+    for j in data_dict[i]:
+        print(data_dict[i][j]['country'])
+        print(data_dict[i][j]['event_time'])
+        print(data_dict[i][j]['event_date'])
+db.calender.drop()
