@@ -72,7 +72,6 @@ def board(request):
         dow_price = price_collection.find_one({'ticker':dow})['price']
         snp_price = price_collection.find_one({'ticker':snp})['price']
     try:
-        get_currency()
         currency = currency_collection.find_one({'date':today})['currency']
     except:
         get_currency()
