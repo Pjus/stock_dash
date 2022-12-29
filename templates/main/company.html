@@ -1,8 +1,9 @@
 {% extends 'main/base.html' %}
 {% load static %}
-
-{% block unauthuser %}
+{% block css %}
 <link href={% static 'assets/css/company.css' %} rel="stylesheet" />
+{% endblock css %}
+{% block unauthuser %}
 <main
     class="main-content position-relative max-height-vh-100 h-100 mt-1 border-radius-lg"
 >

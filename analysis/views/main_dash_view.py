@@ -59,7 +59,7 @@ def board(request):
         get_currency()
         currency = currency_collection.find_one({'date':today})['currency']
  
-    calender = calender_collection.find_one()
+    calender = calender_collection.find_one({'date':today})
     if calender == None:
         get_calender()
         calender = calender_collection.find_one()
@@ -93,11 +93,16 @@ def board(request):
     if request.user.is_authenticated:
         portfolio = Portfolio.objects.filter(author=request.user)
         context["portfolio"] = portfolio
-        context["percent"] = 100
+        context["percent"] = {}
         total_account = 0
         for port in portfolio:
             total_account += port.port_value
-        
+            if total_account != 0:
+                for idx, port in enumerate(portfolio):
+                    port.weight = round((port.port_value / total_account) * 100, 2)
+            else:
+                port.weight = 0
+                port.save()
         context['total_account'] = total_account
         return render(request, 'main/core.html', context)
 

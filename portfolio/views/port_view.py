@@ -8,9 +8,9 @@ def stock_create(request, port_id):
     form = StockForm(request.POST)
     if form.is_valid():
         ticker = request.POST.get('ticker')
-        buy_price = int(request.POST.get('buy_price'))
+        buy_price = float(request.POST.get('buy_price'))
         quantity = int(request.POST.get('quantity'))
-        buy_date = int(request.POST.get('buyDate'))
+        buy_date = request.POST.get('buyDate')
 
         stock_list = Stock.objects.filter(portfolio=port, ticker=ticker)
         if len(stock_list) > 0:

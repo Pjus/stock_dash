@@ -134,14 +134,13 @@
                                             {{ port.create_date|date:"Y-m-d" }}
                                             </span>
                                         </td>
-                                        <td
-                                            class="align-middle text-center text-sm"
+                                        <td class="align-middle text-center text-sm"> 
+                                            <a
+                                                href="javascript:void(0)"
+                                                class="delete btn btn-sm btn-outline-secondary mb-0"
+                                                data-uri="{% url 'portfolio:port_delete' port_id=port.id %}"
+                                                >DELETE</a
                                             >
-                                            <span
-                                                class="text-xs font-weight-bold"
-                                            >
-                                            {{ port.create_date|date:"Y-m-d" }}
-                                            </span>
                                         </td>
                                     </tr>
                                     {% endif %}
@@ -300,6 +299,14 @@
 
 {% block script %}
 <script type='text/javascript'>
+    const delete_elements = document.getElementsByClassName("delete");
+    Array.from(delete_elements).forEach(function (element) {
+        element.addEventListener("click", function () {
+            if (confirm("정말로 삭제하시겠습니까?")) {
+                location.href = this.dataset.uri;
+            }
+        });
+    });
 
     const btn_port = document.getElementById("btn_port");
     btn_port.addEventListener("click", function (e) {

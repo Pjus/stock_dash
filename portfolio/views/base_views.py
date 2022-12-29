@@ -17,6 +17,9 @@ import json
 
 today = datetime.now()
 today = datetime.strftime(today, '%Y-%m-%d')
+monthly_return = {
+
+}
 
 with open("SECRET.json", "r") as secret_json:
     sc_python = json.load(secret_json)
@@ -58,6 +61,7 @@ def detail(request, port_id):
         port_value = 0
         port_profit = 0
         for stock in port.stock_port.all():
+            print(stock.buy_dates)
             ticker = stock.ticker
             ticker_yahoo = yf.Ticker(ticker)
             data = ticker_yahoo.history()
@@ -85,10 +89,15 @@ def detail(request, port_id):
 
         port.port_value = port_value
         total_value = round(port_value, 2)
-        port.save()
+    else:
+        port.port_value = 0
+    port.save()
     context = {'portfolio':port, "total_value" : total_value, "page":"Portfolio"}
     return render(request, 'main/port_detail.html', context)
 
 
 def port_delete(request, port_id):
+    print(port_id)
+    port = Portfolio.objects.get(id=port_id)
+    port.delete()
     return redirect('portfolio:index')
