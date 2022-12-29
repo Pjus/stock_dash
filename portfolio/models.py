@@ -31,6 +31,10 @@ class Stock(models.Model):
     return_ratio = models.FloatField(default=0, null=True)
     volatility = models.FloatField(default=0, null=True)
     evaluated = models.FloatField(default=0, null=True)
+    prev_month = models.TextField(null=True, default="")
+    curr_month = models.TextField(null=True, default="")
+    prev_month_return = models.FloatField(default=0, null=True)
+    curr_month_return = models.FloatField(default=0, null=True)
     buy_dates = models.CharField(max_length=200, null=True)
     sell_dates = models.CharField(max_length=200, null=True)
 

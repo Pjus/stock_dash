@@ -1,4 +1,4 @@
-let testData = [-450, -200, 100, 220, 500, 100, 400, 230, 500];
+let testData = [200, 0, 0, -450, -200, 100, 220, 500, 100, 400, 230, 500];
 var colors = []
 for(var i = 0; i < testData.length; i++){
    var color;
@@ -16,7 +16,7 @@ var ctx = document.getElementById("chart-bars").getContext("2d");
 new Chart(ctx, {
     type: "bar",
     data: {
-        labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        labels: [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
         datasets: [
             {
                 label: "Sales",

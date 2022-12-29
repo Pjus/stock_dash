@@ -7,6 +7,8 @@ from portfolio.models import Portfolio
 import yfinance as yf
 import pandas as pd
 import json
+import re
+
 
 TODAY_DOWN = False
 
@@ -24,8 +26,8 @@ calender_collection = db['calender']
 
 
 
-yesterday = datetime.now() - timedelta(1)
-day = datetime.strftime(yesterday, '%Y-%m-%d')
+yesterday_origin = datetime.now() - timedelta(1)
+yesterday = datetime.strftime(yesterday_origin, '%Y-%m-%d')
 
 today_origin = datetime.now()
 today = datetime.strftime(today_origin, '%Y-%m-%d')
@@ -42,6 +44,8 @@ def board(request):
     dow_last_day = get_last_day(dow)
     snp_last_day = get_last_day(snp)
 
+    print(yesterday)
+    print(nasdaq_last_day)
 
     if time_in_range(start, end, now.time()):
         get_price(nasdaq, yesterday)
@@ -49,11 +53,26 @@ def board(request):
         get_price(snp, yesterday)
         get_currency()
         get_calender()
-
-    nas_price = price_collection.find_one({'ticker':nasdaq})['price']
-    dow_price = price_collection.find_one({'ticker':dow})['price']
-    snp_price = price_collection.find_one({'ticker':snp})['price']
+    
     try:
+        nas_price = price_collection.find_one({'ticker':nasdaq})['price'][yesterday]
+        dow_price = price_collection.find_one({'ticker':dow})['price'][yesterday]
+        snp_price = price_collection.find_one({'ticker':snp})['price'][yesterday]
+        print(nas_price)
+
+        nas_price = price_collection.find_one({'ticker':nasdaq})['price']
+        dow_price = price_collection.find_one({'ticker':dow})['price']
+        snp_price = price_collection.find_one({'ticker':snp})['price']
+    except:
+        get_price(nasdaq, yesterday)
+        get_price(dow, yesterday)
+        get_price(snp, yesterday)
+        
+        nas_price = price_collection.find_one({'ticker':nasdaq})['price']
+        dow_price = price_collection.find_one({'ticker':dow})['price']
+        snp_price = price_collection.find_one({'ticker':snp})['price']
+    try:
+        get_currency()
         currency = currency_collection.find_one({'date':today})['currency']
     except:
         get_currency()
@@ -63,14 +82,26 @@ def board(request):
     if calender == None:
         get_calender()
         calender = calender_collection.find_one()
+
     nas_df = pd.DataFrame(nas_price).T.pct_change()
     dow_df = pd.DataFrame(dow_price).T.pct_change()
     snp_df = pd.DataFrame(snp_price).T.pct_change()
+
+    nas_diff = pd.DataFrame(nas_price).T.diff()
+    dow_diff = pd.DataFrame(dow_price).T.diff()
+    snp_diff = pd.DataFrame(snp_price).T.diff()
+
+    print(nas_diff)
+    print(round(nas_diff.iloc[-1:, 3:4].values[0][0], 2))
 
     krw = currency
 
     news_collection = get_collection("news")
     fin_news = news_collection.find_one({'press':"fin"})['news']
+    
+    print(krw[today]['USD'])
+    day_defore = krw[today]['USD']['day_before']
+    day_defore = re.sub(r'[^0-9.]', '', day_defore)
 
 
     context = {
@@ -82,7 +113,12 @@ def board(request):
         "dow_pct": round(dow_df.iloc[-1:, 3:4].values[0][0] * 100, 2),
         "snp_pct": round(snp_df.iloc[-1:, 3:4].values[0][0] * 100, 2),
 
+        "nas_diff": round(nas_diff.iloc[-1:, 3:4].values[0][0], 2),
+        "dow_diff": round(dow_diff.iloc[-1:, 3:4].values[0][0], 2),
+        "snp_diff": round(snp_diff.iloc[-1:, 3:4].values[0][0], 2),
+
         "currency": round(krw[today]['USD']['current'], 2),
+        "currency_chg": float(day_defore),
         "currency_pct": krw[today]['USD']['change'],
         "calender": calender['calender'],
 

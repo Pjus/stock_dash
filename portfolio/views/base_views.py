@@ -11,7 +11,7 @@ from ..forms import PortfolioForm, StockForm
 
 from pymongo import MongoClient
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 import json
 
@@ -27,6 +27,7 @@ with open("SECRET.json", "r") as secret_json:
 client = MongoClient(sc_python['MONGODB'], 27017)
 db = client['stockDB']
 infos_collection = db['infos']
+price_collection = db['stock_price']
 
 def index(request):
     if request.method == 'POST':
@@ -54,22 +55,46 @@ def index(request):
     return render(request, 'main/port_list.html', context)
 
 
+
 def detail(request, port_id):
+
+    today_month = date.today()
+    last_month = today_month - timedelta(days=1)
+
+    today_month = today_month.strftime("%Y-%m").split("-")[1]
+    last_month = last_month.strftime("%Y-%m").split("-")[1]
+
+    print(today_month)
+    print(last_month)
+
     port = get_object_or_404(Portfolio, pk=port_id)
     total_value = 0
     if len(port.stock_port.all()) > 0:
         port_value = 0
         port_profit = 0
         for stock in port.stock_port.all():
-            print(stock.buy_dates)
             ticker = stock.ticker
-            ticker_yahoo = yf.Ticker(ticker)
-            data = ticker_yahoo.history()
-            last_quote = data['Close'].iloc[-1]
+            stock_price = price_collection.find_one({'ticker':ticker})['price']
+            data = pd.DataFrame(stock_price).T
+            data['Date'] = data.index
+            new_df = data.loc[stock.buy_dates:,]
+            month_avg_close = new_df.groupby(pd.PeriodIndex(new_df['Date'], freq="M"))['Adj Close'].mean()
+
+            if stock.curr_month_return == 0:
+                stock.curr_month_return = round(month_avg_close, 2)
+            else:
+                if today_month == last_month:
+                    stock.curr_month_return = round(month_avg_close, 2)
+                else:
+                    stock.prev_month_return = stock.curr_month_return
+                    stock.curr_month_return = round(month_avg_close, 2)
+
+
+            last_quote = new_df['Adj Close'].iloc[-1]
             stock.current_price = round(last_quote, 2)
-            stock.profit = round(stock.current_price - stock.buy_price, 2)
-            stock.return_ratio = round((stock.profit / stock.buy_price) * 100, 2)
+            stock.profit = round((stock.current_price - stock.buy_price) * stock.quantity, 2)
             stock.evaluated = round(stock.quantity * stock.current_price, 2)
+            stock.return_ratio = round((1 - (stock.buy_price / stock.current_price)) * 100, 2)
             stock.save()
 
             port_profit += stock.profit

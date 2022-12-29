@@ -85,10 +85,17 @@ def get_currency(refresh=False):
     currency_query = {today:{}}
     df = pd.read_html('https://www.kita.net/cmmrcInfo/ehgtGnrlzInfo/rltmEhgt.do', header = 0, encoding='utf-8')[0]
     for row in df.iloc[:, :-1].iterrows():
+        if row[1][3] < 0:
+            numbers = re.sub(r'[^0-9.]', '', row[1][2])
+            day_before = f'-{numbers}'
+        else:
+            numbers = re.sub(r'[^0-9.]', '', row[1][2])
+            day_before = numbers
+
         currency_query[today][row[1][0].split(" ")[0]] = {
             'in_korean' : row[1][0].split(" ")[1],
             'current' : row[1][1],
-            'day_before' : row[1][2],
+            'day_before' : float(day_before),
             'change' : row[1][3],
             'buy' : row[1][4],
             'sell' : row[1][5],

@@ -10,6 +10,17 @@
                             >
                                 Nasdaq
                             </p>
+                            {% if nas_diff > 0 %}
+                            <h4
+                                class="text-success text-sm font-weight-bolder"
+                                >+{{nas_diff}}</h4
+                            >
+                            {% else %}
+                            <h4
+                                class="text-danger text-sm font-weight-bolder"
+                                >{{nas_diff}}</h4
+                            >
+                            {% endif %}                         
                             <h5 class="font-weight-bolder mb-0">
                                 {{nasdaq}} {% if nas_pct > 0 %}
                                 <span
@@ -22,6 +33,7 @@
                                     >{{nas_pct}}%</span
                                 >
                                 {% endif %}
+ 
                             </h5>
                         </div>
                     </div>
@@ -50,6 +62,17 @@
                             >
                                 Dow
                             </p>
+                            {% if dow_diff > 0 %}
+                            <h4
+                                class="text-success text-sm font-weight-bolder"
+                                >+{{dow_diff}}</h4
+                            >
+                            {% else %}
+                            <h4
+                                class="text-danger text-sm font-weight-bolder"
+                                >{{dow_diff}}</h4
+                            >
+                            {% endif %}  
                             <h5 class="font-weight-bolder mb-0">
                                 {{dow}} {% if dow_pct > 0 %}
                                 <span
@@ -90,6 +113,17 @@
                             >
                                 S&P 500
                             </p>
+                            {% if snp_diff > 0 %}
+                            <h4
+                                class="text-success text-sm font-weight-bolder"
+                                >+{{snp_diff}}</h4
+                            >
+                            {% else %}
+                            <h4
+                                class="text-danger text-sm font-weight-bolder"
+                                >{{snp_diff}}</h4
+                            >
+                            {% endif %}  
                             <h5 class="font-weight-bolder mb-0">
                                 {{snp}}{% if snp_pct > 0 %}
                                 <span
@@ -127,6 +161,18 @@
                             >
                                 KWR / USD
                             </p>
+                            {% if currency_chg > 0 %}
+                            <h4
+                                class="text-success text-sm font-weight-bolder"
+                                >+{{currency_chg}}</h4
+                            >
+                            {% else %}
+                            <h4
+                                class="text-danger text-sm font-weight-bolder"
+                                >{{currency_chg}}</h4
+                            >
+                            {% endif %}
+
                             <h5 class="font-weight-bolder mb-0">
                                 {{currency}}{% if currency_pct > 0 %}
                                 <span

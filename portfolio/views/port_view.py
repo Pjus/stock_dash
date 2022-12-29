@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+import json
 
 from ..forms import StockForm
 from ..models import Stock, Portfolio
@@ -10,20 +11,19 @@ def stock_create(request, port_id):
         ticker = request.POST.get('ticker')
         buy_price = float(request.POST.get('buy_price'))
         quantity = int(request.POST.get('quantity'))
-        buy_date = request.POST.get('buyDate')
+        buy_date = request.POST.get('datepicker')
 
-        stock_list = Stock.objects.filter(portfolio=port, ticker=ticker)
-        if len(stock_list) > 0:
-            stocks = stock_list[0]
+        stock_list = Stock.objects.filter(portfolio=port_id, ticker=ticker)
+        if len(stock_list) != 0:
+            stocks = stock_list
             total_price = stocks.buy_price * stocks.quantity
             new_price = buy_price * quantity
             total_quantity = stocks.quantity + quantity
             stocks.buy_price = (total_price + new_price) / total_quantity
-            stocks.buy_dates = buy_date
             stocks.quantity += quantity
             stocks.save()
         else:
-            stocks = Stock(portfolio=port, ticker=request.POST.get('ticker'), quantity=request.POST.get('quantity'), buy_price=request.POST.get('buy_price'))
+            stocks = Stock(portfolio=port, ticker=ticker, quantity=quantity, buy_price=buy_price, buy_dates=buy_date)
             stocks.save()
         return redirect('portfolio:detail', port_id)
     else:
