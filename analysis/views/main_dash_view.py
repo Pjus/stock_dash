@@ -90,17 +90,13 @@ def board(request):
     dow_diff = pd.DataFrame(dow_price).T.diff()
     snp_diff = pd.DataFrame(snp_price).T.diff()
 
-    print(nas_diff)
-    print(round(nas_diff.iloc[-1:, 3:4].values[0][0], 2))
 
     krw = currency
 
     news_collection = get_collection("news")
     fin_news = news_collection.find_one({'press':"fin"})['news']
     
-    print(krw[today]['USD'])
     day_defore = krw[today]['USD']['day_before']
-    day_defore = re.sub(r'[^0-9.]', '', day_defore)
 
 
     context = {
@@ -128,9 +124,24 @@ def board(request):
     if request.user.is_authenticated:
         portfolio = Portfolio.objects.filter(author=request.user)
         context["portfolio"] = portfolio
-        context["percent"] = {}
+        curr_month_return = 0
+        prev_month_return = 0
+        prev_month = ''
+        curr_month = ''
+
         total_account = 0
+        monthly_returns = {}
+        port_history = {}
+
         for port in portfolio:
+            for stock in port.stock_port.all():
+                temp = json.loads(stock.profit_history)
+                for key, value in temp.items():
+                    if key in monthly_returns:
+                        monthly_returns[key] += value['profit']
+                    else:
+                        monthly_returns[key] = value['profit']
+
             total_account += port.port_value
             if total_account != 0:
                 for idx, port in enumerate(portfolio):
@@ -138,7 +149,21 @@ def board(request):
             else:
                 port.weight = 0
                 port.save()
+
+            temp_history = json.loads(port.port_history)
+
+            for key, value in temp_history.items():
+                if key in port_history:
+                    port_history[key] += value
+                else:
+                    port_history[key] = value
+
+        print(port_history)
         context['total_account'] = total_account
+        context['monthly_returns'] = json.dumps(monthly_returns) 
+        context['port_history'] = json.dumps(port_history) 
+
+
         return render(request, 'main/core.html', context)
 
     return render(request, 'main/core2.html', context)

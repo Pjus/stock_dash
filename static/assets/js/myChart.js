@@ -1,31 +1,49 @@
-let testData = [200, 0, 0, -450, -200, 100, 220, 500, 100, 400, 230, 500];
-var colors = []
-for(var i = 0; i < testData.length; i++){
-   var color;
-   if(testData[i] > 0){
-    color = "green"
-   }else{
-    color = "red"
-   }
-   colors[i] = color;
+const monthlyReturns = document.getElementById("monthly-returns").value;
+const portHistory = document.getElementById("port_history").value;
+
+const profit_data_json = JSON.parse(monthlyReturns);
+const portHistory_data_json = JSON.parse(portHistory);
+
+let profitKeys = Object.keys(profit_data_json);
+let profitData = [];
+
+let historyKeys = Object.keys(portHistory_data_json);
+let historyData = [];
+
+for (let i = 0; i < Object.keys(profitKeys).length; i++) {
+    profitData.push(parseFloat(profit_data_json[profitKeys[i]]));
 }
 
+for (let i = 0; i < Object.keys(historyKeys).length; i++) {
+    historyData.push(parseFloat(portHistory_data_json[historyKeys[i]]));
+}
+
+var colors = [];
+for (var i = 0; i < profitData.length; i++) {
+    var color;
+    if (profitData[i] > 0) {
+        color = "green";
+    } else {
+        color = "red";
+    }
+    colors[i] = color;
+}
 
 var ctx = document.getElementById("chart-bars").getContext("2d");
 
 new Chart(ctx, {
     type: "bar",
     data: {
-        labels: [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        labels: profitKeys,
         datasets: [
             {
-                label: "Sales",
+                label: "Profit $",
                 tension: 0.4,
                 borderWidth: 0,
                 borderRadius: 4,
                 borderSkipped: false,
                 backgroundColor: colors,
-                data: testData,
+                data: profitData,
                 maxBarThickness: 6,
             },
         ],
@@ -93,16 +111,13 @@ gradientStroke2.addColorStop(1, "rgba(20,23,39,0.2)");
 gradientStroke2.addColorStop(0.2, "rgba(72,72,176,0.0)");
 gradientStroke2.addColorStop(0, "rgba(20,23,39,0)"); //purple colors
 
-
-
-
 new Chart(ctx2, {
     type: "line",
     data: {
-        labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        labels: historyKeys,
         datasets: [
             {
-                label: "Mobile apps",
+                label: "Portfolio Value",
                 tension: 0.4,
                 borderWidth: 0,
                 pointRadius: 0,
@@ -110,21 +125,10 @@ new Chart(ctx2, {
                 borderWidth: 3,
                 backgroundColor: gradientStroke1,
                 fill: true,
-                data: [0, 50],
+                data: historyData,
                 maxBarThickness: 6,
             },
-            {
-                label: "Websites",
-                tension: 0.4,
-                borderWidth: 0,
-                pointRadius: 0,
-                borderColor: "#3A416F",
-                borderWidth: 3,
-                backgroundColor: gradientStroke2,
-                fill: true,
-                data: [0, 60],
-                maxBarThickness: 6,
-            },
+
         ],
     },
     options: {

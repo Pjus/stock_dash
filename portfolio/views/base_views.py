@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.core.paginator import Paginator  
 from django.db.models import Q
 
+from pandas_datareader import data as pdr
 import yfinance as yf
 import pandas as pd
 
@@ -11,8 +12,11 @@ from ..forms import PortfolioForm, StockForm
 
 from pymongo import MongoClient
 
-from datetime import datetime, timedelta, date
 
+import calendar
+
+from datetime import datetime, timedelta, date
+import calendar
 import json
 
 today = datetime.now()
@@ -60,35 +64,40 @@ def detail(request, port_id):
 
     today_month = date.today()
     last_month = today_month - timedelta(days=1)
+    year = today_month.year
 
     today_month = today_month.strftime("%Y-%m").split("-")[1]
     last_month = last_month.strftime("%Y-%m").split("-")[1]
-
-    print(today_month)
-    print(last_month)
 
     port = get_object_or_404(Portfolio, pk=port_id)
     total_value = 0
     if len(port.stock_port.all()) > 0:
         port_value = 0
-        port_profit = 0
         for stock in port.stock_port.all():
             ticker = stock.ticker
-            stock_price = price_collection.find_one({'ticker':ticker})['price']
-            data = pd.DataFrame(stock_price).T
-            data['Date'] = data.index
-            new_df = data.loc[stock.buy_dates:,]
-            month_avg_close = new_df.groupby(pd.PeriodIndex(new_df['Date'], freq="M"))['Adj Close'].mean()
+            stock_price = pdr.get_data_yahoo(ticker)
+            new_df = stock_price.loc[stock.buy_dates:,]
+            end_of_month = []
+            for i in range(1, 13):
+                input_dt = datetime(year, i, 13)
+                res = calendar.monthrange(input_dt.year, input_dt.month)
+                day = res[1]
+                end_of_month.append(f"{input_dt.year}-{input_dt.month}")
+            end_of_month_price = {}
+            for day in end_of_month:
+                try:
+                    end_of_month_price[day] = new_df.loc[day,"Adj Close"][-1]
+                except:
+                    pass
 
-            if stock.curr_month_return == 0:
-                stock.curr_month_return = round(month_avg_close, 2)
-            else:
-                if today_month == last_month:
-                    stock.curr_month_return = round(month_avg_close, 2)
-                else:
-                    stock.prev_month_return = stock.curr_month_return
-                    stock.curr_month_return = round(month_avg_close, 2)
+            price_df = pd.DataFrame(end_of_month_price, index=['Close']).T
 
+            price_df['buy_price'] = stock.buy_price
+            price_df['profit'] = (price_df['Close'] - price_df['buy_price']) * stock.quantity
+            profit_dict = price_df[['profit']].T.to_dict()
+
+            json_val = json.dumps(profit_dict)
+            stock.profit_history = json_val
 
             last_quote = new_df['Adj Close'].iloc[-1]
             stock.current_price = round(last_quote, 2)
@@ -97,9 +106,8 @@ def detail(request, port_id):
             stock.return_ratio = round((1 - (stock.buy_price / stock.current_price)) * 100, 2)
             stock.save()
 
-            port_profit += stock.profit
+            port_value += stock.evaluated
 
-        port_value += stock.evaluated
         if port.port_history == "":
             history = {
                 today : port_value

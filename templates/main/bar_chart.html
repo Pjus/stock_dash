@@ -13,6 +13,7 @@
                 </div>
             </div>
             <h6 class="ms-2 mt-4 mb-0">Monthly Return</h6>
+            {{monthly_returns}}
             <p class="text-sm ms-2">
                 (<span class="font-weight-bolder">-+0%</span>) than
                 last Month
@@ -290,3 +291,5 @@
         </div>
     </div>
 </div>
+
+<input type="hidden" name="monthly-returns" id="monthly-returns" value="{{monthly_returns}}">
