@@ -1,6 +1,9 @@
 const monthlyReturns = document.getElementById("monthly-returns").value;
 const portHistory = document.getElementById("port_history").value;
 
+console.log(portHistory)
+
+
 const profit_data_json = JSON.parse(monthlyReturns);
 const portHistory_data_json = JSON.parse(portHistory);
 
@@ -8,15 +11,34 @@ let profitKeys = Object.keys(profit_data_json);
 let profitData = [];
 
 let historyKeys = Object.keys(portHistory_data_json);
+let historyTicker = []
 let historyData = [];
 
-for (let i = 0; i < Object.keys(profitKeys).length; i++) {
+
+for (let i = 0; i < profitKeys.length; i++) {
     profitData.push(parseFloat(profit_data_json[profitKeys[i]]));
 }
 
-for (let i = 0; i < Object.keys(historyKeys).length; i++) {
-    historyData.push(parseFloat(portHistory_data_json[historyKeys[i]]));
+for (let i = 0; i < historyKeys.length; i++) {
+    historyTicker.push(Object.keys(portHistory_data_json[historyKeys[i]]));
 }
+
+for (let i = 0; i < historyKeys.length; i++) {
+    let sumOfStock = 0
+    console.log(historyTicker[0].length)
+    for (let j = 0; j < historyTicker[0].length; j++) {
+        sumOfStock += portHistory_data_json[historyKeys[i]][historyTicker[0][j]]
+        console.log(sumOfStock)
+    }
+    historyData.push(sumOfStock);
+
+}
+
+
+console.log(historyTicker)
+console.log(historyData)
+
+
 
 var colors = [];
 for (var i = 0; i < profitData.length; i++) {

@@ -32,6 +32,13 @@ def stock_create(request, port_id):
 
 
 def stock_delete(request, port_id, stock_id):
+    port = get_object_or_404(Portfolio, pk=port_id)
     stock = Stock.objects.get(id=stock_id)
+    history = json.loads(port.port_history)
+    print(history)
+    for key, value in history.items():
+        if stock.ticker in value.keys():
+            value.pop(stock.ticker, None)
+    port.save()
     stock.delete()
     return redirect('portfolio:detail', port_id)

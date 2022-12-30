@@ -72,7 +72,7 @@ def detail(request, port_id):
     port = get_object_or_404(Portfolio, pk=port_id)
     total_value = 0
     if len(port.stock_port.all()) > 0:
-        port_value = 0
+        port_value = {}
         for stock in port.stock_port.all():
             ticker = stock.ticker
             stock_price = pdr.get_data_yahoo(ticker)
@@ -106,7 +106,8 @@ def detail(request, port_id):
             stock.return_ratio = round((1 - (stock.buy_price / stock.current_price)) * 100, 2)
             stock.save()
 
-            port_value += stock.evaluated
+            port_value[stock.ticker] = stock.evaluated
+            total_value += stock.evaluated
 
         if port.port_history == "":
             history = {
@@ -117,11 +118,12 @@ def detail(request, port_id):
         else:
             port_dict = json.loads(port.port_history)
             port_dict[today] = port_value
+
             json_val = json.dumps(port_dict)
             port.port_history = json_val
 
-        port.port_value = port_value
-        total_value = round(port_value, 2)
+        port.port_value = total_value
+        total_value = round(total_value, 2)
     else:
         port.port_value = 0
     port.save()
