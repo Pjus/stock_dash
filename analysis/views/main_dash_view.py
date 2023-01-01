@@ -8,7 +8,9 @@ import yfinance as yf
 import pandas as pd
 import json
 import re
+from pandas_datareader import data as pdr
 
+yf.pdr_override()
 
 TODAY_DOWN = False
 
@@ -54,23 +56,25 @@ def board(request):
         get_currency()
         get_calender()
     
-    try:
-        nas_price = price_collection.find_one({'ticker':nasdaq})['price'][yesterday]
-        dow_price = price_collection.find_one({'ticker':dow})['price'][yesterday]
-        snp_price = price_collection.find_one({'ticker':snp})['price'][yesterday]
-        print(nas_price)
+    # try:
+    #     price_collection.find_one({'ticker':nasdaq})['price'][yesterday]
+    #     price_collection.find_one({'ticker':dow})['price'][yesterday]
+    #     price_collection.find_one({'ticker':snp})['price'][yesterday]
 
-        nas_price = price_collection.find_one({'ticker':nasdaq})['price']
-        dow_price = price_collection.find_one({'ticker':dow})['price']
-        snp_price = price_collection.find_one({'ticker':snp})['price']
-    except:
-        get_price(nasdaq, yesterday)
-        get_price(dow, yesterday)
-        get_price(snp, yesterday)
+    #     nas_price = price_collection.find_one({'ticker':nasdaq})['price']
+    #     dow_price = price_collection.find_one({'ticker':dow})['price']
+    #     snp_price = price_collection.find_one({'ticker':snp})['price']
+    # except:
+    #     get_price(nasdaq, yesterday)
+    #     get_price(dow, yesterday)
+    #     get_price(snp, yesterday)
         
-        nas_price = price_collection.find_one({'ticker':nasdaq})['price']
-        dow_price = price_collection.find_one({'ticker':dow})['price']
-        snp_price = price_collection.find_one({'ticker':snp})['price']
+    #     nas_price = price_collection.find_one({'ticker':nasdaq})['price']
+    #     dow_price = price_collection.find_one({'ticker':dow})['price']
+    #     snp_price = price_collection.find_one({'ticker':snp})['price']
+    
+
+
     try:
         currency = currency_collection.find_one({'date':today})['currency']
     except:
@@ -82,14 +86,20 @@ def board(request):
         get_calender()
         calender = calender_collection.find_one()
 
-    nas_df = pd.DataFrame(nas_price).T.pct_change()
-    dow_df = pd.DataFrame(dow_price).T.pct_change()
-    snp_df = pd.DataFrame(snp_price).T.pct_change()
 
-    nas_diff = pd.DataFrame(nas_price).T.diff()
-    dow_diff = pd.DataFrame(dow_price).T.diff()
-    snp_diff = pd.DataFrame(snp_price).T.diff()
+    nas_df = pdr.get_data_yahoo(nasdaq)
+    dow_df = pdr.get_data_yahoo(dow)
+    snp_df = pdr.get_data_yahoo(snp)
 
+    nas_diff = nas_df.diff()
+    dow_diff = dow_df.diff()
+    snp_diff = snp_df.diff()
+
+    nas_pct = nas_df.pct_change()
+    dow_pct = dow_df.pct_change()
+    snp_pct = snp_df.pct_change()
+
+    print(nas_pct)
 
     krw = currency
 
@@ -100,13 +110,13 @@ def board(request):
 
 
     context = {
-        "nasdaq": round(nas_price[nasdaq_last_day]['Adj Close'], 2),
-        "dow":round(dow_price[dow_last_day]['Adj Close'], 2),
-        "snp":round(snp_price[snp_last_day]['Adj Close'], 2),
+        "nasdaq": round(nas_df.iloc[-1:,4], 2)[0],
+        "dow":round(dow_df.iloc[-1:,4], 2)[0],
+        "snp":round(snp_df.iloc[-1:,4], 2)[0],
 
-        "nas_pct": round(nas_df.iloc[-1:, 3:4].values[0][0] * 100, 2),
-        "dow_pct": round(dow_df.iloc[-1:, 3:4].values[0][0] * 100, 2),
-        "snp_pct": round(snp_df.iloc[-1:, 3:4].values[0][0] * 100, 2),
+        "nas_pct": round(nas_pct.iloc[-1:, 4][0] * 100, 2),
+        "dow_pct": round(dow_pct.iloc[-1:, 4][0] * 100, 2),
+        "snp_pct": round(snp_pct.iloc[-1:, 4][0] * 100, 2),
 
         "nas_diff": round(nas_diff.iloc[-1:, 3:4].values[0][0], 2),
         "dow_diff": round(dow_diff.iloc[-1:, 3:4].values[0][0], 2),
