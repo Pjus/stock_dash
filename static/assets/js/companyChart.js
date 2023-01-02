@@ -92,7 +92,7 @@ const config = {
                 {
                     type: "time",
                     time: {
-                        min:'3',
+                        min:'2022',
                     }
                 },
             ],
@@ -113,6 +113,5 @@ const config = {
 
 window.onload = function (e) {
     const myChart = new Chart(document.getElementById("chart-line"), config);
-    
-
+  
 };
