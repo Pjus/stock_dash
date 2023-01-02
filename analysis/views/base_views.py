@@ -50,6 +50,7 @@ def refresh(request):
 def company(request):
     ticker = request.GET.get('ticker', '')  # 검색어
     content = {"ticker":ticker}
+    print(ticker)
 
     if currency_collection.find_one({'date':today}) == None:
         get_currency()
@@ -57,12 +58,13 @@ def company(request):
         return render(request, 'main/company.html', content)
 
     if ticker.encode().isalpha():
+        print("???")
         if infos_collection.find_one({'ticker':ticker}) == None:
             stock = yf.Ticker(ticker)
             stock_info = stock.info
             infos_collection.insert_one({'ticker':ticker, 'infos' : stock_info})
 
-        get_price(ticker, yesterday)
+        get_price(ticker, day)
         get_finanacial_infos(financial_collection, ticker, type="fs")
         get_finanacial_infos(balancesheet_collection, ticker, type="bs")
         get_finanacial_infos(cashflow_collection, ticker, type="cf")

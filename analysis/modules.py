@@ -64,6 +64,7 @@ def make_price_query(ticker):
     return price_mongodb_query
 
 def get_price(ticker, yesterday):
+    print(ticker, yesterday)
     week_of_day = calendar.day_name[today_origin.weekday()]
     if check_none(ticker):
         print("None")
@@ -71,15 +72,15 @@ def get_price(ticker, yesterday):
         price_collection.insert_one({'ticker':ticker, 'price' : price_mongodb_query})
     else:
         except_days = ['Monday', 'Sunday', 'Saturday']
+        last_day = get_last_day(ticker)
         if week_of_day not in except_days :
-            print(week_of_day)
-            last_day = get_last_day(ticker)
             if str(last_day) != str(yesterday):
-                print(last_day)
                 price_mongodb_query = make_price_query(ticker)
                 price_collection.update_one({'ticker':ticker}, {'$set':{'price':price_mongodb_query }})
         else:
-            pass
+            if str(last_day) != str(yesterday):
+                price_mongodb_query = make_price_query(ticker)
+                price_collection.update_one({'ticker':ticker}, {'$set':{'price':price_mongodb_query }})
 
 def get_currency(refresh=False):
     currency_query = {today:{}}

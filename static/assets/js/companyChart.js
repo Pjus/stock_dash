@@ -110,6 +110,8 @@ const config = {
         },
         tooltips: {
             mode: "index",
+            intersect: false,
+
         },
         hover: {
             mode: "index",
