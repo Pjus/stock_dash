@@ -91,7 +91,15 @@ def company(request):
             'current_krw':format(round(infos['currentPrice'] * currency[today]['USD']['current']), ',')
         }
 
+        return render(request, 'main/company_detail.html', content)
+    else:
+        return render(request, 'main/company.html', content)
 
-    return render(request, 'main/company.html', content)
 
+
+
+
+def today_check():
+    #날짜 셋팅
+    today = datetime.date.today()
 

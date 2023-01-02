@@ -30,11 +30,14 @@
   {% block css %}{% endblock css %}
 
   <!--   Core JS Files   -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/0.6.6/chartjs-plugin-zoom.js"></script>
+
   <script src={% static "assets/js/core/popper.min.js" %}></script>
   <script src={% static "assets/js/core/bootstrap.min.js" %}></script>
   <script src={% static "assets/js/plugins/perfect-scrollbar.min.js" %}></script>
   <script src={% static "assets/js/plugins/smooth-scrollbar.min.js" %}></script>
-  <script src={% static "assets/js/plugins/chartjs.min.js" %}></script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
   <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
@@ -64,8 +67,13 @@
     {% block unauthuser %}
     {% endblock unauthuser %}
   {% endif %}
+
+  {% block stocks %}
+  {% endblock stocks %}
+  
   {% block articles %}
   {% endblock articles %}
+
   {% block news %}
   {% endblock news %}
   {% include 'main/gear.html' %}

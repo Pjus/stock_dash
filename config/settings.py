@@ -38,7 +38,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = sc_python['DJANGO_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = {
     "production":
@@ -66,7 +66,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     "bootstrap5",
-    # "django_apscheduler",
+    "django_apscheduler",
     # App registration
     'dash.apps.DashConfig',
     'common.apps.CommonConfig',
@@ -231,3 +231,4 @@ CKEDITOR_CONFIGS = {
 }
 
 AWS_QUERYSTRING_AUTH = False
+

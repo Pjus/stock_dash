@@ -1,0 +1,38 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block css %}
+<link href={% static 'assets/css/company-detail.css' %} rel="stylesheet" />
+
+{% endblock css %}
+
+{% block stocks %}
+<main
+    class="main-content position-relative max-height-vh-100 h-100 mt-1 border-radius-lg"
+>
+    <div class="container">
+        <h1 class="text-uppercase ticker-head">{{ticker}}</h1>
+        <div class="chart">
+            <canvas id="chart-line"></canvas>
+            
+        </div>
+        <button class="btn btn-outline-primary btn-sm mb-0">View All</button>
+        <div class="row">
+            <div class="table">
+
+            </div>
+
+        </div>
+    </div>
+</main>
+
+<input type="hidden" id="stock_price" name="variable" value="{{ stock_price }}"/>
+<input type="hidden" id="stock_ticker" name="variable" value="{{ ticker }}" />
+<input type="hidden" id="stock_fs" name="variable" value="{{ financial }}" />
+<input type="hidden" id="stock_bs" name="variable" value="{{ balance }}" />
+<input type="hidden" id="stock_cf" name="variable" value="{{ cashflow }}" />
+
+{% endblock stocks %}
+{% block script %}
+
+    <script src="{% static 'assets/js/companyChart.js' %}"></script>
+{% endblock script %}
