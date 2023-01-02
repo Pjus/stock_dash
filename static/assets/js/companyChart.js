@@ -92,8 +92,8 @@ const config = {
                 {
                     type: "time",
                     time: {
-                        min:'2022',
-                    }
+                        min: "2022",
+                    },
                 },
             ],
         },
@@ -108,10 +108,16 @@ const config = {
         legend: {
             display: false,
         },
+        tooltips: {
+            mode: "index",
+        },
+        hover: {
+            mode: "index",
+            intersect: false,
+        },
     },
 };
 
 window.onload = function (e) {
     const myChart = new Chart(document.getElementById("chart-line"), config);
-  
 };
