@@ -11,6 +11,8 @@ let macdData4 = [];
 let macdData5 = [];
 let macdData6 = [];
 
+let colors = ["#fc0f0f", "#ffffff", "#55ffff", "#322bff", "#ffff66", "#ffffff"]
+
 for (let i = 0; i < priceKeys.length; i++) {
     priceData.push(price_data_json[priceKeys[i]]["Close"]);
 }
@@ -221,12 +223,27 @@ const config = {
     },
 };
 
-const myChart = new Chart(document.getElementById("chart-line"), config);
+let myChart = new Chart(document.getElementById("chart-line"), config);
 
 function fillDataset(macdData, macdKeys, macd_data_json, myChart, num) {
     for (let i = 0; i < macdKeys.length; i++) {
         macdData.push(macd_data_json[macdKeys[i]]);
     }
+    let tempData = {
+        label: `MACD ${num}`,
+        tension: 0.4,
+        borderWidth: 0,
+        pointRadius: 0,
+        pointBorderWidth: 1,
+        borderColor: colors[num-1],
+        borderWidth: 3,
+        backgroundColor: gradientStroke1,
+        fill: true,
+        data: macdData,
+        maxBarThickness: 6,
+    }
+
+    
 }
 
 window.onload = function () {
@@ -240,7 +257,6 @@ window.onload = function () {
 
     async function getMACD() {
         if (this.clicked == true) {
-            console.log(true);
             this.clicked = false;
             switch (this.value) {
                 case "10":
@@ -277,7 +293,6 @@ window.onload = function () {
                     break;
             }
         } else {
-            console.log(false);
             this.clicked = true;
             let obj;
             const res = await fetch(
@@ -288,9 +303,13 @@ window.onload = function () {
             let macdKeys = Object.keys(macd_data_json);
             switch (this.value) {
                 case "10":
-                    for (let i = 0; i < macdKeys.length; i++) {
-                        macdData1.push(macd_data_json[macdKeys[i]]);
-                    }
+                    fillDataset(
+                        macdData1,
+                        macdKeys,
+                        macd_data_json,
+                        myChart,
+                        1
+                    );
                     myChart.update();
                     break;
                 case "20":
@@ -345,6 +364,6 @@ window.onload = function () {
 
                     break;
             }
-        }
+        }myChart.update(config);
     }
 };
