@@ -1,17 +1,18 @@
 const monthlyReturns = document.getElementById("monthly-returns").value;
 const portHistory = document.getElementById("port_history").value;
 
-console.log(portHistory)
+console.log(monthlyReturns)
 
 
 const profit_data_json = JSON.parse(monthlyReturns);
 const portHistory_data_json = JSON.parse(portHistory);
 
+
 let profitKeys = Object.keys(profit_data_json);
 let profitData = [];
 
-let historyKeys = Object.keys(portHistory_data_json);
-let historyTicker = []
+let historyTicker = Object.keys(portHistory_data_json);
+let historyDate = []
 let historyData = [];
 
 
@@ -19,24 +20,24 @@ for (let i = 0; i < profitKeys.length; i++) {
     profitData.push(parseFloat(profit_data_json[profitKeys[i]]));
 }
 
-for (let i = 0; i < historyKeys.length; i++) {
-    historyTicker.push(Object.keys(portHistory_data_json[historyKeys[i]]));
+for (let i = 0; i < historyTicker.length; i++) {
+    historyDate.push(Object.keys(portHistory_data_json[historyTicker[i]]));
 }
 
-for (let i = 0; i < historyKeys.length; i++) {
+
+for (let i = 0; i < historyDate[0].length; i++) {
     let sumOfStock = 0
-    console.log(historyTicker[0].length)
-    for (let j = 0; j < historyTicker[0].length; j++) {
-        sumOfStock += portHistory_data_json[historyKeys[i]][historyTicker[0][j]]
-        console.log(sumOfStock)
+    for(let j = 0; j < historyTicker.length; j++){
+        const listDate = portHistory_data_json[historyTicker[j]]
+        const currentVal = listDate[historyDate[0][i]]
+        sumOfStock += currentVal['Current Value']
     }
     historyData.push(sumOfStock);
 
 }
 
-
-console.log(historyTicker)
-console.log(historyData)
+// console.log(historyDate)
+// console.log(historyData)
 
 
 
@@ -136,7 +137,7 @@ gradientStroke2.addColorStop(0, "rgba(20,23,39,0)"); //purple colors
 new Chart(ctx2, {
     type: "line",
     data: {
-        labels: historyKeys,
+        labels: historyDate[0],
         datasets: [
             {
                 label: "Portfolio Value",

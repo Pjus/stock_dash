@@ -4,6 +4,13 @@ const price_data_json = JSON.parse(priceHistory);
 let priceKeys = Object.keys(price_data_json);
 let priceData = [];
 
+let macdData1 = [];
+let macdData2 = [];
+let macdData3 = [];
+let macdData4 = [];
+let macdData5 = [];
+let macdData6 = [];
+
 for (let i = 0; i < priceKeys.length; i++) {
     priceData.push(price_data_json[priceKeys[i]]["Close"]);
 }
@@ -65,25 +72,105 @@ const scales = {
     },
 };
 
+let totalDatasets = [
+    {
+        label: "Close Price",
+        tension: 0.4,
+        borderWidth: 0,
+        pointRadius: 0,
+        pointBorderWidth: 1,
+        borderColor: "#cb0c9f",
+        borderWidth: 3,
+        backgroundColor: gradientStroke1,
+        fill: true,
+        data: priceData,
+        maxBarThickness: 6,
+    },
+    {
+        label: "MACD1",
+        tension: 0.4,
+        borderWidth: 0,
+        pointRadius: 0,
+        pointBorderWidth: 1,
+        borderColor: "#fc0f0f",
+        borderWidth: 3,
+        backgroundColor: gradientStroke1,
+        fill: true,
+        data: macdData1,
+        maxBarThickness: 6,
+    },
+    {
+        label: "MACD2",
+        tension: 0.4,
+        borderWidth: 0,
+        pointRadius: 0,
+        pointBorderWidth: 1,
+        borderColor: "#ffffff",
+        borderWidth: 3,
+        backgroundColor: gradientStroke1,
+        fill: true,
+        data: macdData2,
+        maxBarThickness: 6,
+    },
+    {
+        label: "MACD3",
+        tension: 0.4,
+        borderWidth: 0,
+        pointRadius: 0,
+        pointBorderWidth: 1,
+        borderColor: "#55ffff",
+        borderWidth: 3,
+        backgroundColor: gradientStroke1,
+        fill: true,
+        data: macdData3,
+        maxBarThickness: 6,
+    },
+    {
+        label: "MACD4",
+        tension: 0.4,
+        borderWidth: 0,
+        pointRadius: 0,
+        pointBorderWidth: 1,
+        borderColor: "#322bff",
+        borderWidth: 3,
+        backgroundColor: gradientStroke1,
+        fill: true,
+        data: macdData4,
+        maxBarThickness: 6,
+    },
+    {
+        label: "MACD5",
+        tension: 0.4,
+        borderWidth: 0,
+        pointRadius: 0,
+        pointBorderWidth: 1,
+        borderColor: "#ffff66",
+        borderWidth: 3,
+        backgroundColor: gradientStroke1,
+        fill: true,
+        data: macdData5,
+        maxBarThickness: 6,
+    },
+    {
+        label: "MACD6",
+        tension: 0.4,
+        borderWidth: 0,
+        pointRadius: 0,
+        pointBorderWidth: 1,
+        borderColor: "#ffffff",
+        borderWidth: 3,
+        backgroundColor: gradientStroke1,
+        fill: true,
+        data: macdData6,
+        maxBarThickness: 6,
+    },
+];
+
 const config = {
     type: "line",
     data: {
         labels: priceKeys,
-        datasets: [
-            {
-                label: "Close Price",
-                tension: 0.4,
-                borderWidth: 0,
-                pointRadius: 0,
-                pointBorderWidth: 1,
-                borderColor: "#cb0c9f",
-                borderWidth: 3,
-                backgroundColor: gradientStroke1,
-                fill: true,
-                data: priceData,
-                maxBarThickness: 6,
-            },
-        ],
+        datasets: totalDatasets,
     },
     options: {
         responsive: true,
@@ -96,6 +183,21 @@ const config = {
                     },
                 },
             ],
+            y: {
+                type: "linear",
+                display: true,
+                position: "left",
+            },
+            y1: {
+                type: "linear",
+                display: true,
+                position: "right",
+
+                // grid line settings
+                grid: {
+                    drawOnChartArea: false, // only want the grid lines for one axis to show up
+                },
+            },
         },
         pan: {
             enabled: true,
@@ -111,7 +213,6 @@ const config = {
         tooltips: {
             mode: "index",
             intersect: false,
-
         },
         hover: {
             mode: "index",
@@ -120,6 +221,130 @@ const config = {
     },
 };
 
-window.onload = function (e) {
-    const myChart = new Chart(document.getElementById("chart-line"), config);
+const myChart = new Chart(document.getElementById("chart-line"), config);
+
+function fillDataset(macdData, macdKeys, macd_data_json, myChart, num) {
+    for (let i = 0; i < macdKeys.length; i++) {
+        macdData.push(macd_data_json[macdKeys[i]]);
+    }
+}
+
+window.onload = function () {
+    let macd_btns = document.querySelectorAll(".macd");
+    const ticker = document.querySelector("#stock_ticker").value;
+
+    for (let i = 0; i < macd_btns.length; i++) {
+        let curr_btn = macd_btns[i];
+        curr_btn.addEventListener("click", getMACD);
+    }
+
+    async function getMACD() {
+        if (this.clicked == true) {
+            console.log(true);
+            this.clicked = false;
+            switch (this.value) {
+                case "10":
+                    macdData1.length = 0;
+                    myChart.data.datasets[1] = macdData1;
+                    myChart.update();
+
+                    break;
+                case "20":
+                    macdData2.length = 0;
+                    myChart.data.datasets[2] = macdData2;
+                    myChart.update();
+                    break;
+
+                case "30":
+                    macdData3.length = 0;
+                    myChart.data.datasets[3] = macdData3;
+                    myChart.update();
+                    break;
+                case "50":
+                    macdData4.length = 0;
+                    myChart.data.datasets[4] = macdData4;
+                    myChart.update();
+                    break;
+                case "100":
+                    macdData5.length = 0;
+                    myChart.data.datasets[5] = macdData5;
+                    myChart.update();
+                    break;
+                case "200":
+                    macdData6.length = 0;
+                    myChart.data.datasets[6] = macdData6;
+                    myChart.update();
+                    break;
+            }
+        } else {
+            console.log(false);
+            this.clicked = true;
+            let obj;
+            const res = await fetch(
+                `/analysis/indicator/macd/${ticker}/${this.value}`
+            );
+            obj = await res.json();
+            const macd_data_json = JSON.parse(obj["result"]);
+            let macdKeys = Object.keys(macd_data_json);
+            switch (this.value) {
+                case "10":
+                    for (let i = 0; i < macdKeys.length; i++) {
+                        macdData1.push(macd_data_json[macdKeys[i]]);
+                    }
+                    myChart.update();
+                    break;
+                case "20":
+                    fillDataset(
+                        macdData2,
+                        macdKeys,
+                        macd_data_json,
+                        myChart,
+                        2
+                    );
+                    myChart.update();
+                    break;
+                case "30":
+                    fillDataset(
+                        macdData3,
+                        macdKeys,
+                        macd_data_json,
+                        myChart,
+                        3
+                    );
+                    myChart.update();
+                    break;
+                case "50":
+                    fillDataset(
+                        macdData4,
+                        macdKeys,
+                        macd_data_json,
+                        myChart,
+                        4
+                    );
+                    myChart.update();
+                    break;
+                case "100":
+                    fillDataset(
+                        macdData5,
+                        macdKeys,
+                        macd_data_json,
+                        myChart,
+                        5
+                    );
+                    myChart.update();
+                    break;
+                case "200":
+                    fillDataset(
+                        macdData6,
+                        macdKeys,
+                        macd_data_json,
+                        myChart,
+                        6
+                    );
+                    myChart.update();
+
+                    break;
+            }
+        }
+    }
 };

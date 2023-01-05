@@ -6,6 +6,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/0.6.6/chartjs-plugin-zoom.js"></script>
 
+
 {% endblock css %}
 
 {% block stocks %}
@@ -13,14 +14,61 @@
     class="main-content position-relative max-height-vh-100 h-100 mt-1 border-radius-lg"
 >
     <div class="container">
-        <h1 class="text-uppercase ticker-head">{{ticker}}</h1>
+        <h1 class="text-uppercase ticker-head">{{ticker}} 
+            <h3>
+                <span
+                    class="font-weight-bolder text-2xl"
+                    >{{last_stock_price}}</span>
+ 
+                {% if last_diff_val > 0 %}
+                <span
+                    class="text-success font-weight-bolder"
+                    >+{{last_diff_val}}</span
+                >
+                {% else %}
+                <span
+                    class="text-danger font-weight-bolder"
+                    >{{last_diff_val}}</span
+                >
+                {% endif %}
+
+                {% if last_pct_val > 0 %}
+                <span
+                    class="text-success font-weight-bolder"
+                    >(+{{last_pct_val}}%)</span
+                >
+                {% else %}
+                <span
+                    class="text-danger font-weight-bolder"
+                    >({{last_pct_val}}%)</span
+                >
+                {% endif %}
+            </h3>
+        </h1>
         <div class="chart" id="stock-chart">
             <canvas id="chart-line"></canvas>
             
         </div>
-        <button class="btn btn-outline-primary btn-sm mb-0">View All</button>
+        <div class="container">
+            <button class="btn btn-outline-primary btn-sm mb-0 infoType" value="recommand">Recommandation</button>
+            <button class="btn btn-outline-primary btn-sm mb-0 infoType" value="oscill">Oscillator</button>
+            <button class="btn btn-outline-primary btn-sm mb-0 infoType" value="macd">Moving Avg</button>
+            <button class="btn btn-outline-primary btn-sm mb-0 infoType" value="indicator">Indicators</button>
+        </div>
+
+
+        <div class="container mt-5 macd-days-hidden">
+            <button class="btn btn-outline-primary btn-sm mb-0 macd" value="10">10d</button>
+            <button class="btn btn-outline-primary btn-sm mb-0 macd" value="20">20d</button>
+            <button class="btn btn-outline-primary btn-sm mb-0 macd" value="30">30d</button>
+            <button class="btn btn-outline-primary btn-sm mb-0 macd" value="50">50d</button>
+            <button class="btn btn-outline-primary btn-sm mb-0 macd" value="100">100d</button>
+            <button class="btn btn-outline-primary btn-sm mb-0 macd" value="200">200d</button>
+        </div>
+
         <div class="row">
             <div class="table">
+                {% include 'main/company_table.html' %}
 
             </div>
 
@@ -28,14 +76,25 @@
     </div>
 </main>
 
+<input type="hidden" id="stock_ticker" name="variable" value="{{ ticker }}"/>
+
 <input type="hidden" id="stock_price" name="variable" value="{{ stock_price }}"/>
 <input type="hidden" id="stock_ticker" name="variable" value="{{ ticker }}" />
 <input type="hidden" id="stock_fs" name="variable" value="{{ financial }}" />
 <input type="hidden" id="stock_bs" name="variable" value="{{ balance }}" />
 <input type="hidden" id="stock_cf" name="variable" value="{{ cashflow }}" />
 
+
+
+
 {% endblock stocks %}
 {% block script %}
 
+    
     <script src="{% static 'assets/js/companyChart.js' %}"></script>
+    <script src="{% static 'assets/js/displayInfos.js' %}"></script>
+    <script src="{% static 'assets/js/getIndicators.js' %}"></script>
+
+    
+
 {% endblock script %}

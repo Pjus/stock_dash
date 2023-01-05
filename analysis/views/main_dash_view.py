@@ -160,15 +160,19 @@ def board(request):
                 port.weight = 0
                 port.save()
 
-            temp_history = json.loads(port.port_history)
+            
+            
+            try:
+                temp_history = json.loads(port.port_history)
+                for key, value in temp_history.items():
+                    if key in port_history:
+                        port_history[key] += value
+                    else:
+                        port_history[key] = value
+                print(port_history)
+            except:
+                pass
 
-            for key, value in temp_history.items():
-                if key in port_history:
-                    port_history[key] += value
-                else:
-                    port_history[key] = value
-
-        print(port_history)
         context['total_account'] = total_account
         context['monthly_returns'] = json.dumps(monthly_returns) 
         context['port_history'] = json.dumps(port_history) 

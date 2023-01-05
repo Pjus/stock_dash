@@ -51,6 +51,7 @@ def check_none(ticker):
 
 def make_price_query(ticker):
     price = pdr.get_data_yahoo(ticker)
+    print(price)
     price_mongodb_query = {}
     for row in price.iterrows():
         price_mongodb_query[str(row[0]).split(" ")[0]] = {

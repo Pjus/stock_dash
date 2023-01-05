@@ -3,10 +3,13 @@ import yfinance as yf
 import json
 from pymongo import MongoClient
 from datetime import datetime, timedelta
+import pandas as pd
 
 import calendar
 
 from analysis.modules import get_currency, get_price, get_finanacial_infos
+
+from tradingview_ta import TA_Handler, Interval, Exchange
 
 yf.pdr_override()
 with open("SECRET.json", "r") as secret_json:
@@ -48,9 +51,11 @@ def refresh(request):
 
 
 def company(request):
+
     ticker = request.GET.get('ticker', '')  # 검색어
     content = {"ticker":ticker}
     print(ticker)
+
 
     if currency_collection.find_one({'date':today}) == None:
         get_currency()
@@ -58,11 +63,22 @@ def company(request):
         return render(request, 'main/company.html', content)
 
     if ticker.encode().isalpha():
-        print("???")
         if infos_collection.find_one({'ticker':ticker}) == None:
             stock = yf.Ticker(ticker)
             stock_info = stock.info
             infos_collection.insert_one({'ticker':ticker, 'infos' : stock_info})
+            
+        stock_ta = TA_Handler(
+            symbol=ticker,
+            screener="america",
+            exchange="NASDAQ",
+            interval=Interval.INTERVAL_1_DAY,
+        )
+
+        recommandation = stock_ta.get_analysis().summary
+        oscillator = stock_ta.get_analysis().oscillators
+        moving_average = stock_ta.get_analysis().moving_averages
+        indicator = stock_ta.get_indicators()
 
         get_price(ticker, day)
         get_finanacial_infos(financial_collection, ticker, type="fs")
@@ -70,6 +86,20 @@ def company(request):
         get_finanacial_infos(cashflow_collection, ticker, type="cf")
 
         stock_price = price_collection.find_one({'ticker':ticker})['price']
+        last_stock_price = pd.DataFrame(stock_price).T
+        last_stock_price = last_stock_price.iloc[-1:, :]
+        last_stock_price = last_stock_price['Adj Close'].values[0]
+
+        stock_price_diff = pd.DataFrame(stock_price).T.diff()
+        last_diff = stock_price_diff.iloc[-1:, :]
+        last_diff_val = last_diff['Adj Close'].values[0]
+
+        stock_price_pct = pd.DataFrame(stock_price).T.pct_change()
+        last_pct = stock_price_pct.iloc[-1:, :]
+        last_pct_val = last_pct['Adj Close'].values[0]
+        
+
+        print(last_diff_val, last_pct_val)
         fs = financial_collection.find_one({'ticker':ticker})['fs']
         bs = balancesheet_collection.find_one({'ticker':ticker})['bs']
         cf = cashflow_collection.find_one({'ticker':ticker})['cf']
@@ -79,6 +109,9 @@ def company(request):
         content = {
             "ticker":ticker, 
             'stock_price':json.dumps(stock_price), 
+            'last_stock_price' : round(last_stock_price, 2),
+            'last_diff_val':round(last_diff_val, 2) ,
+            'last_pct_val':round(last_pct_val*100, 2) ,
             'financial':json.dumps(fs), 
             'balance':json.dumps(bs), 
             'cashflow':json.dumps(cf), 
@@ -90,9 +123,14 @@ def company(request):
             'len_cf':len(list(cf.values())[0]) // 2,
             'infos':infos,
             'currency':currency[today]['USD']['current'],
-            'current_krw':format(round(infos['currentPrice'] * currency[today]['USD']['current']), ',')
-        }
+            'current_krw':format(round(infos['currentPrice'] * currency[today]['USD']['current']), ','),
+            'recommandation':recommandation,
+            'oscillator':oscillator['COMPUTE'],
+            'moving_average':moving_average['COMPUTE'],
+            'indicators':indicator,
 
+
+        }
         return render(request, 'main/company_detail.html', content)
     else:
         return render(request, 'main/company.html', content)

@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import base_views, heatmap_view, main_dash_view
+from .views import base_views, heatmap_view, main_dash_view, indicators_view
 
 app_name = 'analysis'
 
@@ -12,5 +12,7 @@ urlpatterns = [
     path('portable/', main_dash_view.get_portable, name='table'),
     path('billing/', main_dash_view.get_billing, name='billing'),
     path('box/', main_dash_view.get_box, name='box'),
+    path('indicator/macd/<str:ticker>/<int:day>', indicators_view.get_macd, name='macd'),
+
 
 ]

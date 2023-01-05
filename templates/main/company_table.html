@@ -1,0 +1,108 @@
+<table class="table align-items-center mb-0 w-100">
+    <thead>
+        <tr>
+            <br>
+        </tr>
+    </thead>
+    <tbody class="container" id="recommand">
+        {% if recommandation %}
+        {% for redommand, val in recommandation.items %}
+        <tr>
+            <td>
+                <div class="d-flex px-2 py-1">
+                    <div
+                        class="d-flex flex-column justify-content-center articleTitle"
+                    >
+                        <h6 class="mb-0 text-sm  d-inline-block text-truncate">
+                            {{redommand}}
+                        </h6>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <div class="avatar-group mt-2">
+                    {{ val }}
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+    </tbody>
+
+    <tbody class="stock-infos-hidden" id="oscill">
+    
+        {% if oscillator %}
+        {% for os, val in oscillator.items %}
+        <tr>
+            <td>
+                <div class="d-flex px-2 py-1">
+                    <div
+                        class="d-flex flex-column justify-content-center articleTitle"
+                    >
+                        <h6 class="mb-0 text-sm  d-inline-block text-truncate">
+                            {{os}}
+                        </h6>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <div class="avatar-group mt-2">
+                    {{ val }}
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+    </tbody>
+
+    <tbody class="stock-infos-hidden" id="macd">
+        {% if moving_average %}
+        {% for moving, val in moving_average.items %}
+        <tr>
+            <td>
+                <div class="d-flex px-2 py-1">
+                    <div
+                        class="d-flex flex-column justify-content-center articleTitle"
+                    >
+                        <h6 class="mb-0 text-sm  d-inline-block text-truncate">
+                            {{moving}}
+                        </h6>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <div class="avatar-group mt-2">
+                    {{ val }}
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+    </tbody>
+
+    <tbody class="stock-infos-hidden" id="indicator">
+        {% if indicators %}
+        {% for indicator, val in indicators.items %}
+        <tr>
+            <td>
+                <div class="d-flex px-2 py-1">
+                    <div
+                        class="d-flex flex-column justify-content-center articleTitle"
+                    >
+                        <h6 class="mb-0 text-sm  d-inline-block text-truncate">
+                            {{indicator}}
+                        </h6>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <div class="avatar-group mt-2">
+                    {{ val }}
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+    </tbody>
+
+</table>
