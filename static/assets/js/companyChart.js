@@ -243,6 +243,8 @@ function fillDataset(macdData, macdKeys, macd_data_json, myChart, num) {
         maxBarThickness: 6,
     }
 
+    myChart.data.datasets[num] = tempData
+
     
 }
 

@@ -54,7 +54,6 @@ def company(request):
 
     ticker = request.GET.get('ticker', '')  # 검색어
     content = {"ticker":ticker}
-    print(ticker)
 
 
     if currency_collection.find_one({'date':today}) == None:
@@ -99,7 +98,6 @@ def company(request):
         last_pct_val = last_pct['Adj Close'].values[0]
         
 
-        print(last_diff_val, last_pct_val)
         fs = financial_collection.find_one({'ticker':ticker})['fs']
         bs = balancesheet_collection.find_one({'ticker':ticker})['bs']
         cf = cashflow_collection.find_one({'ticker':ticker})['cf']
@@ -122,8 +120,8 @@ def company(request):
             'len_bs':len(list(bs.values())[0]) // 2,
             'len_cf':len(list(cf.values())[0]) // 2,
             'infos':infos,
-            'currency':currency[today]['USD']['current'],
-            'current_krw':format(round(infos['currentPrice'] * currency[today]['USD']['current']), ','),
+            # 'currency':currency[today]['USD']['current'],
+            # 'current_krw':format(round(infos['currentPrice'] * currency[today]['USD']['current']), ','),
             'recommandation':recommandation,
             'oscillator':oscillator['COMPUTE'],
             'moving_average':moving_average['COMPUTE'],
