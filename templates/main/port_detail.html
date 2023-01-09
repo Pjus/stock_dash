@@ -86,7 +86,7 @@
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Quantity</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Avg Price</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Current Price</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Target Price</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Recommandation</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Return r</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Evaluation</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Profit</th>
@@ -122,8 +122,7 @@
                                             {{ stock.current_price }}
                                         </td>
                                         <td class="align-middle text-center text-sm"> 
-                                            <i class="fa fa-usd" aria-hidden="true"></i>
-                                            {{ stock.target_price }}
+                                            <b>{{ stock.recommandation }}</b>
                                         </td>
                                         <td class="align-middle text-center text-sm"> 
                                             {% if stock.return_ratio > 0 %}

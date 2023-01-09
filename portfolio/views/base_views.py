@@ -11,6 +11,7 @@ from ..models import Portfolio, Stock
 from ..forms import PortfolioForm, StockForm
 
 from pymongo import MongoClient
+from tradingview_ta import TA_Handler, Interval, Exchange
 
 
 import calendar
@@ -79,6 +80,18 @@ def detail(request, port_id):
             stock_price = pdr.get_data_yahoo(ticker)
             new_df = stock_price.loc[stock.buy_dates:,]
             end_of_month = []
+
+            stock_ta = TA_Handler(
+                symbol=ticker,
+                screener="america",
+                exchange="NASDAQ",
+                interval=Interval.INTERVAL_1_DAY,
+            )
+
+            recommandation = stock_ta.get_analysis().summary
+
+            stock.recommandation = recommandation['RECOMMENDATION']
+            
             for year in range(int(buy_year), int(today_year)+1):
                 for i in range(1, 13):
                     input_dt = datetime(year, i, 13)

@@ -27,6 +27,7 @@ class Stock(models.Model):
     sell_price = models.FloatField(default=0.0)
     current_price = models.FloatField(default=0, null=True)
     target_price = models.FloatField(default=0, null=True, blank=True)
+    recommandation = models.CharField(max_length=10, null=True, default='')
     profit = models.FloatField(default=0, null=True)
     return_ratio = models.FloatField(default=0, null=True)
     volatility = models.FloatField(default=0, null=True)
