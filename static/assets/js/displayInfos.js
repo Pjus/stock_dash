@@ -6,6 +6,8 @@ let macd = document.querySelector("#macd");
 let indicator = document.querySelector("#indicator");
 
 let macd_days = document.querySelector(".macd-days-hidden")
+let indi_days = document.querySelector(".indicator-days-hidden")
+
 
 
 for(let i=0; i < list.length; i++){
@@ -30,8 +32,11 @@ for(let i=0; i < list.length; i++){
         }
         if(curr_btn.value == indicator.id){
             indicator.classList = "stock-infos"
+            indi_days.classList = "indicator-days-show"
+
         } else {
             indicator.classList = "stock-infos-hidden"
+            indi_days.classList = "indicator-days-hidden"
         }
     })
 }

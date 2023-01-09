@@ -46,8 +46,8 @@ def board(request):
     dow_last_day = get_last_day(dow)
     snp_last_day = get_last_day(snp)
 
-    print(yesterday)
-    print(nasdaq_last_day)
+    # print(yesterday)
+    # print(nasdaq_last_day)
 
     if time_in_range(start, end, now.time()):
         get_price(nasdaq, yesterday)
@@ -99,7 +99,7 @@ def board(request):
     dow_pct = dow_df.pct_change()
     snp_pct = snp_df.pct_change()
 
-    print(nas_pct)
+    # print(nas_pct)
 
     krw = currency
 

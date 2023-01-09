@@ -1,7 +1,10 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from datetime import datetime, timedelta
+
+from analysis.get_indicators import BBANDS
 from analysis.modules import get_collection
+
 import yfinance as yf
 import pandas as pd
 import json
@@ -9,6 +12,7 @@ import json
 yesterday = datetime.now() - timedelta(1)
 day = datetime.strftime(yesterday, '%Y-%m-%d')
 
+price_collection = get_collection('stock_price')
 
 def macd(price, slow, fast, smooth):
     exp1 = price.ewm(span = fast, adjust = False).mean()
@@ -22,7 +26,6 @@ def macd(price, slow, fast, smooth):
 
 
 def get_macd(request, ticker, day):
-    price_collection = get_collection('stock_price')
     stock_price = price_collection.find_one({'ticker':ticker})['price']
     stock_price = pd.DataFrame(stock_price).T
 
@@ -30,6 +33,20 @@ def get_macd(request, ticker, day):
 
     results = stock_price['Adj Close'].ewm(span = day, adjust = False).mean()
     results_json = results.to_json()
+    content = {
+        "result":results_json,
+    }
+
+    return JsonResponse(content, content_type="application/json")
+
+
+def get_BBAND(request, ticker):
+    stock_price = price_collection.find_one({'ticker':ticker})['price']
+    stock_price = pd.DataFrame(stock_price).T
+    results = BBANDS(stock_price, 50)
+    results = results[['MiddleBand', 'UpperBand', 'LowerBand']]
+    results_json = results.to_json()
+
     content = {
         "result":results_json,
     }

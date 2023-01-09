@@ -45,10 +45,14 @@
                 {% endif %}
             </h3>
         </h1>
-        <div class="chart" id="stock-chart">
+        <div class="chart Scrollable" id="stock-chart">
             <canvas id="chart-line"></canvas>
-            
         </div>
+
+        <div class="chart Scrollable" id="stock-chart-indi">
+            <canvas id="chart-line-indi"></canvas>
+        </div>
+
         <div class="container">
             <button class="btn btn-outline-primary btn-sm mb-0 infoType" value="recommand">Recommandation</button>
             <button class="btn btn-outline-primary btn-sm mb-0 infoType" value="oscill">Oscillator</button>
@@ -64,6 +68,16 @@
             <button class="btn btn-outline-primary btn-sm mb-0 macd" value="50">50d</button>
             <button class="btn btn-outline-primary btn-sm mb-0 macd" value="100">100d</button>
             <button class="btn btn-outline-primary btn-sm mb-0 macd" value="200">200d</button>
+        </div>
+
+        <div class="container mt-5 indicator-days-hidden">
+            <button class="btn btn-outline-primary btn-sm mb-0 indi" value="bband">BBand</button>
+            <button class="btn btn-outline-primary btn-sm mb-0 indi" value="mfi">Money Flow Index</button>
+            <button class="btn btn-outline-primary btn-sm mb-0 indi" value="atr">Average True Range</button>
+            <button class="btn btn-outline-primary btn-sm mb-0 indi" value="fi">Force Index</button>
+            <button class="btn btn-outline-primary btn-sm mb-0 indi" value="evm">EVM</button>
+            <button class="btn btn-outline-primary btn-sm mb-0 indi" value="rsi">RSI</button>
+
         </div>
 
         <div class="row">
@@ -89,7 +103,35 @@
 
 {% endblock stocks %}
 {% block script %}
-
+    <script>
+        $('.Scrollable').on('DOMMouseScroll mousewheel', function(ev) {
+            var $this = $(this),
+                scrollTop = this.scrollTop,
+                scrollHeight = this.scrollHeight,
+                height = $this.height(),
+                delta = (ev.type == 'DOMMouseScroll' ?
+                    ev.originalEvent.detail * -40 :
+                    ev.originalEvent.wheelDelta),
+                up = delta > 0;
+        
+            var prevent = function() {
+                ev.stopPropagation();
+                ev.preventDefault();
+                ev.returnValue = false;
+                return false;
+            }
+        
+            if (!up && -delta > scrollHeight - height - scrollTop) {
+                // Scrolling down, but this will take us past the bottom.
+                $this.scrollTop(scrollHeight);
+                return prevent();
+            } else if (up && delta > scrollTop) {
+                // Scrolling up, but this will take us past the top.
+                $this.scrollTop(0);
+                return prevent();
+            }
+        });
+    </script>
     
     <script src="{% static 'assets/js/companyChart.js' %}"></script>
     <script src="{% static 'assets/js/displayInfos.js' %}"></script>

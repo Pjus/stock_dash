@@ -1,21 +1,3 @@
-const priceHistory = document.getElementById("stock_price").value;
-const price_data_json = JSON.parse(priceHistory);
-
-let priceKeys = Object.keys(price_data_json);
-let priceData = [];
-
-let macdData1 = [];
-let macdData2 = [];
-let macdData3 = [];
-let macdData4 = [];
-let macdData5 = [];
-let macdData6 = [];
-
-let colors = ["#fc0f0f", "#ffffff", "#55ffff", "#322bff", "#ffff66", "#ffffff"]
-
-for (let i = 0; i < priceKeys.length; i++) {
-    priceData.push(price_data_json[priceKeys[i]]["Close"]);
-}
 
 var ctx2 = document.getElementById("chart-line").getContext("2d");
 
@@ -30,6 +12,73 @@ var gradientStroke2 = ctx2.createLinearGradient(0, 230, 0, 50);
 gradientStroke2.addColorStop(1, "rgba(20,23,39,0.2)");
 gradientStroke2.addColorStop(0.2, "rgba(72,72,176,0.0)");
 gradientStroke2.addColorStop(0, "rgba(20,23,39,0)"); //purple colors
+
+
+
+const priceHistory = document.getElementById("stock_price").value;
+const price_data_json = JSON.parse(priceHistory);
+
+let priceKeys = Object.keys(price_data_json);
+
+
+let priceData = [];
+let macdData1 = [];
+let macdData2 = [];
+let macdData3 = [];
+let macdData4 = [];
+let macdData5 = [];
+let macdData6 = [];
+
+let bbandMiddleData = [];
+let bbandUpperData = [];
+let bbandLowerData = [];
+
+let bbandDataset = [
+    bbandMiddleData,
+    bbandUpperData,
+    bbandLowerData,
+]
+
+let dataArray = [
+    priceData,
+    macdData1,
+    macdData2,
+    macdData3,
+    macdData4,
+    macdData5,
+    macdData6,
+    bbandMiddleData,
+    bbandUpperData,
+    bbandLowerData,
+]
+
+
+let colors = [
+    "#cb0c9f", 
+    "#fc0f0f", 
+    "#8338eb", 
+    "#55ffff", 
+    "#322bff", 
+    "#ffff66", 
+    "#fb8500", 
+    '#ACC6DF', 
+    '#1B98E0', 
+    '#1B98E0', 
+]
+
+let labels = [
+    'Price', 
+    '10D', 
+    '20D', 
+    '30D', 
+    '50D', 
+    '100D', 
+    '200D', 
+    'Middle', 
+    'Upper', 
+    'Lower'
+]
+
 
 const scales = {
     y: {
@@ -74,99 +123,31 @@ const scales = {
     },
 };
 
-let totalDatasets = [
-    {
-        label: "Close Price",
-        tension: 0.4,
-        borderWidth: 0,
-        pointRadius: 0,
-        pointBorderWidth: 1,
-        borderColor: "#cb0c9f",
-        borderWidth: 3,
-        backgroundColor: gradientStroke1,
-        fill: true,
-        data: priceData,
-        maxBarThickness: 6,
-    },
-    {
-        label: "MACD1",
-        tension: 0.4,
-        borderWidth: 0,
-        pointRadius: 0,
-        pointBorderWidth: 1,
-        borderColor: "#fc0f0f",
-        borderWidth: 3,
-        backgroundColor: gradientStroke1,
-        fill: true,
-        data: macdData1,
-        maxBarThickness: 6,
-    },
-    {
-        label: "MACD2",
-        tension: 0.4,
-        borderWidth: 0,
-        pointRadius: 0,
-        pointBorderWidth: 1,
-        borderColor: "#ffffff",
-        borderWidth: 3,
-        backgroundColor: gradientStroke1,
-        fill: true,
-        data: macdData2,
-        maxBarThickness: 6,
-    },
-    {
-        label: "MACD3",
-        tension: 0.4,
-        borderWidth: 0,
-        pointRadius: 0,
-        pointBorderWidth: 1,
-        borderColor: "#55ffff",
-        borderWidth: 3,
-        backgroundColor: gradientStroke1,
-        fill: true,
-        data: macdData3,
-        maxBarThickness: 6,
-    },
-    {
-        label: "MACD4",
-        tension: 0.4,
-        borderWidth: 0,
-        pointRadius: 0,
-        pointBorderWidth: 1,
-        borderColor: "#322bff",
-        borderWidth: 3,
-        backgroundColor: gradientStroke1,
-        fill: true,
-        data: macdData4,
-        maxBarThickness: 6,
-    },
-    {
-        label: "MACD5",
-        tension: 0.4,
-        borderWidth: 0,
-        pointRadius: 0,
-        pointBorderWidth: 1,
-        borderColor: "#ffff66",
-        borderWidth: 3,
-        backgroundColor: gradientStroke1,
-        fill: true,
-        data: macdData5,
-        maxBarThickness: 6,
-    },
-    {
-        label: "MACD6",
-        tension: 0.4,
-        borderWidth: 0,
-        pointRadius: 0,
-        pointBorderWidth: 1,
-        borderColor: "#ffffff",
-        borderWidth: 3,
-        backgroundColor: gradientStroke1,
-        fill: true,
-        data: macdData6,
-        maxBarThickness: 6,
-    },
-];
+for (let i = 0; i < priceKeys.length; i++) {
+    priceData.push(price_data_json[priceKeys[i]]["Close"]);
+}
+
+let totalDatasets = []
+
+for(let i = 0; i < colors.length; i++){
+    totalDatasets.push(
+        {
+            label: labels[i],
+            tension: 0.4,
+            borderWidth: 0,
+            pointRadius: 0,
+            pointBorderWidth: 1,
+            borderColor: colors[i],
+            borderWidth: 3,
+            backgroundColor: gradientStroke1,
+            fill: true,
+            data: dataArray[i],
+            maxBarThickness: 6,
+        }
+    )
+    
+}
+
 
 const config = {
     type: "line",
@@ -215,6 +196,11 @@ const config = {
         tooltips: {
             mode: "index",
             intersect: false,
+            callbacks: {
+                label: function(tooltipItem, data) {
+                    return `${data.datasets[tooltipItem.datasetIndex].label} ${tooltipItem.yLabel.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`;
+                }
+            }
         },
         hover: {
             mode: "index",
@@ -230,12 +216,12 @@ function fillDataset(macdData, macdKeys, macd_data_json, myChart, num) {
         macdData.push(macd_data_json[macdKeys[i]]);
     }
     let tempData = {
-        label: `MACD ${num}`,
+        label: labels[num],
         tension: 0.4,
         borderWidth: 0,
         pointRadius: 0,
         pointBorderWidth: 1,
-        borderColor: colors[num-1],
+        borderColor: colors[num],
         borderWidth: 3,
         backgroundColor: gradientStroke1,
         fill: true,
@@ -248,14 +234,52 @@ function fillDataset(macdData, macdKeys, macd_data_json, myChart, num) {
     
 }
 
+function fillBBAND(bbandKeys, bband_data_json){
+    for(let i=0; i < bbandKeys.length; i++){
+        let currentBand = bbandKeys[i]
+        let currentData = bband_data_json[currentBand]
+        let dateKeys = Object.keys(currentData);
+
+        for(let date=0; date < dateKeys.length; date++){
+            bbandDataset[i].push(currentData[dateKeys[date]])
+        }
+
+        let tempData = {
+            label: labels[7 + i],
+            tension: 0.4,
+            borderWidth: 0,
+            pointRadius: 0,
+            pointBorderWidth: 1,
+            borderColor: colors[7 + i],
+            borderWidth: 3,
+            backgroundColor: gradientStroke1,
+            fill: true,
+            data: bbandDataset[i],
+            maxBarThickness: 6,
+        }
+        myChart.data.datasets[7 + i] = tempData
+
+    }
+
+
+}
+
 window.onload = function () {
     let macd_btns = document.querySelectorAll(".macd");
+    let indi_btns = document.querySelectorAll(".indi");
+
     const ticker = document.querySelector("#stock_ticker").value;
 
     for (let i = 0; i < macd_btns.length; i++) {
         let curr_btn = macd_btns[i];
         curr_btn.addEventListener("click", getMACD);
     }
+
+    for (let i = 0; i < indi_btns.length; i++) {
+        let curr_btn = indi_btns[i];
+        curr_btn.addEventListener("click", getINDI);
+    }
+
 
     async function getMACD() {
         if (this.clicked == true) {
@@ -364,6 +388,65 @@ window.onload = function () {
                     );
                     myChart.update();
 
+                    break;
+            }
+        }myChart.update(config);
+    }
+
+    async function getINDI(){
+        if (this.clicked == true) {
+            this.clicked = false;
+            switch (this.value) {
+                case "bband":
+
+                    break;
+
+                case "20":
+                    break;
+
+                case "30":
+                    break;
+
+                case "50":
+                    break;
+
+                case "100":
+                    break;
+
+                case "200":
+                    break;
+            }
+        } else {
+            this.clicked = true;
+            let obj;
+            const res = await fetch(
+                `/analysis/indicator/bband/${ticker}`
+            );
+            obj = await res.json();
+            const bband_data_json = JSON.parse(obj["result"]);
+            let bbandKeys = Object.keys(bband_data_json);
+            switch (this.value) {
+                case "bband":
+
+                    fillBBAND(bbandKeys, bband_data_json)
+ 
+
+
+                    break;
+
+                case "20":
+                    break;
+
+                case "30":
+                    break;
+
+                case "50":
+                    break;
+
+                case "100":
+                    break;
+
+                case "200":
                     break;
             }
         }myChart.update(config);

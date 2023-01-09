@@ -13,6 +13,7 @@ urlpatterns = [
     path('billing/', main_dash_view.get_billing, name='billing'),
     path('box/', main_dash_view.get_box, name='box'),
     path('indicator/macd/<str:ticker>/<int:day>', indicators_view.get_macd, name='macd'),
+    path('indicator/bband/<str:ticker>', indicators_view.get_BBAND, name='bband'),
 
 
 ]

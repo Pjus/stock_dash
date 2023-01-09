@@ -20,7 +20,15 @@
 
 }
 
+.indicator-days-hidden{
+    display: none;
+}
 
+.indicator-days-show{
+    margin-top: .5rem;
+    margin-left: 1.5rem;
+
+}
 
 @media only screen and (max-width: 600px){
     #ticker-search-input{
