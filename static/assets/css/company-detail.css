@@ -2,6 +2,15 @@
     overflow: auto;  /* code added */
 }
 
+#stock-chart-indi{
+    overflow: auto;  /* code added */
+}
+
+.chart-hidden{
+    display: none;
+}
+
+
 #ticker-search-input{
     width: 80vh;
     left: -45vh;

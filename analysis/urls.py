@@ -14,6 +14,13 @@ urlpatterns = [
     path('box/', main_dash_view.get_box, name='box'),
     path('indicator/macd/<str:ticker>/<int:day>', indicators_view.get_macd, name='macd'),
     path('indicator/bband/<str:ticker>', indicators_view.get_BBAND, name='bband'),
+    path('indicator/rsi/<str:ticker>', indicators_view.get_RSI, name='rsi'),
+    path('indicator/mfi/<str:ticker>', indicators_view.get_MFI, name='mfi'),
+    path('indicator/atr/<str:ticker>', indicators_view.get_ATR, name='atr'),
+    path('indicator/fi/<str:ticker>', indicators_view.get_Force_Index, name='fi'),
+    path('indicator/evm/<str:ticker>', indicators_view.get_EMV, name='emv'),
+
+
 
 
 ]

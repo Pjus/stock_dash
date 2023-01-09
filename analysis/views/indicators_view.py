@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from datetime import datetime, timedelta
 
-from analysis.get_indicators import BBANDS
+from analysis.get_indicators import BBANDS, rsi, mfi, atr, ForceIndex, EMV
 from analysis.modules import get_collection
 
 import yfinance as yf
@@ -52,4 +52,88 @@ def get_BBAND(request, ticker):
     }
 
     return JsonResponse(content, content_type="application/json")
+
+
+def get_RSI(request, ticker):
+    stock_price = price_collection.find_one({'ticker':ticker})['price']
+    stock_price = pd.DataFrame(stock_price).T
+    
+    # Call RSI function from the talib library to calculate RSI
+    stock_price['RSI'] = rsi(stock_price['Adj Close'])
+    results = stock_price[['RSI']]
+    results_json = results.to_json()
+
+    content = {
+        "result":results_json,
+    }
+
+    return JsonResponse(content, content_type="application/json")
+
+
+def get_MFI(request, ticker):
+    stock_price = price_collection.find_one({'ticker':ticker})['price']
+    stock_price = pd.DataFrame(stock_price).T
+    
+    stock_price['MFI'] = mfi(stock_price['High'], stock_price['Low'], stock_price['Close'], stock_price['Volume'], 14)
+
+    results = stock_price[['MFI']]
+    results_json = results.to_json()
+
+    content = {
+        "result":results_json,
+    }
+
+    return JsonResponse(content, content_type="application/json")
+
+
+
+def get_ATR(request, ticker):
+    stock_price = price_collection.find_one({'ticker':ticker})['price']
+    stock_price = pd.DataFrame(stock_price).T
+    
+    stock_price['ATR'] = atr(stock_price['High'], stock_price['Low'], stock_price['Close'], 14)
+
+    results = stock_price[['ATR']]
+    results_json = results.to_json()
+
+    content = {
+        "result":results_json,
+    }
+
+    return JsonResponse(content, content_type="application/json")
+
+
+def get_Force_Index(request, ticker):
+    stock_price = price_collection.find_one({'ticker':ticker})['price']
+    stock_price = pd.DataFrame(stock_price).T
+    
+    n = 1
+    stock_ForceIndex = ForceIndex(stock_price, n)
+    results_json = stock_ForceIndex[['ForceIndex']].to_json()
+
+    content = {
+        "result":results_json,
+    }
+
+    return JsonResponse(content, content_type="application/json")
+
+
+def get_EMV(request, ticker):
+    stock_price = price_collection.find_one({'ticker':ticker})['price']
+    stock_price = pd.DataFrame(stock_price).T
+    
+    # Compute the 14-day Ease of Movement for AAPL
+    n = 14
+    stock_EMV = EMV(stock_price, n)
+    results = stock_EMV['EMV']
+    results_json = results.to_json()
+
+    content = {
+        "result":results_json,
+    }
+
+    return JsonResponse(content, content_type="application/json")
+
+
+
 

@@ -8,7 +8,7 @@ let indicator = document.querySelector("#indicator");
 let macd_days = document.querySelector(".macd-days-hidden")
 let indi_days = document.querySelector(".indicator-days-hidden")
 
-
+let indiChart = document.querySelector("#stock-chart-indi")
 
 for(let i=0; i < list.length; i++){
     let curr_btn = list[i]
@@ -37,6 +37,7 @@ for(let i=0; i < list.length; i++){
         } else {
             indicator.classList = "stock-infos-hidden"
             indi_days.classList = "indicator-days-hidden"
+
         }
     })
 }
