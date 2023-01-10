@@ -131,54 +131,56 @@ def board(request):
 
     }
 
-    if request.user.is_authenticated:
-        portfolio = Portfolio.objects.filter(author=request.user)
-        context["portfolio"] = portfolio
-        curr_month_return = 0
-        prev_month_return = 0
-        prev_month = ''
-        curr_month = ''
+    # if request.user.is_authenticated:
+    #     try:
+    #         portfolio = Portfolio.objects.filter(author=request.user)
+    #     except:
+    #         portfolio = ''
+    #     context["portfolio"] = portfolio
+    #     curr_month_return = 0
+    #     prev_month_return = 0
+    #     prev_month = ''
+    #     curr_month = ''
 
-        total_account = 0
-        monthly_returns = {}
-        port_history = {}
+    #     total_account = 0
+    #     monthly_returns = {}
+    #     port_history = {}
 
-        for port in portfolio:
-            for stock in port.stock_port.all():
-                temp = json.loads(stock.profit_history)
-                for key, value in temp.items():
-                    if key in monthly_returns:
-                        monthly_returns[key] += value['profit']
-                    else:
-                        monthly_returns[key] = value['profit']
+    #     for port in portfolio:
+    #         for stock in port.stock_port.all():
+    #             temp = json.loads(stock.profit_history)
+    #             for key, value in temp.items():
+    #                 if key in monthly_returns:
+    #                     monthly_returns[key] += value['profit']
+    #                 else:
+    #                     monthly_returns[key] = value['profit']
 
-            total_account += port.port_value
-            if total_account != 0:
-                for idx, port in enumerate(portfolio):
-                    port.weight = round((port.port_value / total_account) * 100, 2)
-            else:
-                port.weight = 0
-                port.save()
+    #         total_account += port.port_value
+    #         if total_account != 0:
+    #             for idx, port in enumerate(portfolio):
+    #                 port.weight = round((port.port_value / total_account) * 100, 2)
+    #         else:
+    #             port.weight = 0
+    #             port.save()
 
             
             
-            try:
-                temp_history = json.loads(port.port_history)
-                for key, value in temp_history.items():
-                    if key in port_history:
-                        port_history[key] += value
-                    else:
-                        port_history[key] = value
-                print(port_history)
-            except:
-                pass
+    #         # try:
+    #         #     temp_history = json.loads(port.port_history)
+    #         #     for key, value in temp_history.items():
+    #         #         if key in port_history:
+    #         #             port_history[key] += value
+    #         #         else:
+    #         #             port_history[key] = value
+    #         # except:
+    #         #     pass
 
-        context['total_account'] = total_account
-        context['monthly_returns'] = json.dumps(monthly_returns) 
-        context['port_history'] = json.dumps(port_history) 
+    #     context['total_account'] = total_account
+    #     context['monthly_returns'] = json.dumps(monthly_returns) 
+    #     # context['port_history'] = json.dumps(port_history) 
 
 
-        return render(request, 'main/core.html', context)
+    #     return render(request, 'main/core.html', context)
 
     return render(request, 'main/core2.html', context)
 
