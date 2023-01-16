@@ -7,6 +7,7 @@ import pandas as pd
 import calendar
 import json
 
+from .models import FinancialEvent, FinEventDate
 
 # News
 from pyfinviz.news import News
@@ -206,7 +207,9 @@ def get_calender():
     for day in event_day:
         data_dict[day.text] = {}
         date.append(day.text)
-    
+        fin_event_date = FinEventDate(fin_current_date=day.text)
+        fin_event_date.save()
+
     day_start = -1
     defalut_time = 24
 
@@ -216,8 +219,7 @@ def get_calender():
         country = item.find_element(by=By.CLASS_NAME, value='country-Q1EBfqP8')
         inner_html = country.get_attribute("innerHTML")
         
-        temp_dict['img_src'] = inner_html[inner_html.find("https"):inner_html.find('"><')]
-        temp_dict['country'] = re.compile('[가-힣]+').findall(inner_html)[0]
+
         all_data = item.text.split("\n")
        
         if ':' in all_data[0]:
@@ -250,9 +252,22 @@ def get_calender():
                 temp_dict['previous'] = all_data[-1]
         else:
             temp_dict['previous'] = ''
-                
-        temp_dict['event_time'] = event_time
-        temp_dict['event_subject'] = event_subject
-        temp_dict['event_date'] = date[day_start]
-        data_dict[date[day_start]][temp_dict['country']] = temp_dict
-    calender_collection.insert_one({'calender' : data_dict, 'date':today})
+
+
+
+        fin_event = FinancialEvent(
+                event_mother = fin_event_date, 
+                img_src = inner_html[inner_html.find("https"):inner_html.find('"><')],
+                country = re.compile('[가-힣]+').findall(inner_html)[0],
+                event_time = event_time,
+                event_date = date[day_start],
+                event_subject = event_subject,
+                forecast=temp_dict['forecast'],
+                previous=temp_dict['previous'],
+
+            )
+        fin_event.save()
+
+    
+    for event in data_dict:
+        print(event)

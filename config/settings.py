@@ -13,14 +13,13 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 import json
 import os
-import certifi
 from django.utils.translation import gettext_lazy as _
+
 
 LANGUAGES = [
     ('ko', _('Korean')),
     ('en', _('English')),
 ]
-ca = certifi.where()
 
 
 with open("SECRET.json", "r") as secret_json:
@@ -38,7 +37,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = sc_python['DJANGO_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = {
     "production":
@@ -70,7 +69,9 @@ INSTALLED_APPS = [
     # App registration
     'dash.apps.DashConfig',
     'common.apps.CommonConfig',
-    'portfolio.apps.PortfolioConfig'
+    'portfolio.apps.PortfolioConfig',
+    'analysis.apps.AnalysisConfig',
+
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -121,23 +122,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 
 DATABASES = {
-    'dev': {
+    'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     },
-    'production': {
-        'ENGINE': 'djongo',
-        'NAME': 'stockDB',
-        'ENFORCE_SCHEMA': False,
-        'CLIENT': {
-            'host': sc_python['MONGODB'],
-            'port': 27017
-        }
-
-    }
 }
 
-DATABASES['default'] = DATABASES['dev' if DEBUG else 'production']
 
 
 # Password validation

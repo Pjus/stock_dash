@@ -11,29 +11,40 @@
             </p> {% endcomment %}
         </div>
         <div class="card-body p-3">
-        {% if calender %}
-        {% for key1, value1 in calender.items %}
-            {% for key2, value2 in value1.items %}
+
+        {% if event_detail_list %}
+        {% for event in event_detail_list %}
                 <div class="timeline timeline-one-side">
                     <div class="timeline-block mb-3">
                         <span class="timeline-step">
-                            <img src={{value2.img_src}} alt="">
+                            <img src={{event.img_src}} alt="">
                         </span>
                         <div class="timeline-content">
                             <h6
                                 class="text-dark text-sm font-weight-bold mb-0"
                             >
-                                {{value2.event_subject}}
+                                {{event.event_subject}}
                             </h6>
                             <p
                                 class="text-secondary font-weight-bold text-xs mt-1 mb-0"
                             >
-                                {{value2.event_date}} {{value2.event_time}}
+                                {{event.event_date}} {{event.event_time}}
+
                             </p>
+                            <div class="text-secondary font-weight-bold text-xs mt-1 mb-0">
+                                {% if event.previous %}
+                                    prev : {{event.previous}}
+                                {% endif %}
+                            </div>
+                            <div class="text-secondary font-weight-bold text-xs mt-1 mb-0">
+                                {% if event.forecast %}
+                                    fore : {{event.forecast}}
+                                {% endif %}
+                            </div>
+
                         </div>
                     </div>
                 </div>
-            {% endfor %}
         {% endfor %}
         {% endif %}
 

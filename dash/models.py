@@ -40,3 +40,11 @@ class QuestionForm(forms.ModelForm):
     class Meta:
         model = Question  # 사용할 모델
         fields = ['subject', 'content']  # QuestionForm에서 사용할 Question 모델의 속성
+
+
+
+class News(models.Model):
+    press = models.CharField(max_length=10, default='')
+    title = models.CharField(max_length=50, default='')
+    url = models.CharField(max_length=100, default='')
+    date = models.CharField(max_length=20, default='')

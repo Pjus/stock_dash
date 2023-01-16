@@ -13,15 +13,22 @@ from pymongo import MongoClient
 with open("SECRET.json", "r") as secret_json:
     sc_python = json.load(secret_json)
 
-client = MongoClient(sc_python['MONGODB'], 27017)
-db = client['stockDB']
 
-# balancesheet_collection = db['balance']
-# cashflow_collection = db['cashflow']
-# financial_collection = db['financial_statement']
-# price_collection = db['stock_price']
+print(sc_python['MONGODB'])
+client = MongoClient(sc_python['MONGODB'], 27017)
+print(client)
+
+db = client['stockDB']
+print(db)
+
+balancesheet_collection = db['balance']
+cashflow_collection = db['cashflow']
+financial_collection = db['financial_statement']
+price_collection = db['stock_price']
 
 calender_collection = db['calender']
+
+print(calender_collection)
 
 # def company(ticker):
 #     stock = yf.Ticker(ticker)
@@ -113,6 +120,8 @@ calender_collection = db['calender']
 
 source myvenv/bin/activate
 
+cd /srv/stock_dash
+
 sudo cp -f /srv/stock_dash/.config/nginx/mysite.conf /etc/nginx/sites-available/mysite.conf
 
 sudo ln -sf /etc/nginx/sites-available/mysite.conf /etc/nginx/sites-enabled/mysite.conf
@@ -122,11 +131,6 @@ sudo systemctl daemon-reload && sudo systemctl restart nginx uwsgi
 
 """
 
-# db.balance.drop()
-# db.cashflow.drop()
-# db.financial_statement.drop()
-# db.infos.drop()
-# db.stock_price.drop()
 
 
 # df = pd.read_html('https://www.kita.net/cmmrcInfo/ehgtGnrlzInfo/rltmEhgt.do', header = 0, encoding='utf-8')[0]
@@ -165,13 +169,21 @@ sudo systemctl daemon-reload && sudo systemctl restart nginx uwsgi
 
 
 
-data_dict = calender_collection.find_one()['calender']
+# data_dict = calender_collection.find_one()['calender']
 
 
 
-for i in data_dict:
-    for j in data_dict[i]:
-        print(data_dict[i][j]['country'])
-        print(data_dict[i][j]['event_time'])
-        print(data_dict[i][j]['event_date'])
+# for i in data_dict:
+#     for j in data_dict[i]:
+#         print(data_dict[i][j]['country'])
+#         print(data_dict[i][j]['event_time'])
+#         print(data_dict[i][j]['event_date'])
+# db.calender.drop()
+
+
+db.balance.drop()
+db.cashflow.drop()
+db.financial_statement.drop()
+db.infos.drop()
+db.stock_price.drop()
 db.calender.drop()
