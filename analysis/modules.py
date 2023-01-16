@@ -1,7 +1,6 @@
 from pandas_datareader import data as pdr
 from datetime import datetime, timedelta
 from django.shortcuts import render
-from pymongo import MongoClient
 import yfinance as yf
 import pandas as pd
 import calendar
@@ -20,18 +19,7 @@ import re
 
 yf.pdr_override()
 
-with open("SECRET.json", "r") as secret_json:
-    sc_python = json.load(secret_json)
 
-client = MongoClient(sc_python['MONGODB'], 27017)
-db = client['stockDB']
-
-price_collection = db['stock_price']
-currency_collection = db['currency']
-
-infos_collection = db['infos']
-news_collection = db['news']
-calender_collection = db['calender']
 
 yesterday = datetime.now() - timedelta(1)
 day = datetime.strftime(yesterday, '%Y-%m-%d')
@@ -39,16 +27,6 @@ day = datetime.strftime(yesterday, '%Y-%m-%d')
 today_origin = datetime.now()
 today = datetime.strftime(today_origin, '%Y-%m-%d')
 
-def get_collection(collection_name):
-    collection = db[collection_name]
-    return collection
-
-def get_last_day(ticker):
-    last_day = list(price_collection.find_one({'ticker':ticker})['price'])[-1]
-    return last_day
-
-def check_none(ticker):
-    return price_collection.find_one({'ticker':ticker}) == None
 
 def make_price_query(ticker):
     price = pdr.get_data_yahoo(ticker)
@@ -65,24 +43,24 @@ def make_price_query(ticker):
         }
     return price_mongodb_query
 
-def get_price(ticker, yesterday):
-    print(ticker, yesterday)
-    week_of_day = calendar.day_name[today_origin.weekday()]
-    if check_none(ticker):
-        print("None")
-        price_mongodb_query = make_price_query(ticker)
-        price_collection.insert_one({'ticker':ticker, 'price' : price_mongodb_query})
-    else:
-        except_days = ['Monday', 'Sunday', 'Saturday']
-        last_day = get_last_day(ticker)
-        if week_of_day not in except_days :
-            if str(last_day) != str(yesterday):
-                price_mongodb_query = make_price_query(ticker)
-                price_collection.update_one({'ticker':ticker}, {'$set':{'price':price_mongodb_query }})
-        else:
-            if str(last_day) != str(yesterday):
-                price_mongodb_query = make_price_query(ticker)
-                price_collection.update_one({'ticker':ticker}, {'$set':{'price':price_mongodb_query }})
+# def get_price(ticker, yesterday):
+#     print(ticker, yesterday)
+#     week_of_day = calendar.day_name[today_origin.weekday()]
+#     if check_none(ticker):
+#         print("None")
+#         price_mongodb_query = make_price_query(ticker)
+#         price_collection.insert_one({'ticker':ticker, 'price' : price_mongodb_query})
+#     else:
+#         except_days = ['Monday', 'Sunday', 'Saturday']
+#         last_day = get_last_day(ticker)
+#         if week_of_day not in except_days :
+#             if str(last_day) != str(yesterday):
+#                 price_mongodb_query = make_price_query(ticker)
+#                 price_collection.update_one({'ticker':ticker}, {'$set':{'price':price_mongodb_query }})
+#         else:
+#             if str(last_day) != str(yesterday):
+#                 price_mongodb_query = make_price_query(ticker)
+#                 price_collection.update_one({'ticker':ticker}, {'$set':{'price':price_mongodb_query }})
 
 def get_currency(refresh=False):
     currency_query = {today:{}}
@@ -105,10 +83,6 @@ def get_currency(refresh=False):
             'send' : row[1][6],
             'receive' : row[1][7],
         }
-    if refresh:
-        currency_collection.update_one({'date':today}, {'$set':{'currency' : currency_query}})
-    else:
-        currency_collection.insert_one({'date':today, 'currency' : currency_query})
 
 def get_finanacial_infos(collection, ticker, type):
     stock = yf.Ticker(ticker)
@@ -165,7 +139,6 @@ def get_sec_news():
         inner_query['url'] = row[1]['URL']
         news_query[row[1]['Time']] = inner_query
 
-    news_collection.insert_one({"press":"sec", "news" : news_query})
 
 
 def get_finviz_news():
@@ -181,8 +154,7 @@ def get_finviz_news():
         inner_query['Time'] = row[1]['Time']
         news_query[f'{str(now)} {str(idx)}'] = inner_query
 
-    news_collection.insert_one({'press':"fin", 'news' : news_query})
-
+    
 
 
 

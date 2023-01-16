@@ -10,7 +10,6 @@ import pandas as pd
 from ..models import Portfolio, Stock
 from ..forms import PortfolioForm, StockForm
 
-from pymongo import MongoClient
 from tradingview_ta import TA_Handler, Interval, Exchange
 
 
@@ -26,20 +25,13 @@ monthly_return = {
 
 }
 
-with open("SECRET.json", "r") as secret_json:
-    sc_python = json.load(secret_json)
-
-client = MongoClient(sc_python['MONGODB'], 27017)
-db = client['stockDB']
-infos_collection = db['infos']
-price_collection = db['stock_price']
 
 def index(request):
     if request.method == 'POST':
         form = PortfolioForm(request.POST)
         if form.is_valid():
             port = form.save(commit=False)
-            port.target_price = infos_collection.find_one({'ticker':request.POST.get('ticker')})
+            port.target_price = 0
             port.create_date = timezone.now()
             port.author = request.user
             port.save()

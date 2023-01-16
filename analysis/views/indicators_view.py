@@ -3,7 +3,6 @@ from django.http import JsonResponse
 from datetime import datetime, timedelta
 
 from analysis.get_indicators import BBANDS, rsi, mfi, atr, ForceIndex, EMV
-from analysis.modules import get_collection
 
 import yfinance as yf
 import pandas as pd
@@ -12,7 +11,6 @@ import json
 yesterday = datetime.now() - timedelta(1)
 day = datetime.strftime(yesterday, '%Y-%m-%d')
 
-price_collection = get_collection('stock_price')
 
 def macd(price, slow, fast, smooth):
     exp1 = price.ewm(span = fast, adjust = False).mean()
@@ -26,7 +24,7 @@ def macd(price, slow, fast, smooth):
 
 
 def get_macd(request, ticker, day):
-    stock_price = price_collection.find_one({'ticker':ticker})['price']
+    # stock_price = price_collection.find_one({'ticker':ticker})['price']
     stock_price = pd.DataFrame(stock_price).T
 
     # results = macd(stock_price['Adj Close'], 26, 12, 9)
@@ -41,7 +39,7 @@ def get_macd(request, ticker, day):
 
 
 def get_BBAND(request, ticker):
-    stock_price = price_collection.find_one({'ticker':ticker})['price']
+    # stock_price = price_collection.find_one({'ticker':ticker})['price']
     stock_price = pd.DataFrame(stock_price).T
     results = BBANDS(stock_price, 50)
     results = results[['MiddleBand', 'UpperBand', 'LowerBand']]
@@ -55,7 +53,7 @@ def get_BBAND(request, ticker):
 
 
 def get_RSI(request, ticker):
-    stock_price = price_collection.find_one({'ticker':ticker})['price']
+    # stock_price = price_collection.find_one({'ticker':ticker})['price']
     stock_price = pd.DataFrame(stock_price).T
     
     # Call RSI function from the talib library to calculate RSI
@@ -71,7 +69,7 @@ def get_RSI(request, ticker):
 
 
 def get_MFI(request, ticker):
-    stock_price = price_collection.find_one({'ticker':ticker})['price']
+    # stock_price = price_collection.find_one({'ticker':ticker})['price']
     stock_price = pd.DataFrame(stock_price).T
     
     stock_price['MFI'] = mfi(stock_price['High'], stock_price['Low'], stock_price['Close'], stock_price['Volume'], 14)
@@ -88,7 +86,7 @@ def get_MFI(request, ticker):
 
 
 def get_ATR(request, ticker):
-    stock_price = price_collection.find_one({'ticker':ticker})['price']
+    # stock_price = price_collection.find_one({'ticker':ticker})['price']
     stock_price = pd.DataFrame(stock_price).T
     
     stock_price['ATR'] = atr(stock_price['High'], stock_price['Low'], stock_price['Close'], 14)
@@ -104,7 +102,7 @@ def get_ATR(request, ticker):
 
 
 def get_Force_Index(request, ticker):
-    stock_price = price_collection.find_one({'ticker':ticker})['price']
+    # stock_price = price_collection.find_one({'ticker':ticker})['price']
     stock_price = pd.DataFrame(stock_price).T
     
     n = 1
@@ -119,7 +117,7 @@ def get_Force_Index(request, ticker):
 
 
 def get_EMV(request, ticker):
-    stock_price = price_collection.find_one({'ticker':ticker})['price']
+    # stock_price = price_collection.find_one({'ticker':ticker})['price']
     stock_price = pd.DataFrame(stock_price).T
     
     # Compute the 14-day Ease of Movement for AAPL

@@ -1,13 +1,11 @@
 from django.shortcuts import render
 import yfinance as yf
 import json
-from pymongo import MongoClient
 from datetime import datetime, timedelta
 import pandas as pd
 
 import calendar
 
-from analysis.modules import get_currency, get_price, get_finanacial_infos
 
 from tradingview_ta import TA_Handler, Interval, Exchange
 

@@ -1,7 +1,6 @@
 from django.urls import path
 
 from .views import base_views, question_views, answer_views
-from ..analysis.views import news_view
 
 app_name = 'dash'
 
@@ -18,6 +17,5 @@ urlpatterns = [
     path('question/delete/<int:question_id>/', question_views.question_delete, name='question_delete'),
     path('question/vote/<int:question_id>/', question_views.question_vote, name='question_vote'),
 
-    path('news/<str:news_id>/', news_view.index, name='news'),
 
 ]

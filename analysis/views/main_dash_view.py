@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta, time
 from django.shortcuts import render
-from pymongo import MongoClient
-from analysis.modules import get_price, get_last_day, get_currency, time_in_range, get_calender, get_collection, get_finviz_news
+from analysis.modules import get_calender
 from portfolio.models import Portfolio
 
 import yfinance as yf
@@ -17,9 +16,6 @@ yf.pdr_override()
 TODAY_DOWN = False
 
 yf.pdr_override()
-with open("SECRET.json", "r") as secret_json:
-    sc_python = json.load(secret_json)
-
 
 
 yesterday_origin = datetime.now() - timedelta(1)

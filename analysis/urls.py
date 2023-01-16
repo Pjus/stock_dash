@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import base_views, heatmap_view, main_dash_view, indicators_view
+from .views import base_views, heatmap_view, main_dash_view, indicators_view, news_view
 
 app_name = 'analysis'
 
@@ -19,7 +19,7 @@ urlpatterns = [
     path('indicator/atr/<str:ticker>', indicators_view.get_ATR, name='atr'),
     path('indicator/fi/<str:ticker>', indicators_view.get_Force_Index, name='fi'),
     path('indicator/evm/<str:ticker>', indicators_view.get_EMV, name='emv'),
-
+    path('news/<str:news_id>/', news_view.index, name='news'),
 
 
 
