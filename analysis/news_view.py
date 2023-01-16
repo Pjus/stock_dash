@@ -14,7 +14,7 @@ now = datetime.now()
 
 news_collection = get_collection("news")
 
-def news_view(request, news_id):
+def index(request, news_id):
     content = {}
 
 

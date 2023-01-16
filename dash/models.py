@@ -43,8 +43,3 @@ class QuestionForm(forms.ModelForm):
 
 
 
-class News(models.Model):
-    press = models.CharField(max_length=10, default='')
-    title = models.CharField(max_length=50, default='')
-    url = models.CharField(max_length=100, default='')
-    date = models.CharField(max_length=20, default='')
