@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta, time
 from django.shortcuts import render
+from django.db.models import Q
+
 from analysis.modules import get_calender
 from portfolio.models import Portfolio
 
@@ -9,7 +11,7 @@ import json
 import re
 from pandas_datareader import data as pdr
 
-from ..models import FinEventDate, FinancialEvent
+from ..models import FinEventDate, FinancialEvent, FinNews
 
 yf.pdr_override()
 
@@ -34,6 +36,10 @@ def board(request):
     context = {}
 
     event_list = FinEventDate.objects.order_by('-fin_current_date')
+    news_list = FinNews.objects.order_by('date')
+    sec_news_list = news_list.filter(Q(press="sec")).distinct()
+    context['news_list'] = sec_news_list
+
     if len(event_list) == 0:
         get_calender()
         event_list = FinEventDate.objects.order_by('-fin_current_date')
