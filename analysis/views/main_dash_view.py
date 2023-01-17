@@ -35,14 +35,6 @@ def board(request):
     snp = "^GSPC"
     context = {}
 
-    # # Get Nasdap, Dow, Snp
-
-    CompanyPrice.objects.all().delete()
-    get_index(nasdaq)
-    get_index(dow)
-    get_index(snp)
-
-
     # Nasdaq
     stock = StockCompany.objects.filter(Q(ticker=nasdaq))
     price_list = CompanyPrice.objects.filter(Q(ticker=stock[0]))
@@ -107,15 +99,6 @@ def board(request):
     else:
         currency_list = currency_list.filter(Q(country="USD")).distinct()
         context['currency'] = currency_list[len(currency_list)-1]
-
-
-
-
-
-
-
-
-
 
 
     return render(request, 'main/core2.html', context)
