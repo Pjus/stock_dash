@@ -22,7 +22,8 @@
                             >
                             {% endif %}                         
                             <h5 class="font-weight-bolder mb-0">
-                                {{nasdaq}} {% if nas_pct > 0 %}
+                                {{nasdaq}} 
+                                {% if nas_pct > 0 %}
                                 <span
                                     class="text-success text-sm font-weight-bolder"
                                     >+{{nas_pct}}%</span
@@ -161,28 +162,29 @@
                             >
                                 KWR / USD
                             </p>
-                            {% if currency_chg > 0 %}
+                            {% if currency.day_before > 0 %}
                             <h4
                                 class="text-success text-sm font-weight-bolder"
-                                >+{{currency_chg}}</h4
+                                >+{{currency.day_before}}</h4
                             >
                             {% else %}
                             <h4
                                 class="text-danger text-sm font-weight-bolder"
-                                >{{currency_chg}}</h4
+                                >{{currency.day_before}}</h4
                             >
                             {% endif %}
 
                             <h5 class="font-weight-bolder mb-0">
-                                {{currency}}{% if currency_pct > 0 %}
+                                {{currency.current}}
+                                {% if currency.change > 0 %}
                                 <span
                                     class="text-success text-sm font-weight-bolder"
-                                    >+{{currency_pct}}%</span
+                                    >+{{currency.change}}%</span
                                 >
                                 {% else %}
                                 <span
                                     class="text-danger text-sm font-weight-bolder"
-                                    >{{currency_pct}}%</span
+                                    >{{currency.change}}%</span
                                 >
                                 {% endif %}
                             </h5>

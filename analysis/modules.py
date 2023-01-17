@@ -6,7 +6,7 @@ import pandas as pd
 import calendar
 import json
 
-from .models import FinancialEvent, FinEventDate, FinNews
+from .models import FinancialEvent, FinEventDate, FinNews, Currency, StockCompany, CompanyPrice, StockCompany
 
 # News
 from pyfinviz.news import News
@@ -27,43 +27,76 @@ day = datetime.strftime(yesterday, '%Y-%m-%d')
 today_origin = datetime.now()
 today = datetime.strftime(today_origin, '%Y-%m-%d')
 
+def get_company_infos(ticker):
+    stock = yf.Ticker(ticker)
+    company = StockCompany(
+        ticker=ticker, 
+        company_name=stock.info['shortName'], 
+        industry=stock.info['sector'], 
+        market_cap=stock.info['marketCap'], 
+        recommandation=stock.info['recommendationKey']
+    )
+    company.save()
 
-def make_price_query(ticker):
+
+# Nasdaq, Dow, Snp
+def get_index(ticker):
+
+    try:
+        stock = StockCompany.objects.get(ticker=ticker)
+    except:
+        stock = yf.Ticker(ticker)
+        index = StockCompany(
+            ticker=ticker, 
+            company_name=stock.info['shortName'], 
+        )
+        index.save()
+        stock = StockCompany.objects.get(ticker=ticker)
+
+
     price = pdr.get_data_yahoo(ticker)
-    print(price)
-    price_mongodb_query = {}
-    for row in price.iterrows():
-        price_mongodb_query[str(row[0]).split(" ")[0]] = {
-            'High':row[1][0],
-            'Low':row[1][1],
-            'Open':row[1][2],
-            'Close':row[1][3],
-            'Adj Close':row[1][4],
-            'Volume':row[1][5],
-        }
-    return price_mongodb_query
+    price['Date'] = price.index
+    price['Date'] = price['Date'].dt.date  
+    df_records = price.to_dict('records')
+    model_instances = [
+        CompanyPrice(
+            ticker = stock,
+            date = record['Date'],
+            high_price = record['High'],
+            low_price = record['Low'],
+            open_price = record['Open'],
+            close_price = record['Close'],
+            adj_close_price = record['Adj Close'],
+            volume = record['Volume']
+        ) for record in df_records[-10:]
+    ]
+    CompanyPrice.objects.bulk_create(model_instances)
 
-# def get_price(ticker, yesterday):
-#     print(ticker, yesterday)
-#     week_of_day = calendar.day_name[today_origin.weekday()]
-#     if check_none(ticker):
-#         print("None")
-#         price_mongodb_query = make_price_query(ticker)
-#         price_collection.insert_one({'ticker':ticker, 'price' : price_mongodb_query})
-#     else:
-#         except_days = ['Monday', 'Sunday', 'Saturday']
-#         last_day = get_last_day(ticker)
-#         if week_of_day not in except_days :
-#             if str(last_day) != str(yesterday):
-#                 price_mongodb_query = make_price_query(ticker)
-#                 price_collection.update_one({'ticker':ticker}, {'$set':{'price':price_mongodb_query }})
-#         else:
-#             if str(last_day) != str(yesterday):
-#                 price_mongodb_query = make_price_query(ticker)
-#                 price_collection.update_one({'ticker':ticker}, {'$set':{'price':price_mongodb_query }})
+
+def get_price(ticker):
+    try:
+        stock = StockCompany.objects.get(ticker=ticker)
+    except:
+        get_company_infos(ticker)
+        stock = StockCompany.objects.get(ticker=ticker)
+    
+    price = pdr.get_data_yahoo(ticker)
+    for row in price.iterrows():
+        price_indivisual = CompanyPrice(
+            ticker = stock,
+            date = str(row[0]).split(" ")[0],
+            high_price = row[1][0],
+            low_price = row[1][1],
+            open_price = row[1][2],
+            close_price = row[1][3],
+            adj_close_price = row[1][4],
+            volume = row[1][5],
+        )
+        price_indivisual.save()
+
+
 
 def get_currency(refresh=False):
-    currency_query = {today:{}}
     df = pd.read_html('https://www.kita.net/cmmrcInfo/ehgtGnrlzInfo/rltmEhgt.do', header = 0, encoding='utf-8')[0]
     for row in df.iloc[:, :-1].iterrows():
         if row[1][3] < 0:
@@ -72,17 +105,21 @@ def get_currency(refresh=False):
         else:
             numbers = re.sub(r'[^0-9.]', '', row[1][2])
             day_before = numbers
+            
+        currency_price = Currency(
+                            date = today,
+                            country = row[1][0].split(" ")[0], 
+                            in_korean = row[1][0].split(" ")[1],
+                            current = row[1][1],
+                            day_before = float(day_before),
+                            change = row[1][3],
+                            buy = row[1][4],
+                            sell = row[1][5],
+                            send = row[1][6],
+                            receive = row[1][7],
+                        )   
+        currency_price.save()
 
-        currency_query[today][row[1][0].split(" ")[0]] = {
-            'in_korean' : row[1][0].split(" ")[1],
-            'current' : row[1][1],
-            'day_before' : float(day_before),
-            'change' : row[1][3],
-            'buy' : row[1][4],
-            'sell' : row[1][5],
-            'send' : row[1][6],
-            'receive' : row[1][7],
-        }
 
 def get_finanacial_infos(collection, ticker, type):
     stock = yf.Ticker(ticker)

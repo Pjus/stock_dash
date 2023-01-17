@@ -2,7 +2,7 @@ from datetime import datetime, timedelta, time
 from django.shortcuts import render
 from django.db.models import Q
 
-from analysis.modules import get_calender
+from analysis.modules import get_calender, get_finviz_news, get_sec_news, get_currency, get_price, get_index
 from portfolio.models import Portfolio
 
 import yfinance as yf
@@ -11,7 +11,7 @@ import json
 import re
 from pandas_datareader import data as pdr
 
-from ..models import FinEventDate, FinancialEvent, FinNews
+from ..models import FinEventDate, FinancialEvent, FinNews, Currency, StockCompany, CompanyPrice
 
 yf.pdr_override()
 
@@ -35,24 +35,88 @@ def board(request):
     snp = "^GSPC"
     context = {}
 
-    event_list = FinEventDate.objects.order_by('-fin_current_date')
-    news_list = FinNews.objects.order_by('date')
-    sec_news_list = news_list.filter(Q(press="sec")).distinct()
-    context['news_list'] = sec_news_list
+    # # Get Nasdap, Dow, Snp
 
+    CompanyPrice.objects.all().delete()
+    get_index(nasdaq)
+    get_index(dow)
+    get_index(snp)
+
+
+    # Nasdaq
+    stock = StockCompany.objects.filter(Q(ticker=nasdaq))
+    price_list = CompanyPrice.objects.filter(Q(ticker=stock[0]))
+
+    df = pd.DataFrame(list(price_list.values()))
+    df = df[['adj_close_price']]
+
+    context['nas_diff'] = round(df.diff().iloc[-1:,:].values[0][0], 2) 
+    context['nas_pct'] = round(df.pct_change().iloc[-1:,:].values[0][0] * 100, 2)
+    context['nasdaq'] = round(price_list[len(price_list)-1].close_price, 2) 
+
+    # Snp
+    stock = StockCompany.objects.filter(Q(ticker=snp))
+    price_list = CompanyPrice.objects.filter(Q(ticker=stock[0]))
+
+    df = pd.DataFrame(list(price_list.values()))
+    df = df[['adj_close_price']]
+
+    context['snp_diff'] = round(df.diff().iloc[-1:,:].values[0][0], 2) 
+    context['snp_pct'] = round(df.pct_change().iloc[-1:,:].values[0][0] * 100, 2)
+    context['snp'] = round(price_list[len(price_list)-1].close_price, 2) 
+
+    # Dow
+    stock = StockCompany.objects.filter(Q(ticker=dow))
+    price_list = CompanyPrice.objects.filter(Q(ticker=stock[0]))
+
+    df = pd.DataFrame(list(price_list.values()))
+    df = df[['adj_close_price']]
+
+    context['dow_diff'] = round(df.diff().iloc[-1:,:].values[0][0], 2) 
+    context['dow_pct'] = round(df.pct_change().iloc[-1:,:].values[0][0] * 100, 2)
+    context['dow'] = round(price_list[len(price_list)-1].close_price, 2) 
+
+
+
+    # Events
+    event_list = FinEventDate.objects.order_by('fin_current_date')
     if len(event_list) == 0:
         get_calender()
-        event_list = FinEventDate.objects.order_by('-fin_current_date')
         event_detail = FinancialEvent.objects.order_by('event_mother')
-        print(len(event_list))
-        context['event_list'] = event_list
-        context['event_detail_list'] = event_detail
+        context['event_detail_list'] = event_detail[:11]
     else:
-        event_list = FinEventDate.objects.order_by('fin_current_date')
         event_detail = FinancialEvent.objects.order_by('event_mother')
+        context['event_detail_list'] = event_detail[:11]
 
-        context['event_list'] = event_list
-        context['event_detail_list'] = event_detail
+    # News
+    news_list = FinNews.objects.order_by('date')
+    if len(event_list) == 0:
+        get_finviz_news()
+        sec_news_list = news_list.filter(Q(press="fin")).distinct()
+        context['news_list'] = sec_news_list[:21]
+    else:
+        sec_news_list = news_list.filter(Q(press="fin")).distinct()
+        context['news_list'] = sec_news_list[:21]
+
+    # Currency
+    currency_list = Currency.objects.order_by('date')
+    if len(currency_list) == 0:
+        get_currency()
+        currency_list = currency_list.filter(Q(country="USD")).distinct()
+        context['currency'] = currency_list[len(currency_list)-1]
+    else:
+        currency_list = currency_list.filter(Q(country="USD")).distinct()
+        context['currency'] = currency_list[len(currency_list)-1]
+
+
+
+
+
+
+
+
+
+
 
     return render(request, 'main/core2.html', context)
 
