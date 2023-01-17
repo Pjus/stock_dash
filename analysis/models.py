@@ -22,8 +22,13 @@ class FinancialEvent(models.Model):
         return self.country
 
 
-class News(models.Model):
+class FinNews(models.Model):
     press = models.CharField(max_length=10, default='')
     title = models.CharField(max_length=50, default='')
     url = models.CharField(max_length=100, default='')
     date = models.CharField(max_length=20, default='')
+    def __str__(self):
+        return self.title
+
+
+

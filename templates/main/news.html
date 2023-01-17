@@ -9,9 +9,9 @@
             <div class="col-lg-8 col-md-6 mb-md-0 mb-4">
                 {% include 'main/small_title.html' %}
                 <div class="row text-center mb-5 mt-5">
-                    <h3 class="col" ><a class="newsSelect" href="{% url 'dash:news' 'fin' %}">Finviz</a></h3>
-                    <h3 class="col" ><a class="newsSelect" href="{% url 'dash:news' 'sec' %}">SEC</a></h3>
-                    <!-- <h3 class="col" ><a class="newsSelect" href="{% url 'dash:news' 'yah' %}">IMF</a></h3> -->
+                    <h3 class="col" ><a class="newsSelect" href="{% url 'analysis:news' 'fin' %}">Finviz</a></h3>
+                    <h3 class="col" ><a class="newsSelect" href="{% url 'analysis:news' 'sec' %}">SEC</a></h3>
+                    <!-- <h3 class="col" ><a class="newsSelect" href="{% url 'analysis:news' 'yah' %}">IMF</a></h3> -->
                 </div>
                 <div class="card w-100">
                     <div class="card-header pb-0">
@@ -81,7 +81,8 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for index, row in news_list.iterrows %}
+                                    {% if news_list %}
+                                    {% for news in news_list %}
                                     <tr>
                                         <td style="padding-left:1rem">
                                             <div class="d-flex px-2 py-1">
@@ -91,11 +92,11 @@
                                                     <h6 class="mb-0 text-sm  d-inline-block text-truncate">
                                                         <a 
                                                             class="articlTitle" 
-                                                            title="{{row.headline}}"
-                                                            href="{{row.url}}"
+                                                            title="{{news.title}}"
+                                                            href="{{news.url}}"
                                                             target="_blank"
                                                             >
-                                                            {{row.headline}}
+                                                            {{news.title}}
                                                         </a>
                                                     </h6>
                                                 </div>
@@ -107,12 +108,13 @@
                                             <span
                                                 class="text-xs font-weight-bold"
                                             >
-                                            {{row.Time}}
+                                            {{news.date}}
                                             </span>
                                         </td>
 
                                     </tr>
                                     {% endfor %}
+                                    {% endif %}
                                 </tbody>
                             </table>
                         </div>

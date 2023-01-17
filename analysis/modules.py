@@ -6,7 +6,7 @@ import pandas as pd
 import calendar
 import json
 
-from .models import FinancialEvent, FinEventDate
+from .models import FinancialEvent, FinEventDate, FinNews
 
 # News
 from pyfinviz.news import News
@@ -131,32 +131,18 @@ def get_sec_news():
     df['URL'] = df['URL'].str.replace('Link: ', '')
 
     df = df[['Time', 'Headline', 'URL']]
-    news_query = {}
 
     for row in df.iterrows():
-        inner_query = {}
-        inner_query['headline'] = row[1]['Headline']
-        inner_query['url'] = row[1]['URL']
-        news_query[row[1]['Time']] = inner_query
-
+        s_news = FinNews(press='sec', title=row[1]['Headline'], url=row[1]['URL'], date=row[1]['Time'])
+        s_news.save()
 
 
 def get_finviz_news():
     news = News()
     df = news.news_df
-    news_query = {}
     for idx, row in enumerate(df.iterrows()):
-        now = datetime.now()
-        now = datetime.strftime(today_origin, '%Y-%m-%d %H:%M')
-        inner_query = {}
-        inner_query['headline'] = row[1]['Headline']
-        inner_query['url'] = row[1]['URL']
-        inner_query['Time'] = row[1]['Time']
-        news_query[f'{str(now)} {str(idx)}'] = inner_query
-
-    
-
-
+        s_news = FinNews(press='fin', title=row[1]['Headline'], url=row[1]['URL'], date=row[1]['Time'])
+        s_news.save()
 
 def get_calender():
     options = webdriver.ChromeOptions()
