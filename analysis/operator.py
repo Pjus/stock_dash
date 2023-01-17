@@ -4,8 +4,8 @@ from django.conf import settings
 from apscheduler.executors.pool import ProcessPoolExecutor, ThreadPoolExecutor
 from django_apscheduler.jobstores import register_events, DjangoJobStore
 import time
-from .modules import get_index
-from .models import CompanyPrice
+from .modules import get_index, get_finviz_news, get_calender, get_currency
+from .models import CompanyPrice, FinNews, FinancialEvent, Currency
 
 
 def start():
@@ -14,7 +14,7 @@ def start():
     register_events(scheduler)
     @scheduler.scheduled_job('cron', hour='9', minute = '5', name = 'auto_get_index')
     def auto_get_index():
-        print("Schedule")
+        print("Index")
         nasdaq = "^IXIC"
         dow = "^DJI"
         snp = "^GSPC"
@@ -22,4 +22,23 @@ def start():
         get_index(nasdaq)
         get_index(dow)
         get_index(snp)
+    
+    @scheduler.scheduled_job('cron', minute = '*/50', name = 'auto_get_news')
+    def auto_get_news():
+        print("News")
+        FinNews.objects.all().delete()
+        get_finviz_news()
+
+    @scheduler.scheduled_job('cron', minute = '*/50', name = 'auto_get_calender')
+    def auto_get_calender():
+        print("Calender")
+        FinancialEvent.objects.all().delete()
+        get_calender()
+
+    @scheduler.scheduled_job('cron', minute = '*/10', name = 'auto_get_currency')
+    def auto_get_currency():
+        print("Currency")
+        Currency.objects.all().delete()
+        get_currency()
+
     scheduler.start()
