@@ -2,7 +2,9 @@ from django.shortcuts import render
 import yfinance as yf
 import json
 from datetime import datetime, timedelta
+
 import pandas as pd
+from pandas_datareader import data as pdr
 
 import calendar
 
@@ -32,13 +34,18 @@ def refresh(request):
 
 def company(request):
 
+
     ticker = request.GET.get('ticker', '')  # 검색어
     content = {"ticker":ticker}
     
-    if ticker.encode().isalpha() == False:
-        return render(request, 'main/company.html', content)
-
     if ticker.encode().isalpha():
+        price = pdr.get_data_yahoo(ticker)
+        price['Date'] = price.index
+        price['Date'] = price['Date'].dt.date  
+        price.index = price['Date'].astype("str")
+        price.drop(['Date'], axis=1, inplace=True)
+        content['stock_price'] = price.T.to_json()
+
         return render(request, 'main/company_detail.html', content)
     else:
         return render(request, 'main/company.html', content)
