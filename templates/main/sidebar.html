@@ -222,7 +222,7 @@
                             </g>
                         </svg>
                     </div>
-                    <span class="nav-link-text ms-1">Company</span>
+                    <span class="nav-link-text ms-1">Chart</span>
                 </a>
             </li>
             {% if user.is_authenticated %}
@@ -275,8 +275,8 @@
                     <span class="nav-link-text ms-1">Portfolio</span>
                 </a>
             </li>
-            {% comment %} <li class="nav-item">
-                <a class="nav-link" href="{% url 'analysis:billing' %}">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'analysis:mailing' %}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
                     >
@@ -320,9 +320,9 @@
                             </g>
                         </svg>
                     </div>
-                    <span class="nav-link-text ms-1">Record</span>
+                    <span class="nav-link-text ms-1">Mailing</span>
                 </a>
-            </li> {% endcomment %}
+            </li>
 
 
             {% endif %}

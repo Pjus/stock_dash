@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 
@@ -69,3 +70,13 @@ class Currency(models.Model):
     
     def __str__(self):
         return self.country
+
+
+class MailingTicker(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='mailing_user')
+    ticker = models.CharField(max_length=10, default='')
+    create_date = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return self.ticker
+

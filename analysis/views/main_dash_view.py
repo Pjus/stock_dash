@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta, time
-from django.shortcuts import render
+from django.utils import timezone
 from django.db.models import Q
+from django.shortcuts import render, get_object_or_404, redirect
 
 from analysis.modules import get_calender, get_finviz_news, get_sec_news, get_currency, get_price, get_index
 from portfolio.models import Portfolio
@@ -11,7 +12,8 @@ import json
 import re
 from pandas_datareader import data as pdr
 
-from ..models import FinEventDate, FinancialEvent, FinNews, Currency, StockCompany, CompanyPrice
+from ..models import FinEventDate, FinancialEvent, FinNews, Currency, StockCompany, CompanyPrice, MailingTicker
+from ..forms import MailingForm
 
 yf.pdr_override()
 
@@ -122,8 +124,28 @@ def get_portable(request):
     context["portfolio"] = portfolio
     return render(request, 'main/port_list.html', context)
 
-def get_billing(request):
-    return render(request, 'main/billing.html')
+def get_mailing(request):
+    constext = {}
+
+    if request.method == 'POST':
+        ticker = request.GET.get('ticker', '')  # 검색어
+        form = MailingForm(request.POST)
+        if form.is_valid():
+            # mail_ticker = form.save(commit=False)
+            # mail_ticker.ticker = ticker
+            # mail_ticker.create_date = timezone.now()
+            # mail_ticker.author = request.user
+            # mail_ticker.save()
+            # mailing = MailingTicker.objects.filter(author=request.user)
+            # constext['mailing'] = mailing
+            print(ticker)
+
+            return redirect('analysis:mailing')
+
+    mailing = MailingTicker.objects.filter(author=request.user)
+    constext['mailing'] = mailing
+
+    return render(request, 'main/mailing.html')
 
 def get_box(request):
     return render(request, 'main/box.html')

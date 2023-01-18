@@ -57,6 +57,7 @@
 
 <body class="g-sidenav-show  bg-gray-100">
   {% include 'main/navbar.html' %}
+  {% include 'main/gear.html' %}
   {% include 'main/sidebar.html' %}
  
   {% block unauthuser %}
@@ -70,7 +71,10 @@
 
   {% block news %}
   {% endblock news %}
-  {% include 'main/gear.html' %}
+
+  {% block mailing %}
+  {% endblock %}
+
 
   
   <script>

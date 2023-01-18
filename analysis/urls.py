@@ -10,7 +10,7 @@ urlpatterns = [
     path('company/', base_views.company, name='company'),
     path('heatmap/', heatmap_view.get_heatmap, name='heatmap'),
     path('portable/', main_dash_view.get_portable, name='table'),
-    path('billing/', main_dash_view.get_billing, name='billing'),
+    path('mailing/', main_dash_view.get_mailing, name='mailing'),
     path('box/', main_dash_view.get_box, name='box'),
     path('indicator/macd/<str:ticker>/<int:day>', indicators_view.get_macd, name='macd'),
     path('indicator/bband/<str:ticker>', indicators_view.get_BBAND, name='bband'),
@@ -20,6 +20,7 @@ urlpatterns = [
     path('indicator/fi/<str:ticker>', indicators_view.get_Force_Index, name='fi'),
     path('indicator/evm/<str:ticker>', indicators_view.get_EMV, name='emv'),
     path('news/<str:news_id>/', news_view.index, name='news'),
+
 
 
 
