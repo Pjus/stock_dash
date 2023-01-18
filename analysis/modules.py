@@ -27,6 +27,11 @@ day = datetime.strftime(yesterday, '%Y-%m-%d')
 today_origin = datetime.now()
 today = datetime.strftime(today_origin, '%Y-%m-%d')
 
+def update_company_price(ticker, company):
+    stock = yf.Ticker(ticker)
+    company.last_price = stock.info['currentPrice']
+    company.save()
+    
 def update_company_infos(ticker, company):
     stock = yf.Ticker(ticker)
     company.market_cap = stock.info['marketCap']
@@ -251,7 +256,6 @@ def get_finanacial_infos(collection, ticker, type):
                 column = financial.columns[idx]
                 mongodb_query[date][subject] = financial[column][subject]
         collection.insert_one({'ticker':ticker, type : mongodb_query})
-
 
 
 def time_in_range(start, end, x):

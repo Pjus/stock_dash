@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 
-from analysis.modules import get_calender, get_finviz_news, get_sec_news, get_currency, get_price, get_index, get_company_infos, update_company_infos
+from analysis.modules import get_calender, get_finviz_news, get_sec_news, get_currency, get_price, get_index, get_company_infos, update_company_infos, time_in_range
 from portfolio.models import Portfolio
 
 import yfinance as yf
@@ -12,8 +12,11 @@ import json
 import re
 from pandas_datareader import data as pdr
 
-from ..models import FinEventDate, FinancialEvent, FinNews, Currency, StockCompany, CompanyPrice, MailingTicker
+from ..models import FinEventDate, FinancialEvent, FinNews, Currency, StockCompany, CompanyPrice, MailingTicker, SendMail
 from ..forms import MailingForm
+
+from django.http import JsonResponse
+
 
 yf.pdr_override()
 
@@ -125,6 +128,14 @@ def get_portable(request):
 
 def get_mailing(request):
     constext = {}
+    try:
+        send_mail = SendMail.objects.get(user=request.user)
+    except:
+        send_mail = SendMail(
+            user=request.user,
+            send_mail=True
+        )
+        send_mail.save()
 
     if request.method == 'POST':
         ticker = request.POST.get('ticker', '')  # 검색어
@@ -149,19 +160,25 @@ def get_mailing(request):
             mailing = MailingTicker.objects.filter(author=request.user)
             constext['mailing'] = mailing
 
+
+            constext['send_mail'] = send_mail
             return render(request, 'main/mailing.html', constext)
         else:
             print("not valid")
 
 
     mailing = MailingTicker.objects.filter(author=request.user)
-    for mail in mailing:
-        ticker = mail.ticker
-        company = mail.company
-        update_company_infos(ticker, company)
-        
+    if time_in_range(start, end, now.time()):
+        for mail in mailing:
+            ticker = mail.ticker
+            company = mail.company
+            update_company_infos(ticker, company)
+            
     mailing = MailingTicker.objects.filter(author=request.user)
+
     constext['mailing'] = mailing
+    constext['send_mail'] = send_mail
+
     if len(mailing) > 0:
         constext['current_ticker'] = mailing[0]
 
@@ -180,3 +197,23 @@ def delete_mailing(request, mail_id):
 
 def send_mailing(request):
     user = request.user
+    try:
+        send_mail = SendMail.objects.get(user=user)
+    except:
+        send_mail = SendMail(
+            user=user,
+            send_mail=True
+        )
+        send_mail.save()
+    content = {}
+    if send_mail.send_mail:
+        send_mail.send_mail = False
+        send_mail.save()
+        send = False
+    else:
+        send_mail.send_mail = True
+        send_mail.save()
+        send = True
+    content['sendMail'] = send
+    return JsonResponse(content, content_type="application/json")
+

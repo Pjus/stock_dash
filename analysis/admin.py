@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import FinEventDate, FinancialEvent, FinNews, Currency, StockCompany, CompanyPrice, MailingTicker
+from .models import FinEventDate, FinancialEvent, FinNews, Currency, StockCompany, CompanyPrice, MailingTicker, SendMail
 from django import forms
 
 # Register your models here.
@@ -25,11 +25,15 @@ class CompanyPriceAdmin(admin.ModelAdmin):
 class MailingAdmin(admin.ModelAdmin):
     search_fields = ['ticker']
 
+class SendMailAdmin(admin.ModelAdmin):
+    search_fields = ['user']
+
 
 admin.site.register(Currency)
 admin.site.register(StockCompany)
 admin.site.register(CompanyPrice)
 admin.site.register(MailingTicker)
+admin.site.register(SendMail)
 
 
 admin.site.register(FinNews)

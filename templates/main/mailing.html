@@ -49,7 +49,7 @@
     </div>
     <div class="mt-3 ms-2" style="width:80vh;">
         <div class="form-check">
-            {% if mailng.send_email %}
+            {% if send_mail.send_mail %}
                 <input class="form-check-input" type="checkbox" value="" id="sendEmail" checked>
             {% else %}
                 <input class="form-check-input" type="checkbox" value="" id="sendEmail">
@@ -72,6 +72,10 @@
 
 {% block script %}
 <script>
+    window.setTimeout(function(){
+        window.location.reload();
+    },60000);
+
     const delete_elements = document.getElementsByClassName("delete");
     Array.from(delete_elements).forEach(function (element) {
         element.addEventListener("click", function () {
@@ -99,25 +103,29 @@
     
 
     $(document).ready(function () {
-        $("#sendEmail").click(function () {
+        $("#sendEmail").click(async function () {
             if(this.checked){
-                console.log("???")
+                let Obj;
+                const mailRes = await fetch(
+                    `/analysis/mailing/send`
+                );
+                mailObj = await mailRes.json();
+                const mail_json = JSON.parse(mailObj["sendMail"]);
+
             } else {
-                console.log("???")
+                let Obj;
+                const mailRes = await fetch(
+                    `/analysis/mailing/send`
+                );
+                mailObj = await mailRes.json();
+                const mail_json = JSON.parse(mailObj["sendMail"]);
+
             }
         });
         });
 
         
-        let bandObj;
-        const bandRes = await fetch(
-            `/analysis/indicator/bband/${ticker}`
-        );
-        bandObj = await bandRes.json();
-        const bband_data_json = JSON.parse(bandObj["result"]);
-        let bbandKeys = Object.keys(bband_data_json);
-        fillBBAND(bbandKeys, bband_data_json)
-        myChart.update(config);
-        break;
+
+        
 </script>
 {% endblock %}

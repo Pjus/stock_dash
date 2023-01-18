@@ -90,7 +90,7 @@ class StockCompany(models.Model):
     netIncomeToCommon = models.IntegerField(default=0, blank=True)
     trailingEps = models.FloatField(default=0, blank=True)
 
-    lastDividendValue = models.FloatField(default=0, blank=True)
+    lastDividendValue = models.FloatField(default=0, blank=True, null=True)
     priceToBook = models.FloatField(default=0, blank=True)
     heldPercentInsiders = models.FloatField(default=0, blank=True)
     shortRatio = models.FloatField(default=0, blank=True)
@@ -147,7 +147,7 @@ class Currency(models.Model):
 
 
 class MailingTicker(models.Model):
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='mailing_user')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='mailing_user')
     ticker = models.CharField(max_length=10, default='')
     company = models.ForeignKey(StockCompany, on_delete=models.CASCADE, related_name='mailing_company', default='')
     create_date = models.DateTimeField(null=True, blank=True)
@@ -155,3 +155,10 @@ class MailingTicker(models.Model):
     def __str__(self):
         return self.ticker
 
+
+class SendMail(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_send_mail')
+    send_mail = models.BooleanField(default=True, blank=True)
+
+    def __str__(self):
+        return str(self.user)

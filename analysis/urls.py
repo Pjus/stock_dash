@@ -11,8 +11,8 @@ urlpatterns = [
     path('heatmap/', heatmap_view.get_heatmap, name='heatmap'),
     path('portable/', main_dash_view.get_portable, name='table'),
     path('mailing/', main_dash_view.get_mailing, name='mailing'),
-    path('mailing/<str:mail_id>', main_dash_view.delete_mailing, name='mailing_delete'),
     path('mailing/send', main_dash_view.send_mailing, name='mailing_send'),
+    path('mailing/<str:mail_id>', main_dash_view.delete_mailing, name='mailing_delete'),
 
     path('box/', main_dash_view.get_box, name='box'),
     path('indicator/macd/<str:ticker>/<int:day>', indicators_view.get_macd, name='macd'),

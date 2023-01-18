@@ -227,3 +227,9 @@ APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"  # Default
 
 SCHEDULER_DEFAULT = True
 
+# Email
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_POST = '587'
+EMAIL_HOST_USER = sc_python["GMAIL_ID"]
+EMAIL_HOST_PASSWORD = sc_python["GMAIL_PASSWORD"]
+EMAIL_USE_TLS = True
