@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 
-from analysis.modules import get_calender, get_finviz_news, get_sec_news, get_currency, get_price, get_index
+from analysis.modules import get_calender, get_finviz_news, get_sec_news, get_currency, get_price, get_index, get_company_infos
 from portfolio.models import Portfolio
 
 import yfinance as yf
@@ -33,18 +33,17 @@ now = datetime.now()
 
 def board(request):
     nasdaq = "^IXIC"
-    dow = "^DJI"
     snp = "^GSPC"
+    dow = "^DJI"
     context = {}
 
     # Nasdaq  
     stock = StockCompany.objects.filter(Q(ticker=nasdaq))
-    price_list = CompanyPrice.objects.filter(Q(ticker=stock[0]))
-
-    if len(price_list) == 0:
+    if len(stock) == 0:
         get_index(nasdaq)
-        price_list = CompanyPrice.objects.filter(Q(ticker=stock[0]))
-
+    stock = StockCompany.objects.filter(Q(ticker=nasdaq))
+        
+    price_list = CompanyPrice.objects.filter(Q(ticker=stock[0]))
     df = pd.DataFrame(list(price_list.values()))
     df = df[['adj_close_price']]
 
@@ -54,12 +53,12 @@ def board(request):
 
     # Snp
     stock = StockCompany.objects.filter(Q(ticker=snp))
-    price_list = CompanyPrice.objects.filter(Q(ticker=stock[0]))
 
-    if len(price_list) == 0:
+    if len(stock) == 0:
         get_index(snp)
-        price_list = CompanyPrice.objects.filter(Q(ticker=stock[0]))
+    stock = StockCompany.objects.filter(Q(ticker=snp))
 
+    price_list = CompanyPrice.objects.filter(Q(ticker=stock[0]))
     df = pd.DataFrame(list(price_list.values()))
     df = df[['adj_close_price']]
 
@@ -69,12 +68,12 @@ def board(request):
 
     # Dow
     stock = StockCompany.objects.filter(Q(ticker=dow))
-    price_list = CompanyPrice.objects.filter(Q(ticker=stock[0]))
 
-    if len(price_list) == 0:
+    if len(stock) == 0:
         get_index(dow)
-        price_list = CompanyPrice.objects.filter(Q(ticker=stock[0]))
+    stock = StockCompany.objects.filter(Q(ticker=dow))
 
+    price_list = CompanyPrice.objects.filter(Q(ticker=stock[0]))
     df = pd.DataFrame(list(price_list.values()))
     df = df[['adj_close_price']]
 
@@ -128,24 +127,42 @@ def get_mailing(request):
     constext = {}
 
     if request.method == 'POST':
-        ticker = request.GET.get('ticker', '')  # 검색어
+        ticker = request.POST.get('ticker', '')  # 검색어
+        print('ticker',ticker)
+        try:
+            company = StockCompany.objects.get(ticker=ticker)
+        except:
+            get_company_infos(ticker)
+            company = StockCompany.objects.get(ticker=ticker)
         form = MailingForm(request.POST)
         if form.is_valid():
-            # mail_ticker = form.save(commit=False)
-            # mail_ticker.ticker = ticker
-            # mail_ticker.create_date = timezone.now()
-            # mail_ticker.author = request.user
-            # mail_ticker.save()
-            # mailing = MailingTicker.objects.filter(author=request.user)
-            # constext['mailing'] = mailing
-            print(ticker)
+            print('form company',company)
+    
+            mail_ticker = form.save(commit=False)
+            mail_ticker.ticker = ticker
+            mail_ticker.company = company
+            mail_ticker.create_date = timezone.now()
+            mail_ticker.author = request.user
+            mail_ticker.save()
+
+            mailing = MailingTicker.objects.filter(author=request.user)
+            constext['mailing'] = mailing
+            print(mailing)
 
             return redirect('analysis:mailing')
-
+        else:
+            print("not valid")
     mailing = MailingTicker.objects.filter(author=request.user)
     constext['mailing'] = mailing
 
-    return render(request, 'main/mailing.html')
+    return render(request, 'main/mailing.html', constext)
 
 def get_box(request):
     return render(request, 'main/box.html')
+
+
+def delete_mailing(request, mail_id):
+    print(mail_id)
+    mail_ticker = MailingTicker.objects.get(id=mail_id)
+    mail_ticker.delete()
+    return redirect('analysis:mailing')

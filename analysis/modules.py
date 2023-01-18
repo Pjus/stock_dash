@@ -30,14 +30,20 @@ today = datetime.strftime(today_origin, '%Y-%m-%d')
 def get_company_infos(ticker):
     stock = yf.Ticker(ticker)
     company = StockCompany(
-        ticker=ticker, 
-        company_name=stock.info['shortName'], 
-        industry=stock.info['sector'], 
-        market_cap=stock.info['marketCap'], 
-        recommandation=stock.info['recommendationKey']
+        ticker = ticker, 
+        company_name = stock.info['shortName'], 
+        industry = stock.info['sector'], 
+        market_cap = stock.info['marketCap'], 
+        recommandation = stock.info['recommendationKey'],
+        last_price = stock.info['currentPrice']
     )
     company.save()
 
+    price = pdr.get_data_yahoo(ticker)
+    price['Date'] = price.index
+    price['Date'] = price['Date'].dt.date  
+    df_records = price.to_dict('records')
+    
 
 # Nasdaq, Dow, Snp
 def get_index(ticker):

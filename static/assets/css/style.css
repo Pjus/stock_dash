@@ -5,6 +5,15 @@
     .articleTitle {
         max-width: 130px;
     }
+
+    .stock-logo{
+        display: none;
+    
+    }
+
+    .stock-long-name{
+        display: none;
+    }
 }
 
 .newsTitle {

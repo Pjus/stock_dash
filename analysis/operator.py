@@ -6,7 +6,7 @@ from django_apscheduler.jobstores import register_events, DjangoJobStore
 import time
 from .modules import get_index, get_finviz_news, get_calender, get_currency
 from .models import CompanyPrice, FinNews, FinancialEvent, Currency
-
+from django.db.models import Q
 
 def start():
     scheduler=BackgroundScheduler()
@@ -18,7 +18,11 @@ def start():
         nasdaq = "^IXIC"
         dow = "^DJI"
         snp = "^GSPC"
-        CompanyPrice.objects.all().delete()
+        CompanyPrice.objects.filter(
+                            Q(ticker=nasdaq)|
+                            Q(ticker=dow)|
+                            Q(ticker=snp)
+                            ).delete()
         get_index(nasdaq)
         get_index(dow)
         get_index(snp)
