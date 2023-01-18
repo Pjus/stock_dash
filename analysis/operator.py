@@ -56,15 +56,15 @@ def start():
                 update_company_infos(company.ticker, company)
 
 
-    @scheduler.scheduled_job('cron', hour='23,0,1,2,3,4,5', minute = '*/1', name = 'auto_update_stock_price')
-    def auto_update_stock_price():
-        not_update = ["^IXIC", "^DJI", "^GSPC"]
-        print("Update Stocks Price")
+    # @scheduler.scheduled_job('cron', hour='23,0,1,2,3,4,5', minute = '*/1', name = 'auto_update_stock_price')
+    # def auto_update_stock_price():
+    #     not_update = ["^IXIC", "^DJI", "^GSPC"]
+    #     print("Update Stocks Price")
 
-        all_company = StockCompany.objects.filter()
-        for company in all_company:
-            if company.ticker not in not_update:
-                update_company_price(company.ticker, company)
+    #     all_company = StockCompany.objects.filter()
+    #     for company in all_company:
+    #         if company.ticker not in not_update:
+    #             update_company_price(company.ticker, company)
 
 
     @scheduler.scheduled_job('cron', hour='18', minute = '0', name = 'auto_send_email')

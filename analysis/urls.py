@@ -10,6 +10,8 @@ urlpatterns = [
     path('company/', base_views.company, name='company'),
     path('heatmap/', heatmap_view.get_heatmap, name='heatmap'),
     path('portable/', main_dash_view.get_portable, name='table'),
+    path('tickerInfo/', main_dash_view.ticker_info, name='ticker_info'),
+
     path('mailing/', main_dash_view.get_mailing, name='mailing'),
     path('mailing/send', main_dash_view.send_mailing, name='mailing_send'),
     path('mailing/<str:mail_id>', main_dash_view.delete_mailing, name='mailing_delete'),
