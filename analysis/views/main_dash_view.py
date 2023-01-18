@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 
-from analysis.modules import get_calender, get_finviz_news, get_sec_news, get_currency, get_price, get_index, get_company_infos
+from analysis.modules import get_calender, get_finviz_news, get_sec_news, get_currency, get_price, get_index, get_company_infos, update_company_infos
 from portfolio.models import Portfolio
 
 import yfinance as yf
@@ -128,16 +128,17 @@ def get_mailing(request):
 
     if request.method == 'POST':
         ticker = request.POST.get('ticker', '')  # 검색어
-        print('ticker',ticker)
         try:
             company = StockCompany.objects.get(ticker=ticker)
+            update_company_infos(ticker, company)
         except:
             get_company_infos(ticker)
             company = StockCompany.objects.get(ticker=ticker)
+
         form = MailingForm(request.POST)
+
         if form.is_valid():
-            print('form company',company)
-    
+            print("POST")
             mail_ticker = form.save(commit=False)
             mail_ticker.ticker = ticker
             mail_ticker.company = company
@@ -147,13 +148,23 @@ def get_mailing(request):
 
             mailing = MailingTicker.objects.filter(author=request.user)
             constext['mailing'] = mailing
-            print(mailing)
 
-            return redirect('analysis:mailing')
+            return render(request, 'main/mailing.html', constext)
         else:
             print("not valid")
+
+
+    mailing = MailingTicker.objects.filter(author=request.user)
+    for mail in mailing:
+        ticker = mail.ticker
+        company = mail.company
+        update_company_infos(ticker, company)
+        
     mailing = MailingTicker.objects.filter(author=request.user)
     constext['mailing'] = mailing
+    if len(mailing) > 0:
+        constext['current_ticker'] = mailing[0]
+
 
     return render(request, 'main/mailing.html', constext)
 
@@ -166,3 +177,6 @@ def delete_mailing(request, mail_id):
     mail_ticker = MailingTicker.objects.get(id=mail_id)
     mail_ticker.delete()
     return redirect('analysis:mailing')
+
+def send_mailing(request):
+    user = request.user

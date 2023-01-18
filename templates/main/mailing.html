@@ -2,7 +2,7 @@
 {% load static %}
 {% block mailing %}
 <main class="main-content position-relative max-height-vh-100 h-100 mt-5 border-radius-lg row">
-    <h1 class="mb-5">Mailing</h1>
+    <h1 class="mb-5">Infos</h1>
     <div class="col-lg-6 col-md-6">
         <div class="card h-100">
             <div class="card-header pb-0">
@@ -23,7 +23,7 @@
                 <table class="table align-items-center mb-0">
                     <tbody>
                         <tr>
-                            <td colspan="6" class="text-center">Nothing</td>
+                            <td colspan="6" class="text-center">Empty</td>
                         </tr>
                     </tbody>
                   </table>
@@ -35,11 +35,28 @@
     <div class="col-lg-4 col-md-6">
         <div class="card h-100">
             <div class="card-header pb-0">
-                <h6>Recommandation</h6>
+                <h6><span class="text-uppercase">{{current_ticker.ticker}}</span> Infos</h6>
             </div>
+
             {% if mailing %}
-                {% include 'main/mailing_recommand_table.html' %}
+                <div class="container d-flex justify-content-center">
+                    <button class="btn btn-outline-primary btn-sm mb-0 mx-1 infoType" value="finanacial">Financial</button>
+                    <button class="btn btn-outline-primary btn-sm mb-0 mx-1 infoType" value="ratio">Ratios</button>
+                </div>
+                {% include 'main/mailing_infos_table.html' %}
             {% endif %}
+        </div>
+    </div>
+    <div class="mt-3 ms-2" style="width:80vh;">
+        <div class="form-check">
+            {% if mailng.send_email %}
+                <input class="form-check-input" type="checkbox" value="" id="sendEmail" checked>
+            {% else %}
+                <input class="form-check-input" type="checkbox" value="" id="sendEmail">
+            {% endif %}
+            <label class="form-check-label" for="sendEmail">
+                Daily E-mail
+            </label>
         </div>
     </div>
 
@@ -79,6 +96,28 @@
                 document.getElementById("mailingForm").submit();
             }
         });
+    
 
+    $(document).ready(function () {
+        $("#sendEmail").click(function () {
+            if(this.checked){
+                console.log("???")
+            } else {
+                console.log("???")
+            }
+        });
+        });
+
+        
+        let bandObj;
+        const bandRes = await fetch(
+            `/analysis/indicator/bband/${ticker}`
+        );
+        bandObj = await bandRes.json();
+        const bband_data_json = JSON.parse(bandObj["result"]);
+        let bbandKeys = Object.keys(bband_data_json);
+        fillBBAND(bbandKeys, bband_data_json)
+        myChart.update(config);
+        break;
 </script>
 {% endblock %}

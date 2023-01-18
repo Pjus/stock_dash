@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.conf import settings
 
 
 
@@ -36,10 +37,82 @@ class FinNews(models.Model):
 class StockCompany(models.Model):
     ticker = models.CharField(max_length=5, default='')
     company_name = models.CharField(max_length=20, default='')
-    industry = models.CharField(max_length=20, default='')
-    market_cap = models.IntegerField(blank=True, default=0)
+    sector = models.CharField(max_length=20, default='')
+    industry = models.CharField(max_length=50, default='')
+    market_cap = models.IntegerField(default=0, blank=True)
     recommandation = models.CharField(max_length=5, default='', blank=True)
     last_price = models.FloatField(default=0, blank=True)
+
+    targetLowPrice = models.FloatField(default=0, blank=True)
+    target_mean_price = models.FloatField(default=0, blank=True)
+    targetHighPrice = models.FloatField(default=0, blank=True)
+    targetMedianPrice = models.FloatField(default=0, blank=True)
+    
+    ebitdaMargins = models.FloatField(default=0, blank=True)
+    profitMargins = models.FloatField(default=0, blank=True)
+    grossMargins = models.FloatField(default=0, blank=True)
+    operatingMargins = models.FloatField(default=0, blank=True)
+
+    operatingCashflow = models.FloatField(default=0, blank=True)
+    revenueGrowth = models.FloatField(default=0, blank=True)
+    ebitda = models.FloatField(default=0, blank=True)
+
+    grossProfits = models.FloatField(default=0, blank=True)
+    freeCashflow = models.FloatField(default=0, blank=True)
+
+    earningsGrowth = models.FloatField(default=0, blank=True)
+    currentRatio = models.FloatField(default=0, blank=True)
+    returnOnAssets = models.FloatField(default=0, blank=True)
+
+    debtToEquity = models.FloatField(default=0, blank=True)
+    returnOnEquity = models.FloatField(default=0, blank=True)
+    totalCash = models.FloatField(default=0, blank=True)
+    totalDebt = models.FloatField(default=0, blank=True)
+
+    totalRevenue = models.FloatField(default=0, blank=True)
+    totalCashPerShare = models.FloatField(default=0, blank=True)
+    revenuePerShare = models.FloatField(default=0, blank=True)
+
+
+    quickRatio = models.FloatField(default=0, blank=True)
+    enterpriseToRevenue = models.FloatField(default=0, blank=True)
+    enterpriseToEbitda = models.FloatField(default=0, blank=True)
+    WeekChange = models.FloatField(default=0, blank=True)
+
+
+    forwardEps = models.FloatField(default=0, blank=True)
+    sharesOutstanding = models.IntegerField(default=0, blank=True)
+    bookValue = models.FloatField(default=0, blank=True)
+    sharesShort = models.IntegerField(default=0, blank=True)
+
+    sharesPercentSharesOut = models.FloatField(default=0, blank=True)
+    heldPercentInstitutions = models.FloatField(default=0, blank=True)
+    netIncomeToCommon = models.IntegerField(default=0, blank=True)
+    trailingEps = models.FloatField(default=0, blank=True)
+
+    lastDividendValue = models.FloatField(default=0, blank=True)
+    priceToBook = models.FloatField(default=0, blank=True)
+    heldPercentInsiders = models.FloatField(default=0, blank=True)
+    shortRatio = models.FloatField(default=0, blank=True)
+    floatShares = models.FloatField(default=0, blank=True)
+    beta = models.FloatField(default=0, blank=True)
+    enterpriseValue = models.FloatField(default=0, blank=True)
+    earningsQuarterlyGrowth = models.FloatField(default=0, blank=True)
+    priceToSalesTrailing12Months = models.FloatField(default=0, blank=True)
+
+
+    pegRatio = models.FloatField(default=0, blank=True)
+    forwardPE = models.FloatField(default=0, blank=True)
+    shortPercentOfFloat = models.FloatField(default=0, blank=True)
+    sharesShortPriorMonth = models.IntegerField(default=0, blank=True)
+    twoHundredDayAverage = models.FloatField(default=0, blank=True)
+    fiftyDayAverage = models.FloatField(default=0, blank=True)
+
+    payoutRatio = models.FloatField(default=0, blank=True)
+    regularMarketOpen = models.FloatField(default=0, blank=True)
+    regularMarketDayHigh = models.FloatField(default=0, blank=True)
+
+
     def __str__(self):
         return self.ticker
 
@@ -74,9 +147,9 @@ class Currency(models.Model):
 
 
 class MailingTicker(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='mailing_user')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='mailing_user')
     ticker = models.CharField(max_length=10, default='')
-    company = models.ForeignKey("StockCompany", on_delete=models.CASCADE, related_name='mailing_company', default='')
+    company = models.ForeignKey(StockCompany, on_delete=models.CASCADE, related_name='mailing_company', default='')
     create_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):

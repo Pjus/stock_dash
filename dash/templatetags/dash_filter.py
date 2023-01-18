@@ -25,9 +25,13 @@ def get_dict(dictionary, key):
 
 @register.filter
 def to_krw(num):
-    num = float(num)
+    num = int(num)
     return format(num, ',')
 
 @register.filter
 def add_one(num):
     return num + 1
+
+@register.filter
+def rounded(num):
+    return round(num, 2)

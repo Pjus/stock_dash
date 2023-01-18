@@ -1,11 +1,14 @@
 {% load static %}
+{% load dash_filter %}
 <div class="card-body p-3">
     <table class="table align-items-center mb-0">
         <thead>
           <tr>
             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Ticker</th>
             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Sector</th>
-            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Price</th>
+            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Current Price</th>
+            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">200Days Avg Price</th>
+            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Target Price</th>
             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Register Date</th>
             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Delete</th>
@@ -28,11 +31,19 @@
                   </div>
                 </td>
                 <td>
-                  <p class="text-xs font-weight-bold mb-0">{{mail.company.industry}}</p>
+                    <h6 class="mb-0 text-sm text-uppercase">{{mail.company.sector}}</h6>
+                    <p class="text-xs font-weight-bold mb-0">{{mail.company.industry}}</p>
                 </td>
                 <td>
-                    <p class="text-xs text-center font-weight-bold mb-0">{{mail.company.last_price}}</p>
-                  </td>
+                    <p class="text-xs text-center font-weight-bold mb-0">$ {{mail.company.last_price}}</p>
+                </td>
+                <td>
+                    <p class="text-xs text-center font-weight-bold mb-0">$ {{mail.company.twoHundredDayAverage|rounded}}</p>
+                </td>
+                <td>
+                    <p class="text-xs text-center font-weight-bold mb-0">$ {{mail.company.target_mean_price}}</p>
+                </td>
+
                 <td class="align-middle text-center text-sm">
                 {% if mail.company.recommandation == 'buy' %}
                   <span class="badge badge-sm bg-gradient-success">{{mail.company.recommandation}}</span>

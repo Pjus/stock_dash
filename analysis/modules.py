@@ -27,6 +27,67 @@ day = datetime.strftime(yesterday, '%Y-%m-%d')
 today_origin = datetime.now()
 today = datetime.strftime(today_origin, '%Y-%m-%d')
 
+def update_company_infos(ticker, company):
+    stock = yf.Ticker(ticker)
+    company.market_cap = stock.info['marketCap']
+    company.recommandation = stock.info['recommendationKey']
+    company.last_price = stock.info['currentPrice']
+    company.targetLowPrice = stock.info['targetLowPrice']
+    company.target_mean_price = stock.info['targetMeanPrice']
+    company.targetHighPrice = stock.info['targetHighPrice']
+    company.targetMedianPrice = stock.info['targetMedianPrice']
+    company.ebitdaMargins = stock.info['ebitdaMargins']
+    company.profitMargins = stock.info['profitMargins']
+    company.grossMargins = stock.info['grossMargins']
+    company.operatingMargins = stock.info['operatingMargins']
+    company.operatingCashflow = stock.info['operatingCashflow']
+    company.freeCashflow = stock.info['freeCashflow']
+    company.revenueGrowth = stock.info['revenueGrowth']
+    company.ebitda = stock.info['ebitda']
+    company.grossProfits = stock.info['grossProfits']
+    company.earningsGrowth = stock.info['earningsGrowth']
+    company.currentRatio = stock.info['currentRatio']
+    company.returnOnAssets = stock.info['returnOnAssets']
+    company.debtToEquity = stock.info['debtToEquity']
+    company.returnOnEquity = stock.info['returnOnEquity']
+    company.totalCash = stock.info['totalCash']
+    company.totalDebt = stock.info['totalDebt']
+    company.totalRevenue = stock.info['totalRevenue']
+    company.totalCashPerShare = stock.info['totalCashPerShare']
+    company.revenuePerShare = stock.info['revenuePerShare']
+    company.quickRatio = stock.info['quickRatio']
+    company.enterpriseToRevenue = stock.info['enterpriseToRevenue']
+    company.enterpriseToEbitda = stock.info['enterpriseToEbitda']
+    company.WeekChange = stock.info['52WeekChange']
+    company.forwardEps = stock.info['forwardEps']
+    company.sharesOutstanding = stock.info['sharesOutstanding']
+    company.bookValue = stock.info['bookValue']
+    company.sharesShort = stock.info['sharesShort']
+    company.sharesPercentSharesOut = stock.info['sharesPercentSharesOut']
+    company.heldPercentInstitutions = stock.info['heldPercentInstitutions']
+    company.netIncomeToCommon = stock.info['netIncomeToCommon']
+    company.trailingEps = stock.info['trailingEps']
+    company.lastDividendValue = stock.info['lastDividendValue']
+    company.priceToBook = stock.info['priceToBook']
+    company.heldPercentInsiders = stock.info['heldPercentInsiders']
+    company.shortRatio = stock.info['shortRatio']
+    company.floatShares = stock.info['floatShares']
+    company.beta = stock.info['beta']
+    company.enterpriseValue = stock.info['enterpriseValue']
+    company.earningsQuarterlyGrowth = stock.info['earningsQuarterlyGrowth']
+    company.priceToSalesTrailing12Months = stock.info['priceToSalesTrailing12Months']
+    company.pegRatio = stock.info['pegRatio']
+    company.forwardPE = stock.info['forwardPE']
+    company.shortPercentOfFloat = stock.info['shortPercentOfFloat']
+    company.sharesShortPriorMonth = stock.info['sharesShortPriorMonth']
+    company.twoHundredDayAverage = stock.info['twoHundredDayAverage']
+    company.fiftyDayAverage = stock.info['fiftyDayAverage']
+    company.payoutRatio = stock.info['payoutRatio']
+    company.regularMarketOpen = stock.info['regularMarketOpen']
+    company.regularMarketDayHigh = stock.info['regularMarketDayHigh']
+    company.save()
+
+
 def get_company_infos(ticker):
     stock = yf.Ticker(ticker)
     company = StockCompany(
@@ -35,15 +96,64 @@ def get_company_infos(ticker):
         industry = stock.info['sector'], 
         market_cap = stock.info['marketCap'], 
         recommandation = stock.info['recommendationKey'],
-        last_price = stock.info['currentPrice']
+        last_price = stock.info['currentPrice'],
+        targetLowPrice = stock.info['targetLowPrice'],
+        target_mean_price = stock.info['targetMeanPrice'],
+        targetHighPrice = stock.info['targetHighPrice'],
+        targetMedianPrice = stock.info['targetMedianPrice'],
+        ebitdaMargins = stock.info['ebitdaMargins'],
+        profitMargins = stock.info['profitMargins'],
+        grossMargins = stock.info['grossMargins'],
+        operatingMargins = stock.info['operatingMargins'],
+        operatingCashflow = stock.info['operatingCashflow'],
+        freeCashflow = stock.info['freeCashflow'],
+        revenueGrowth = stock.info['revenueGrowth'],
+        ebitda = stock.info['ebitda'],
+        grossProfits = stock.info['grossProfits'],
+        earningsGrowth = stock.info['earningsGrowth'],
+        currentRatio = stock.info['currentRatio'],
+        returnOnAssets = stock.info['returnOnAssets'],
+        debtToEquity = stock.info['debtToEquity'],
+        returnOnEquity = stock.info['returnOnEquity'],
+        totalCash = stock.info['totalCash'],
+        totalDebt = stock.info['totalDebt'],
+        totalRevenue = stock.info['totalRevenue'],
+        totalCashPerShare = stock.info['totalCashPerShare'],
+        revenuePerShare = stock.info['revenuePerShare'],
+        quickRatio = stock.info['quickRatio'],
+        enterpriseToRevenue = stock.info['enterpriseToRevenue'],
+        enterpriseToEbitda = stock.info['enterpriseToEbitda'],
+        WeekChange = stock.info['52WeekChange'],
+        forwardEps = stock.info['forwardEps'],
+        sharesOutstanding = stock.info['sharesOutstanding'],
+        bookValue = stock.info['bookValue'],
+        sharesShort = stock.info['sharesShort'],
+        sharesPercentSharesOut = stock.info['sharesPercentSharesOut'],
+        heldPercentInstitutions = stock.info['heldPercentInstitutions'],
+        netIncomeToCommon = stock.info['netIncomeToCommon'],
+        trailingEps = stock.info['trailingEps'],
+        lastDividendValue = stock.info['lastDividendValue'],
+        priceToBook = stock.info['priceToBook'],
+        heldPercentInsiders = stock.info['heldPercentInsiders'],
+        shortRatio = stock.info['shortRatio'],
+        floatShares = stock.info['floatShares'],
+        beta = stock.info['beta'],
+        enterpriseValue = stock.info['enterpriseValue'],
+        earningsQuarterlyGrowth = stock.info['earningsQuarterlyGrowth'],
+        priceToSalesTrailing12Months = stock.info['priceToSalesTrailing12Months'],
+        pegRatio = stock.info['pegRatio'],
+        forwardPE = stock.info['forwardPE'],
+        shortPercentOfFloat = stock.info['shortPercentOfFloat'],
+        sharesShortPriorMonth = stock.info['sharesShortPriorMonth'],
+        twoHundredDayAverage = stock.info['twoHundredDayAverage'],
+        fiftyDayAverage = stock.info['fiftyDayAverage'],
+        payoutRatio = stock.info['payoutRatio'],
+        regularMarketOpen = stock.info['regularMarketOpen'],
+        regularMarketDayHigh = stock.info['regularMarketDayHigh'],
+
     )
     company.save()
 
-    price = pdr.get_data_yahoo(ticker)
-    price['Date'] = price.index
-    price['Date'] = price['Date'].dt.date  
-    df_records = price.to_dict('records')
-    
 
 # Nasdaq, Dow, Snp
 def get_index(ticker):
