@@ -9,6 +9,7 @@ let macd_days = document.querySelector(".macd-days-hidden")
 let indi_days = document.querySelector(".indicator-days-hidden")
 
 let indiChart = document.querySelector("#stock-chart-indi")
+let infoTable = document.querySelector("#info-table");
 
 for(let i=0; i < list.length; i++){
     let curr_btn = list[i]
@@ -16,7 +17,9 @@ for(let i=0; i < list.length; i++){
         if(curr_btn.value == recommand.id){
             recommand.classList = "stock-infos"
         } else {
-            recommand.classList = "stock-infos-hidden"
+            // recommand.classList = "stock-infos-hidden"
+            console.log()
+
         }
         if(curr_btn.value == oscill.id){
             oscill.classList = "stock-infos"

@@ -36,19 +36,29 @@ def company(request):
 
 
     ticker = request.GET.get('ticker', '')  # 검색어
-    content = {"ticker":ticker}
+    context = {"ticker":ticker}
     
     if ticker.encode().isalpha():
+        stock = yf.Ticker(ticker)
         price = pdr.get_data_yahoo(ticker)
         price['Date'] = price.index
         price['Date'] = price['Date'].dt.date  
         price.index = price['Date'].astype("str")
         price.drop(['Date'], axis=1, inplace=True)
-        content['stock_price'] = price.T.to_json()
+        context['stock_price'] = price.T.to_json()
+        context['last_stock_price'] = round(price.iloc[-1:,3:4].values[0][0], 2) 
 
-        return render(request, 'main/company_detail.html', content)
+        context['last_diff_val'] = round(price.diff().iloc[-1:,3:4].values[0][0], 2) 
+        context['last_pct_val'] = round(price.pct_change().iloc[-1:,3:4].values[0][0] * 100, 2)
+        recommand_df = stock.recommendations.loc['2023-01-01':, :]
+        recommand_df['Date'] = recommand_df.index
+        recommand_df = recommand_df[['Date', 'Firm', 'To Grade','From Grade','Action']]
+        context['recommand_col'] = list(recommand_df.columns)
+        context['recommand'] = recommand_df.T.to_dict()
+
+        return render(request, 'main/company_detail.html', context)
     else:
-        return render(request, 'main/company.html', content)
+        return render(request, 'main/company.html', context)
 
 
 

@@ -264,5 +264,3 @@ def get_calender():
         fin_event.save()
 
     
-    for event in data_dict:
-        print(event)

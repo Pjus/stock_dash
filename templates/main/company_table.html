@@ -1,32 +1,41 @@
-<table class="table align-items-center mb-0 w-100">
+<table class="table align-items-center mb-5 mt-5 w-100" id="info-table">
     <thead>
-        <tr>
-            <br>
-        </tr>
+        <thead>
+            <tr>
+                
+                {% for col in recommand_col %}
+                
+                    <th
+                        class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
+                    >
+                        {{col}}
+                    </th>
+                    
+                {% endfor %}
+
+            </tr>
+        </thead>
     </thead>
     <tbody class="container" id="recommand">
-        {% if recommandation %}
-        {% for redommand, val in recommandation.items %}
-        <tr>
-            <td>
-                <div class="d-flex px-2 py-1">
-                    <div
-                        class="d-flex flex-column justify-content-center articleTitle"
-                    >
-                        <h6 class="mb-0 text-sm  d-inline-block text-truncate">
-                            {{redommand}}
-                        </h6>
+            {% for index, row in recommand.items %}
+            <tr>
+                {% for idx, val in row.items %}
+                <td>
+                    {% if val|date:"Y-m-d"  %}
+                    <div class="avatar-group mt-2">
+                        {{ val|date:"Y-m-d" }}
                     </div>
-                </div>
-            </td>
-            <td>
-                <div class="avatar-group mt-2">
-                    {{ val }}
-                </div>
-            </td>
-        </tr>
-        {% endfor %}
-        {% endif %}
+                    {% else %}
+                    <div class="avatar-group mt-2">
+                        {{ val }}
+                    </div>
+                    {% endif %}
+
+                </td>
+              {% endfor %}
+            </tr>
+            {% endfor %}
+            
     </tbody>
 
     <tbody class="stock-infos-hidden" id="oscill">
@@ -106,3 +115,4 @@
     </tbody>
 
 </table>
+

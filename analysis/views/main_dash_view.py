@@ -35,9 +35,13 @@ def board(request):
     snp = "^GSPC"
     context = {}
 
-    # Nasdaq
+    # Nasdaq  
     stock = StockCompany.objects.filter(Q(ticker=nasdaq))
     price_list = CompanyPrice.objects.filter(Q(ticker=stock[0]))
+
+    if len(price_list) == 0:
+        get_index(nasdaq)
+        price_list = CompanyPrice.objects.filter(Q(ticker=stock[0]))
 
     df = pd.DataFrame(list(price_list.values()))
     df = df[['adj_close_price']]
@@ -50,6 +54,10 @@ def board(request):
     stock = StockCompany.objects.filter(Q(ticker=snp))
     price_list = CompanyPrice.objects.filter(Q(ticker=stock[0]))
 
+    if len(price_list) == 0:
+        get_index(snp)
+        price_list = CompanyPrice.objects.filter(Q(ticker=stock[0]))
+
     df = pd.DataFrame(list(price_list.values()))
     df = df[['adj_close_price']]
 
@@ -61,13 +69,16 @@ def board(request):
     stock = StockCompany.objects.filter(Q(ticker=dow))
     price_list = CompanyPrice.objects.filter(Q(ticker=stock[0]))
 
+    if len(price_list) == 0:
+        get_index(dow)
+        price_list = CompanyPrice.objects.filter(Q(ticker=stock[0]))
+
     df = pd.DataFrame(list(price_list.values()))
     df = df[['adj_close_price']]
 
     context['dow_diff'] = round(df.diff().iloc[-1:,:].values[0][0], 2) 
     context['dow_pct'] = round(df.pct_change().iloc[-1:,:].values[0][0] * 100, 2)
     context['dow'] = round(price_list[len(price_list)-1].close_price, 2) 
-
 
 
     # Events

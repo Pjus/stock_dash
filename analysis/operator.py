@@ -23,19 +23,19 @@ def start():
         get_index(dow)
         get_index(snp)
     
-    @scheduler.scheduled_job('cron', minute = '*/50', name = 'auto_get_news')
+    @scheduler.scheduled_job('cron', hour='10', minute = '50', name = 'auto_get_news')
     def auto_get_news():
         print("News")
         FinNews.objects.all().delete()
         get_finviz_news()
 
-    @scheduler.scheduled_job('cron', minute = '*/50', name = 'auto_get_calender')
+    @scheduler.scheduled_job('cron', hour='8', minute = '55', name = 'auto_get_calender')
     def auto_get_calender():
         print("Calender")
         FinancialEvent.objects.all().delete()
         get_calender()
 
-    @scheduler.scheduled_job('cron', minute = '*/10', name = 'auto_get_currency')
+    @scheduler.scheduled_job('cron', hour='9', minute = '45', name = 'auto_get_currency')
     def auto_get_currency():
         print("Currency")
         Currency.objects.all().delete()
