@@ -82,7 +82,8 @@ def board(request):
 
 
     # Events
-    event_list = FinEventDate.objects.order_by('fin_current_date')
+    event_list = FinancialEvent.objects.order_by('event_mother')
+    print(len(event_list))
     if len(event_list) == 0:
         get_calender()
         event_detail = FinancialEvent.objects.order_by('event_mother')
