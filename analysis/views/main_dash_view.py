@@ -139,36 +139,41 @@ def get_mailing(request):
 
     if request.method == 'POST':
         ticker = request.POST.get('ticker', '')  # 검색어
+
         try:
-            MailingTicker.objects.get(ticker=ticker)
-            return redirect('analysis:mailing')
-        except:
             try:
-                company = StockCompany.objects.get(ticker=ticker)
-                update_company_infos(ticker, company)
-            except:
-                get_company_infos(ticker)
-                company = StockCompany.objects.get(ticker=ticker)
-
-            form = MailingForm(request.POST)
-
-            if form.is_valid():
-                print("POST")
-                mail_ticker = form.save(commit=False)
-                mail_ticker.ticker = ticker
-                mail_ticker.company = company
-                mail_ticker.create_date = timezone.now()
-                mail_ticker.author = request.user
-                mail_ticker.save()
-
-                mailing = MailingTicker.objects.filter(author=request.user)
-                constext['mailing'] = mailing
-
-
-                constext['send_mail'] = send_mail
+                MailingTicker.objects.get(ticker=ticker)
                 return redirect('analysis:mailing')
-            else:
-                print("not valid")
+            except:
+                try:
+                    company = StockCompany.objects.get(ticker=ticker)
+                    update_company_infos(ticker, company)
+                except:
+                    get_company_infos(ticker)
+                    company = StockCompany.objects.get(ticker=ticker)
+
+                form = MailingForm(request.POST)
+
+                if form.is_valid():
+                    print("POST")
+                    mail_ticker = form.save(commit=False)
+                    mail_ticker.ticker = ticker
+                    mail_ticker.company = company
+                    mail_ticker.create_date = timezone.now()
+                    mail_ticker.author = request.user
+                    mail_ticker.save()
+
+                    mailing = MailingTicker.objects.filter(author=request.user)
+                    constext['mailing'] = mailing
+
+
+                    constext['send_mail'] = send_mail
+                    return redirect('analysis:mailing')
+                else:
+                    print("not valid")
+        except:
+            return redirect('analysis:mailing')
+
 
 
     mailing = MailingTicker.objects.filter(author=request.user)
