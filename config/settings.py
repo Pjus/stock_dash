@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
     "bootstrap5",
     "django_apscheduler",
+    'mail_templated',
     # App registration
     'dash.apps.DashConfig',
     'common.apps.CommonConfig',

@@ -1,5 +1,12 @@
+{% extends "mail_templated/base.tpl" %}
 {% load static %}
 {% load dash_filter %}
+
+{% block subject %}
+Recommandation
+{% endblock %}
+
+{% block html %}
 <div class="card-body p-3">
     <table class="table align-items-center mb-0">
         <thead>
@@ -7,27 +14,20 @@
             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Ticker</th>
             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Sector</th>
             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Current Price</th>
-            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">200Days Avg Price</th>
             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Target Price</th>
             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Register Date</th>
-            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Delete</th>
 
           </tr>
         </thead>
         <tbody>
-            {% for mail in mailing %}
+            {% for mail in mail_ticker %}
             <tr>
                 <td>
                   <div class="d-flex px-2 py-1">
-                    <div class="stock-logo">
-                      <img src="{% static 'assets/img/NDAQ.svg' %}" class="avatar avatar-sm me-3" style="width: 5px;" alt="user1">
-                    </div>
                     <div class="d-flex flex-column justify-content-center">
                       <!--  -->
-                      <h6 class="mb-0 text-sm text-uppercase"><a href="#">{{mail.ticker}}</a></h6>
                       <p class="text-xs text-secondary mb-0 text-uppercase stock-long-name">{{mail.company.company_name}}</p>
-
                     </div>
                   </div>
                 </td>
@@ -37,9 +37,6 @@
                 </td>
                 <td>
                     <p class="text-xs text-center font-weight-bold mb-0">$ {{mail.company.last_price|rounded}}</p>
-                </td>
-                <td>
-                    <p class="text-xs text-center font-weight-bold mb-0 stock-200-price">$ {{mail.company.twoHundredDayAverage|rounded}}</p>
                 </td>
                 <td>
                     <p class="text-xs text-center font-weight-bold mb-0 stock-target-price">$ {{mail.company.target_mean_price}}</p>
@@ -54,15 +51,13 @@
                 
                 </td>
                 <td class="align-middle text-center">
-                  <span class="text-secondary text-xs font-weight-bold">{{mail.create_date}}</span>
-                </td>
-                <td class="align-middle text-center">
-                  <a href="javascript:void(0)" class="text-secondary font-weight-bold text-xs delete" data-uri="{% url 'analysis:mailing_delete' mail_id=mail.id %}" data-toggle="tooltip" data-original-title="delete ticker">
-                    Delete
-                  </a>
+                  <span class="text-secondary text-xs font-weight-bold">{{mail.create_date|date:"Y-m-d"}}</span>
                 </td>
               </tr>
             {% endfor %}
         </tbody>
       </table>
 </div>
+{% endblock %}
+
+

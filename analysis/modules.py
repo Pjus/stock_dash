@@ -1,12 +1,16 @@
 from pandas_datareader import data as pdr
 from datetime import datetime, timedelta
 from django.shortcuts import render
+from django.db.models import Q
+from django.core.mail import send_mass_mail
+
+
 import yfinance as yf
 import pandas as pd
 import calendar
 import json
 
-from .models import FinancialEvent, FinEventDate, FinNews, Currency, StockCompany, CompanyPrice, StockCompany
+from .models import FinancialEvent, FinEventDate, FinNews, Currency, StockCompany, CompanyPrice, StockCompany, MailingTicker, SendMail
 
 # News
 from pyfinviz.news import News
@@ -16,6 +20,8 @@ import requests
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import re
+
+
 
 yf.pdr_override()
 
@@ -384,3 +390,22 @@ def get_calender():
         fin_event.save()
 
     
+
+from mail_templated import EmailMessage
+
+
+
+def stock_mail_send():
+    all_mail = SendMail.objects.filter()
+    messages = []
+    for idx, mail in enumerate(all_mail):
+        print(idx, mail)
+        if mail.send_mail:
+            mail_ticker = MailingTicker.objects.filter(Q(author=mail.user))
+            message = EmailMessage('email/stock_recommand.tpl', {'user': mail.user, 'mail_ticker':mail_ticker}, 'wnstjd117@gmail.com',
+                                to=[mail.user.email])
+            # TODO: Add more useful commands here.
+            message.send()
+    # message1 = ('Subject here', 'Here is the message', 'from@example.com', ['wnstjd117@gmail.com'])
+    # message2 = ('Another Subject', 'Here is another message', 'from@example.com', ['wnstjd117@naver.com'])
+    # # send_mass_mail((message1, message2), fail_silently=False)
