@@ -67,7 +67,7 @@ def start():
                 update_company_price(company.ticker, company)
 
 
-    @scheduler.scheduled_job('cron', hour="18", minute = '0', name = 'auto_send_email')
+    @scheduler.scheduled_job('cron',minute = '*/1', name = 'auto_send_email')
     def auto_send_email():
         stock_mail_send()
 

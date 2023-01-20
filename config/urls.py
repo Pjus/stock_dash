@@ -31,6 +31,7 @@ urlpatterns = [
     path("analysis/", include('analysis.urls')),
     path("", views.main_dash_view.board, name="index"),
     path('ckeditor/', include('ckeditor_uploader.urls')),
+    path('ads.txt', views.main_dash_view.Ads, name="ads")
 ]
 
 if settings.DEBUG:

@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, time
+from django.http import HttpResponse
 from django.utils import timezone
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
@@ -230,3 +231,7 @@ def send_mailing(request):
 
 def ticker_info(request):
     return
+
+
+def Ads(request):
+    return HttpResponse("google.com, pub-2835834888306304, DIRECT, f08c47fec0942fa0")

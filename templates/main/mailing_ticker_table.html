@@ -54,7 +54,7 @@
                 
                 </td>
                 <td class="align-middle text-center">
-                  <span class="text-secondary text-xs font-weight-bold">{{mail.create_date}}</span>
+                  <span class="text-secondary text-xs font-weight-bold">{{mail.create_date|date:"Y-m-d"}}</span>
                 </td>
                 <td class="align-middle text-center">
                   <a href="javascript:void(0)" class="text-secondary font-weight-bold text-xs delete" data-uri="{% url 'analysis:mailing_delete' mail_id=mail.id %}" data-toggle="tooltip" data-original-title="delete ticker">

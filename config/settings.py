@@ -37,7 +37,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = sc_python['DJANGO_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = {
     "production":
@@ -127,6 +127,14 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     },
+    'new': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'tFnXEEpcjQ',
+        'USER': 'tFnXEEpcjQ',
+        'PASSWORD': 'UW9BWCT8m2',
+        'HOST': 'remotemysql.com',
+        'PORT': '3306',
+    }
 }
 
 
