@@ -5,6 +5,9 @@
     .articleTitle {
         max-width: 130px;
     }
+    .newsTitle{
+        max-width: 30vh;
+    }
 
     .stock-logo{
         display: none;
@@ -14,9 +17,9 @@
     .stock-long-name{
         display: none;
     }
-}
 
-.newsTitle {
-    max-width: 50vh;
+    .stock-date{
+        display: none;
+    }
 }
 
