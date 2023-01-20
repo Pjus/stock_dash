@@ -37,7 +37,11 @@ def start():
     @scheduler.scheduled_job('cron', minute = '*/30', name = 'auto_get_calender')
 =======
     @scheduler.scheduled_job('cron',  minute = '*/5', name = 'auto_get_calender')
+<<<<<<< HEAD
 >>>>>>> 607393e (css chg)
+=======
+>>>>>>> 607393ebaeeb5392283536c694fd3070c677dbbd
+>>>>>>> de9f57dd858070849cdc89d6595af46ba7a5e8b3
     def auto_get_calender():
         print("Calender")
         FinancialEvent.objects.all().delete()
@@ -75,7 +79,11 @@ def start():
     @scheduler.scheduled_job('cron',minute = '*/1', name = 'auto_send_email')
 =======
     @scheduler.scheduled_job('cron', hour="9", minute = '*/2', name = 'auto_send_email')
+<<<<<<< HEAD
 >>>>>>> 607393e (css chg)
+=======
+>>>>>>> 607393ebaeeb5392283536c694fd3070c677dbbd
+>>>>>>> de9f57dd858070849cdc89d6595af46ba7a5e8b3
     def auto_send_email():
         stock_mail_send()
 
