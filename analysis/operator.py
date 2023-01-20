@@ -27,13 +27,13 @@ def start():
         get_index(dow)
         get_index(snp)
     
-    @scheduler.scheduled_job('cron', minute = '*/50', name = 'auto_get_news')
+    @scheduler.scheduled_job('cron', minute = '*/5', name = 'auto_get_news')
     def auto_get_news():
         print("News")
         FinNews.objects.all().delete()
         get_finviz_news()
 
-    @scheduler.scheduled_job('cron', hour='8', minute = '55', name = 'auto_get_calender')
+    @scheduler.scheduled_job('cron',  minute = '*/5', name = 'auto_get_calender')
     def auto_get_calender():
         print("Calender")
         FinancialEvent.objects.all().delete()
@@ -67,7 +67,7 @@ def start():
                 update_company_price(company.ticker, company)
 
 
-    @scheduler.scheduled_job('cron', hour="18", minute = '0', name = 'auto_send_email')
+    @scheduler.scheduled_job('cron', hour="9", minute = '*/2', name = 'auto_send_email')
     def auto_send_email():
         stock_mail_send()
 

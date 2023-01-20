@@ -1,18 +1,19 @@
 {% extends "mail_templated/base.tpl" %}
-{% load static %}
 {% load dash_filter %}
-
+{% load static %}
 {% block subject %}
 Recommandation
 {% endblock %}
 
 {% block html %}
+<head>
+  <link href={% static 'assets/css/email.css' %} rel="stylesheet" />
+</head>
 <div class="card-body p-3">
     <table class="table align-items-center mb-0">
         <thead>
           <tr>
             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Ticker</th>
-            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Sector</th>
             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Current Price</th>
             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Target Price</th>
             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
@@ -30,10 +31,6 @@ Recommandation
                       <p class="text-xs text-secondary mb-0 text-uppercase stock-long-name">{{mail.company.company_name}}</p>
                     </div>
                   </div>
-                </td>
-                <td>
-                    <h6 class="mb-0 text-sm text-uppercase">{{mail.company.sector}}</h6>
-                    <p class="text-xs font-weight-bold mb-0">{{mail.company.industry}}</p>
                 </td>
                 <td>
                     <p class="text-xs text-center font-weight-bold mb-0">$ {{mail.company.last_price|rounded}}</p>

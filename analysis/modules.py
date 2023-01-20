@@ -22,6 +22,8 @@ from selenium.webdriver.common.by import By
 import re
 
 
+# Email
+from mail_templated import EmailMessage
 
 yf.pdr_override()
 
@@ -391,7 +393,6 @@ def get_calender():
 
     
 
-from mail_templated import EmailMessage
 
 
 
@@ -402,7 +403,7 @@ def stock_mail_send():
         print(idx, mail)
         if mail.send_mail:
             mail_ticker = MailingTicker.objects.filter(Q(author=mail.user))
-            message = EmailMessage('email/stock_recommand.tpl', {'user': mail.user, 'mail_ticker':mail_ticker}, 'wnstjd117@gmail.com',
+            message = EmailMessage('email/stock_recommand.html', {'user': mail.user, 'mail_ticker':mail_ticker}, 'wnstjd117@gmail.com',
                                 to=[mail.user.email])
             # TODO: Add more useful commands here.
             message.send()

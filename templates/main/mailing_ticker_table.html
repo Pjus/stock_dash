@@ -1,17 +1,17 @@
 {% load static %}
 {% load dash_filter %}
-<div class="card-body p-3">
+<div class="card-body p-3 mb-3">
     <table class="table align-items-center mb-0">
         <thead>
           <tr>
             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Ticker</th>
-            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Sector</th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 stock-date">Sector</th>
             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Current Price</th>
-            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">200Days Avg Price</th>
-            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Target Price</th>
+            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 stock-date">200Days Avg Price</th>
+            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 stock-date">Target Price</th>
             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
-            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Register Date</th>
-            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Delete</th>
+            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 stock-date">Register Date</th>
+            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 stock-date">Delete</th>
 
           </tr>
         </thead>
@@ -31,17 +31,17 @@
                     </div>
                   </div>
                 </td>
-                <td>
+                <td class="stock-date">
                     <h6 class="mb-0 text-sm text-uppercase">{{mail.company.sector}}</h6>
                     <p class="text-xs font-weight-bold mb-0">{{mail.company.industry}}</p>
                 </td>
                 <td>
                     <p class="text-xs text-center font-weight-bold mb-0">$ {{mail.company.last_price|rounded}}</p>
                 </td>
-                <td>
+                <td class="stock-date">
                     <p class="text-xs text-center font-weight-bold mb-0 stock-200-price">$ {{mail.company.twoHundredDayAverage|rounded}}</p>
                 </td>
-                <td>
+                <td class="stock-date">
                     <p class="text-xs text-center font-weight-bold mb-0 stock-target-price">$ {{mail.company.target_mean_price}}</p>
                 </td>
 
@@ -53,10 +53,10 @@
                 {% endif %}
                 
                 </td>
-                <td class="align-middle text-center">
+                <td class="align-middle text-center stock-date">
                   <span class="text-secondary text-xs font-weight-bold">{{mail.create_date}}</span>
                 </td>
-                <td class="align-middle text-center">
+                <td class="align-middle text-center stock-date">
                   <a href="javascript:void(0)" class="text-secondary font-weight-bold text-xs delete" data-uri="{% url 'analysis:mailing_delete' mail_id=mail.id %}" data-toggle="tooltip" data-original-title="delete ticker">
                     Delete
                   </a>
